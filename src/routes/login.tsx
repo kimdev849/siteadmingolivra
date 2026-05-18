@@ -1,6 +1,6 @@
 ﻿import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, type FormEvent } from "react";
-import { Eye, EyeOff, Loader2, Lock, Mail, ShieldCheck } from "lucide-react";
+import { Eye, EyeOff, Loader2, Lock, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,8 +13,8 @@ import { clearAdminToken, getAdminToken, isRememberMeEnabled, setAdminToken } fr
 export const Route = createFileRoute("/login")({
   head: () => ({
     meta: [
-      { title: "Connexion â€” GoLivra Admin" },
-      { name: "description", content: "AccÃ¨s sÃ©curisÃ© au tableau de bord administrateur GoLivra." },
+      { title: "Connexion — GoLivra" },
+      { name: "description", content: "Connexion à la plateforme GoLivra." },
     ],
   }),
   component: LoginPage,
@@ -62,7 +62,7 @@ function LoginPage() {
 
     const normalizedEmail = email.trim().toLowerCase();
     if (!normalizedEmail.includes("@") || password.length < 6) {
-      setError("Indiquez une adresse e-mail valide et un mot de passe (6 caractÃ¨res minimum).");
+      setError("Adresse e-mail ou mot de passe invalide.");
       return;
     }
 
@@ -74,14 +74,14 @@ function LoginPage() {
       const me = await fetchAdminMe(session.token);
       if (!isAdminUser(me)) {
         clearAdminToken();
-        setError("Ce compte nâ€™est pas autorisÃ© Ã  accÃ©der au back-office GoLivra.");
+        setError("Ce compte n'est pas autorisé à accéder à GoLivra.");
         return;
       }
 
       await navigate({ to: "/admin" });
     } catch (err) {
       clearAdminToken();
-      setError(err instanceof Error ? err.message : "Connexion impossible. VÃ©rifiez vos identifiants.");
+      setError(err instanceof Error ? err.message : "Connexion impossible. Vérifiez vos identifiants.");
     } finally {
       setLoading(false);
     }
@@ -92,65 +92,50 @@ function LoginPage() {
       <div className="flex min-h-screen items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-3 text-muted-foreground">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
-          <p className="text-sm">VÃ©rification de la sessionâ€¦</p>
+          <p className="text-sm">Chargement…</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex min-h-screen">
-      {/* Panneau branding â€” desktop */}
-      <div className="relative hidden w-[44%] overflow-hidden bg-[#0B6B45] lg:flex lg:flex-col lg:justify-between lg:p-12">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.12),transparent_50%)]" />
-        <div className="absolute -right-24 -top-24 h-72 w-72 rounded-full bg-white/10 blur-3xl" />
-        <div className="absolute -bottom-16 -left-16 h-64 w-64 rounded-full bg-black/10 blur-2xl" />
-
-        <div className="relative z-10 flex items-center gap-3">
-          <img src={logo} alt="GoLivra" className="h-12 w-12 rounded-xl bg-white/95 p-1.5 object-contain shadow-lg" />
+    <div className="flex min-h-screen flex-col lg:flex-row">
+      {/* Panneau gauche — desktop */}
+      <div className="relative hidden bg-[#0B6B45] lg:flex lg:w-[44%] lg:flex-col lg:justify-between lg:p-12">
+        <div className="flex items-center gap-3">
+          <img src={logo} alt="GoLivra" className="h-12 w-12 rounded-xl bg-white/95 p-1.5 object-contain" />
           <div>
-            <p className="text-lg font-bold text-white">GoLivra</p>
-            <p className="text-xs text-white/75">Back-office administrateur</p>
+            <p className="text-xl font-bold text-white">GoLivra</p>
+            <p className="text-sm text-white/80">Plateforme GoLivra</p>
           </div>
         </div>
 
-        <div className="relative z-10 space-y-6">
-          <h1 className="max-w-md text-3xl font-bold leading-tight tracking-tight text-white">
-            Pilotez la marketplace Brazzaville
-          </h1>
-          <ul className="space-y-3 text-sm text-white/85">
-            <li className="flex items-start gap-2">
-              <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0" />
-              Validez restaurants et boutiques avant publication
-            </li>
-            <li className="flex items-start gap-2">
-              <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0" />
-              Supervisez commandes, livraisons et commissions
-            </li>
-            <li className="flex items-start gap-2">
-              <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0" />
-              Connexion sÃ©curisÃ©e via lâ€™API GoLivra (Render)
-            </li>
-          </ul>
+        <div className="space-y-4 text-white/90">
+          <p className="max-w-md text-base leading-relaxed">
+            Accédez à votre espace sécurisé pour gérer votre activité sur GoLivra.
+          </p>
+          <p className="max-w-md text-sm leading-relaxed text-white/75">
+            Suivez en temps réel les opérations, les commandes et les mises à jour de la plateforme.
+          </p>
         </div>
 
-        <p className="relative z-10 text-xs text-white/60">Â© GoLivra â€” AccÃ¨s rÃ©servÃ© au personnel autorisÃ©</p>
+        <p className="text-xs text-white/60">© GoLivra — Tous droits réservés</p>
       </div>
 
       {/* Formulaire */}
-      <div className="flex flex-1 items-center justify-center bg-gradient-to-br from-background via-background to-primary/5 px-4 py-10">
-        <div className="w-full max-w-md">
-          <div className="mb-8 flex flex-col items-center text-center lg:items-start lg:text-left">
-            <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl border border-border bg-card shadow-sm lg:hidden">
-              <img src={logo} alt="GoLivra" className="h-10 w-10 object-contain" />
+      <div className="flex flex-1 flex-col bg-background">
+        <div className="flex flex-1 items-center justify-center px-4 py-10">
+          <div className="w-full max-w-md">
+            <div className="mb-8 text-center lg:text-left">
+              <div className="mb-4 flex justify-center lg:hidden">
+                <img src={logo} alt="GoLivra" className="h-14 w-14 object-contain" />
+              </div>
+              <h1 className="text-2xl font-bold text-foreground">Connexion</h1>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Accédez avec vos identifiants GoLivra.
+              </p>
             </div>
-            <h2 className="text-2xl font-bold tracking-tight text-foreground">Connexion admin</h2>
-            <p className="mt-2 text-sm text-muted-foreground">
-              Utilisez votre e-mail administrateur et votre mot de passe GoLivra.
-            </p>
-          </div>
 
-          <div className="rounded-2xl border border-border bg-card p-6 shadow-sm sm:p-8">
             <form className="space-y-5" onSubmit={(e) => void handleSubmit(e)}>
               <div className="space-y-2">
                 <Label htmlFor="email">Adresse e-mail</Label>
@@ -159,7 +144,6 @@ function LoginPage() {
                   <Input
                     id="email"
                     type="email"
-                    placeholder="golivra@gmail.com"
                     autoComplete="email"
                     className="pl-10"
                     value={email}
@@ -176,7 +160,6 @@ function LoginPage() {
                   <Input
                     id="password"
                     type={showPassword ? "text" : "password"}
-                    placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
                     autoComplete="current-password"
                     className="pl-10 pr-10"
                     value={password}
@@ -202,7 +185,7 @@ function LoginPage() {
                   onCheckedChange={(v) => setRemember(v === true)}
                 />
                 <Label htmlFor="remember" className="cursor-pointer text-sm font-normal text-muted-foreground">
-                  Rester connectÃ© sur cet appareil
+                  Rester connecté
                 </Label>
               </div>
 
@@ -212,11 +195,11 @@ function LoginPage() {
                 </Alert>
               ) : null}
 
-              <Button type="submit" className="h-11 w-full text-base" disabled={loading}>
+              <Button type="submit" className="h-11 w-full" disabled={loading}>
                 {loading ? (
                   <>
                     <Loader2 className="h-4 w-4 animate-spin" />
-                    Connexion en coursâ€¦
+                    Connexion…
                   </>
                 ) : (
                   "Se connecter"
@@ -225,9 +208,11 @@ function LoginPage() {
             </form>
           </div>
         </div>
+
+        <p className="pb-6 text-center text-xs text-muted-foreground lg:hidden">
+          © GoLivra — Tous droits réservés
+        </p>
       </div>
     </div>
   );
 }
-
-
