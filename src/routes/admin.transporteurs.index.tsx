@@ -1,12 +1,21 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import { Filter, Loader2 } from "lucide-react";
+import { Filter, Loader2, Plus } from "lucide-react";
 import { PageHeader } from "@/components/admin/PageHeader";
 import { DataTable } from "@/components/admin/DataTable";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import {
   Select,
   SelectContent,
@@ -15,6 +24,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
+  createLogisticsCompanyAdmin,
   fetchAdminLogistics,
   formatDateFr,
   formatStatutLabel,
@@ -30,6 +40,19 @@ function TransporteursPage() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [actingId, setActingId] = useState<string | null>(null);
+  const [createOpen, setCreateOpen] = useState(false);
+  const [creating, setCreating] = useState(false);
+  const [createError, setCreateError] = useState<string | null>(null);
+  const [form, setForm] = useState({
+    nomEntreprise: "",
+    telephoneEntreprise: "",
+    emailEntreprise: "",
+    zoneActivite: "",
+    gestionnaireNom: "",
+    gestionnaireEmail: "",
+    gestionnaireMotDePasse: "",
+    gestionnaireTelephone: "",
+  });
 
   const query = useQuery({
     queryKey: ["admin", "logistics", statusFilter, search],
@@ -39,6 +62,46 @@ function TransporteursPage() {
         q: search.trim() || undefined,
       }),
   });
+
+  const resetForm = () => {
+    setForm({
+      nomEntreprise: "",
+      telephoneEntreprise: "",
+      emailEntreprise: "",
+      zoneActivite: "",
+      gestionnaireNom: "",
+      gestionnaireEmail: "",
+      gestionnaireMotDePasse: "",
+      gestionnaireTelephone: "",
+    });
+    setCreateError(null);
+  };
+
+  const handleCreate = async () => {
+    setCreating(true);
+    setCreateError(null);
+    try {
+      await createLogisticsCompanyAdmin({
+        nomEntreprise: form.nomEntreprise.trim(),
+        telephoneEntreprise: form.telephoneEntreprise.trim() || undefined,
+        emailEntreprise: form.emailEntreprise.trim() || undefined,
+        zoneActivite: form.zoneActivite.trim() || undefined,
+        gestionnaire: {
+          nom: form.gestionnaireNom.trim(),
+          email: form.gestionnaireEmail.trim(),
+          motDePasse: form.gestionnaireMotDePasse,
+          telephone: form.gestionnaireTelephone.trim() || undefined,
+        },
+      });
+      setCreateOpen(false);
+      resetForm();
+      await queryClient.invalidateQueries({ queryKey: ["admin", "logistics"] });
+    } catch (e) {
+      setCreateError(e instanceof Error ? e.message : "Erreur lors de la création.");
+    } finally {
+      setCreating(false);
+    }
+  };
 
   const rows = useMemo(() => {
     return (query.data ?? []).map((e) => {
@@ -89,7 +152,120 @@ function TransporteursPage() {
     <div>
       <PageHeader
         title="Entreprises de livraison"
-        description="Validation et supervision des partenaires logistiques"
+        description="Création, validation et supervision des partenaires logistiques"
+        actions={
+          <Dialog
+            open={createOpen}
+            onOpenChange={(open) => {
+              setCreateOpen(open);
+              if (!open) resetForm();
+            }}
+          >
+            <DialogTrigger asChild>
+              <Button>
+                <Plus className="h-4 w-4" /> Créer une entreprise
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
+              <DialogHeader>
+                <DialogTitle>Nouvelle entreprise logistique</DialogTitle>
+              </DialogHeader>
+              <div className="grid gap-3 py-2">
+                <div className="grid gap-1.5">
+                  <Label htmlFor="nomEntreprise">Nom de l&apos;entreprise</Label>
+                  <Input
+                    id="nomEntreprise"
+                    value={form.nomEntreprise}
+                    onChange={(ev) => setForm((f) => ({ ...f, nomEntreprise: ev.target.value }))}
+                  />
+                </div>
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  <div className="grid gap-1.5">
+                    <Label htmlFor="telEntreprise">Téléphone entreprise</Label>
+                    <Input
+                      id="telEntreprise"
+                      placeholder="+242…"
+                      value={form.telephoneEntreprise}
+                      onChange={(ev) => setForm((f) => ({ ...f, telephoneEntreprise: ev.target.value }))}
+                    />
+                  </div>
+                  <div className="grid gap-1.5">
+                    <Label htmlFor="emailEntreprise">E-mail entreprise</Label>
+                    <Input
+                      id="emailEntreprise"
+                      type="email"
+                      value={form.emailEntreprise}
+                      onChange={(ev) => setForm((f) => ({ ...f, emailEntreprise: ev.target.value }))}
+                    />
+                  </div>
+                </div>
+                <div className="grid gap-1.5">
+                  <Label htmlFor="zone">Zone d&apos;activité</Label>
+                  <Input
+                    id="zone"
+                    value={form.zoneActivite}
+                    onChange={(ev) => setForm((f) => ({ ...f, zoneActivite: ev.target.value }))}
+                  />
+                </div>
+                <p className="text-xs font-medium text-muted-foreground pt-2">Compte gestionnaire (connexion web)</p>
+                <div className="grid gap-1.5">
+                  <Label htmlFor="gestNom">Nom du gestionnaire</Label>
+                  <Input
+                    id="gestNom"
+                    value={form.gestionnaireNom}
+                    onChange={(ev) => setForm((f) => ({ ...f, gestionnaireNom: ev.target.value }))}
+                  />
+                </div>
+                <div className="grid gap-1.5">
+                  <Label htmlFor="gestEmail">E-mail gestionnaire</Label>
+                  <Input
+                    id="gestEmail"
+                    type="email"
+                    value={form.gestionnaireEmail}
+                    onChange={(ev) => setForm((f) => ({ ...f, gestionnaireEmail: ev.target.value }))}
+                  />
+                </div>
+                <div className="grid gap-1.5">
+                  <Label htmlFor="gestMdp">Mot de passe gestionnaire</Label>
+                  <Input
+                    id="gestMdp"
+                    type="password"
+                    autoComplete="new-password"
+                    value={form.gestionnaireMotDePasse}
+                    onChange={(ev) => setForm((f) => ({ ...f, gestionnaireMotDePasse: ev.target.value }))}
+                  />
+                </div>
+                <div className="grid gap-1.5">
+                  <Label htmlFor="gestTel">Téléphone gestionnaire (optionnel)</Label>
+                  <Input
+                    id="gestTel"
+                    placeholder="+242…"
+                    value={form.gestionnaireTelephone}
+                    onChange={(ev) => setForm((f) => ({ ...f, gestionnaireTelephone: ev.target.value }))}
+                  />
+                </div>
+                {createError ? <p className="text-sm text-destructive">{createError}</p> : null}
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setCreateOpen(false)}>
+                  Annuler
+                </Button>
+                <Button
+                  disabled={
+                    creating ||
+                    !form.nomEntreprise.trim() ||
+                    !form.gestionnaireNom.trim() ||
+                    !form.gestionnaireEmail.trim() ||
+                    form.gestionnaireMotDePasse.length < 6
+                  }
+                  onClick={() => void handleCreate()}
+                >
+                  {creating ? <Loader2 className="h-4 w-4 animate-spin" /> : "Créer"}
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        }
       />
 
       <div className="mb-4 flex flex-wrap items-center gap-2">
@@ -123,7 +299,7 @@ function TransporteursPage() {
           columns={["Nom entreprise", "Statut", "Nombre de livreurs", "Date", "Actions"]}
           rows={rows}
           emptyTitle="Aucune entreprise"
-          emptyDescription="Les entreprises de livraison inscrites apparaîtront ici."
+          emptyDescription="Créez une entreprise logistique ou attendez les inscriptions."
         />
       )}
     </div>

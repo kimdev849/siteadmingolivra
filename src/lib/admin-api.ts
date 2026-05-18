@@ -193,6 +193,24 @@ export type AdminSousCommande = {
   articles: { id: string; nom_produit: string; quantite: number; prix_unitaire: number; sous_total: number }[];
 };
 
+export type AdminCourier = {
+  id: string;
+  type_vehicule?: string | null;
+  est_disponible?: boolean;
+  est_approuve?: boolean;
+  nb_livraisons_total?: number;
+  nb_livraisons_reussies?: number;
+  plaque_immatriculation?: string | null;
+  created_at?: string;
+  utilisateur?: {
+    id: string;
+    nom: string | null;
+    telephone: string | null;
+    email?: string | null;
+    est_actif?: boolean;
+  } | null;
+};
+
 export type AdminLogistics = {
   id: string;
   nom: string;
@@ -203,7 +221,29 @@ export type AdminLogistics = {
   nb_livreurs?: number;
   created_at?: string;
   gestionnaire?: AdminOwner | null;
-  livreurs?: unknown[];
+  livreurs?: AdminCourier[];
+};
+
+export type CreateLogisticsCompanyPayload = {
+  nomEntreprise: string;
+  telephoneEntreprise?: string;
+  emailEntreprise?: string;
+  description?: string;
+  zoneActivite?: string;
+  gestionnaire: {
+    nom: string;
+    email: string;
+    motDePasse: string;
+    telephone?: string;
+  };
+};
+
+export type CreateLogisticsCourierPayload = {
+  nom: string;
+  telephone: string;
+  motDePasse: string;
+  typeVehicule: "moto" | "voiture" | "velo" | "pied";
+  plaqueImmatriculation?: string;
 };
 
 export type AdminDelivery = {
@@ -266,6 +306,49 @@ export async function updateLogisticsStatusAdmin(
     method: "PATCH",
     token: token(),
     jsonBody: raison ? { action, raison } : { action },
+  });
+}
+
+export async function createLogisticsCompanyAdmin(
+  payload: CreateLogisticsCompanyPayload,
+): Promise<AdminLogistics> {
+  return apiFetch<AdminLogistics>("/api/admin/logistics", {
+    method: "POST",
+    token: token(),
+    jsonBody: payload,
+  });
+}
+
+export async function createLogisticsCourierAdmin(
+  companyId: string,
+  payload: CreateLogisticsCourierPayload,
+): Promise<AdminCourier> {
+  return apiFetch<AdminCourier>(`/api/admin/logistics/${companyId}/livreurs`, {
+    method: "POST",
+    token: token(),
+    jsonBody: payload,
+  });
+}
+
+export async function suspendLogisticsCourierAdmin(
+  companyId: string,
+  livreurId: string,
+): Promise<AdminCourier> {
+  return apiFetch<AdminCourier>(`/api/admin/logistics/${companyId}/livreurs/${livreurId}/suspend`, {
+    method: "PATCH",
+    token: token(),
+    jsonBody: {},
+  });
+}
+
+export async function activateLogisticsCourierAdmin(
+  companyId: string,
+  livreurId: string,
+): Promise<AdminCourier> {
+  return apiFetch<AdminCourier>(`/api/admin/logistics/${companyId}/livreurs/${livreurId}/activate`, {
+    method: "PATCH",
+    token: token(),
+    jsonBody: {},
   });
 }
 
