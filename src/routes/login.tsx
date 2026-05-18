@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+﻿import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, type FormEvent } from "react";
 import { Eye, EyeOff, Loader2, Lock, Mail, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -7,15 +7,14 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import logo from "@/assets/logo.png";
-import { getApiOrigin } from "@/lib/api";
 import { fetchAdminMe, isAdminUser, staffLogin } from "@/lib/auth-api";
 import { clearAdminToken, getAdminToken, isRememberMeEnabled, setAdminToken } from "@/lib/auth-session";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
     meta: [
-      { title: "Connexion — GoLivra Admin" },
-      { name: "description", content: "Accès sécurisé au tableau de bord administrateur GoLivra." },
+      { title: "Connexion â€” GoLivra Admin" },
+      { name: "description", content: "AccÃ¨s sÃ©curisÃ© au tableau de bord administrateur GoLivra." },
     ],
   }),
   component: LoginPage,
@@ -63,7 +62,7 @@ function LoginPage() {
 
     const normalizedEmail = email.trim().toLowerCase();
     if (!normalizedEmail.includes("@") || password.length < 6) {
-      setError("Indiquez une adresse e-mail valide et un mot de passe (6 caractères minimum).");
+      setError("Indiquez une adresse e-mail valide et un mot de passe (6 caractÃ¨res minimum).");
       return;
     }
 
@@ -75,14 +74,14 @@ function LoginPage() {
       const me = await fetchAdminMe(session.token);
       if (!isAdminUser(me)) {
         clearAdminToken();
-        setError("Ce compte n’est pas autorisé à accéder au back-office GoLivra.");
+        setError("Ce compte nâ€™est pas autorisÃ© Ã  accÃ©der au back-office GoLivra.");
         return;
       }
 
       await navigate({ to: "/admin" });
     } catch (err) {
       clearAdminToken();
-      setError(err instanceof Error ? err.message : "Connexion impossible. Vérifiez vos identifiants.");
+      setError(err instanceof Error ? err.message : "Connexion impossible. VÃ©rifiez vos identifiants.");
     } finally {
       setLoading(false);
     }
@@ -93,7 +92,7 @@ function LoginPage() {
       <div className="flex min-h-screen items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-3 text-muted-foreground">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
-          <p className="text-sm">Vérification de la session…</p>
+          <p className="text-sm">VÃ©rification de la sessionâ€¦</p>
         </div>
       </div>
     );
@@ -101,7 +100,7 @@ function LoginPage() {
 
   return (
     <div className="flex min-h-screen">
-      {/* Panneau branding — desktop */}
+      {/* Panneau branding â€” desktop */}
       <div className="relative hidden w-[44%] overflow-hidden bg-[#0B6B45] lg:flex lg:flex-col lg:justify-between lg:p-12">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.12),transparent_50%)]" />
         <div className="absolute -right-24 -top-24 h-72 w-72 rounded-full bg-white/10 blur-3xl" />
@@ -130,12 +129,12 @@ function LoginPage() {
             </li>
             <li className="flex items-start gap-2">
               <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0" />
-              Connexion sécurisée via l’API GoLivra (Render)
+              Connexion sÃ©curisÃ©e via lâ€™API GoLivra (Render)
             </li>
           </ul>
         </div>
 
-        <p className="relative z-10 text-xs text-white/60">© GoLivra — Accès réservé au personnel autorisé</p>
+        <p className="relative z-10 text-xs text-white/60">Â© GoLivra â€” AccÃ¨s rÃ©servÃ© au personnel autorisÃ©</p>
       </div>
 
       {/* Formulaire */}
@@ -177,7 +176,7 @@ function LoginPage() {
                   <Input
                     id="password"
                     type={showPassword ? "text" : "password"}
-                    placeholder="••••••••"
+                    placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
                     autoComplete="current-password"
                     className="pl-10 pr-10"
                     value={password}
@@ -203,7 +202,7 @@ function LoginPage() {
                   onCheckedChange={(v) => setRemember(v === true)}
                 />
                 <Label htmlFor="remember" className="cursor-pointer text-sm font-normal text-muted-foreground">
-                  Rester connecté sur cet appareil
+                  Rester connectÃ© sur cet appareil
                 </Label>
               </div>
 
@@ -217,7 +216,7 @@ function LoginPage() {
                 {loading ? (
                   <>
                     <Loader2 className="h-4 w-4 animate-spin" />
-                    Connexion en cours…
+                    Connexion en coursâ€¦
                   </>
                 ) : (
                   "Se connecter"
@@ -225,13 +224,10 @@ function LoginPage() {
               </Button>
             </form>
           </div>
-
-            <p className="mt-6 text-center text-xs text-muted-foreground lg:text-left">
-            API :{" "}
-            <span className="font-mono text-[11px]">{getApiOrigin() || "non configurée"}</span>
-          </p>
         </div>
       </div>
     </div>
   );
 }
+
+
