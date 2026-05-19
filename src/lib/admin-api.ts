@@ -238,14 +238,6 @@ export type CreateLogisticsCompanyPayload = {
   };
 };
 
-export type CreateLogisticsCourierPayload = {
-  nom: string;
-  telephone: string;
-  motDePasse: string;
-  typeVehicule: "moto" | "voiture" | "velo" | "pied";
-  plaqueImmatriculation?: string;
-};
-
 export type AdminDelivery = {
   id: string;
   statut: string;
@@ -319,60 +311,10 @@ export async function createLogisticsCompanyAdmin(
   });
 }
 
-export async function createLogisticsCourierAdmin(
-  companyId: string,
-  payload: CreateLogisticsCourierPayload,
-): Promise<AdminCourier> {
-  return apiFetch<AdminCourier>(`/api/admin/logistics/${companyId}/livreurs`, {
-    method: "POST",
-    token: token(),
-    jsonBody: payload,
-  });
-}
-
-export async function suspendLogisticsCourierAdmin(
-  companyId: string,
-  livreurId: string,
-): Promise<AdminCourier> {
-  return apiFetch<AdminCourier>(`/api/admin/logistics/${companyId}/livreurs/${livreurId}/suspend`, {
-    method: "PATCH",
-    token: token(),
-    jsonBody: {},
-  });
-}
-
-export async function activateLogisticsCourierAdmin(
-  companyId: string,
-  livreurId: string,
-): Promise<AdminCourier> {
-  return apiFetch<AdminCourier>(`/api/admin/logistics/${companyId}/livreurs/${livreurId}/activate`, {
-    method: "PATCH",
-    token: token(),
-    jsonBody: {},
-  });
-}
-
 export async function fetchAdminDeliveries(status?: string): Promise<AdminDelivery[]> {
   const qs = status ? `?status=${encodeURIComponent(status)}` : "";
   const data = await apiFetch<AdminDelivery[]>(`/api/admin/deliveries${qs}`, { method: "GET", token: token() });
   return Array.isArray(data) ? data : [];
-}
-
-export async function fetchAdminCouriers(): Promise<
-  { id: string; type_vehicule: string; est_disponible: boolean; utilisateur?: { nom: string; telephone: string } | null }[]
-> {
-  const data = await apiFetch<
-    { id: string; type_vehicule: string; est_disponible: boolean; utilisateur?: { nom: string; telephone: string } | null }[]
-  >("/api/admin/couriers", { method: "GET", token: token() });
-  return Array.isArray(data) ? data : [];
-}
-
-export async function assignDeliveryCourierAdmin(deliveryId: string, livreurId: string): Promise<void> {
-  await apiFetch(`/api/admin/deliveries/${deliveryId}/assign`, {
-    method: "PATCH",
-    token: token(),
-    jsonBody: { livreurId },
-  });
 }
 
 export async function fetchAdminCommissions(): Promise<AdminCommissions> {

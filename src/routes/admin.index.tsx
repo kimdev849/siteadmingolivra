@@ -51,7 +51,7 @@ function DashboardPage() {
           hint={statsQuery.isLoading ? "Chargement…" : undefined}
         />
         <KpiCard
-          label="Comptes marchands"
+          label="Comptes en attente"
           icon={Users}
           value={stats?.comptes_marchands_en_attente}
           hint="En attente de validation"
@@ -77,14 +77,13 @@ function DashboardPage() {
           </CardTitle>
           <Button asChild>
             <Link to="/admin/transporteurs/nouveau">
-              <Plus className="h-4 w-4" /> Créer une entreprise logistique
+              <Plus className="h-4 w-4" /> Créer une entreprise
             </Link>
           </Button>
         </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground">
-            Partenaires qui gèrent leurs propres livreurs. Créez l&apos;entreprise, puis ajoutez les livreurs depuis la
-            fiche détail.
+            Créez une entreprise de livraison et son compte responsable.
           </p>
           <Button variant="link" className="mt-2 h-auto p-0" asChild>
             <Link to="/admin/transporteurs">Voir toutes les entreprises →</Link>
@@ -145,7 +144,7 @@ function DashboardPage() {
                 <Link to="/admin/comptes">Comptes en attente</Link>
               </Button>
               <Button variant="outline" asChild>
-                <Link to="/admin/marchands">Gérer les marchands</Link>
+                <Link to="/admin/marchands">Restaurants & boutiques</Link>
               </Button>
             </div>
           </CardContent>

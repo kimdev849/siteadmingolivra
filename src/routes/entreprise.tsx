@@ -1,16 +1,16 @@
 import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
-import { Sidebar } from "@/components/admin/Sidebar";
-import { Topbar } from "@/components/admin/Topbar";
+import { EntrepriseSidebar } from "@/components/entreprise/EntrepriseSidebar";
+import { EntrepriseTopbar } from "@/components/entreprise/EntrepriseTopbar";
 import { fetchAdminMe, isAdminUser, isLogisticsManager } from "@/lib/auth-api";
 import { clearAdminToken, getAdminToken } from "@/lib/auth-session";
 
-export const Route = createFileRoute("/admin")({
-  component: AdminLayout,
+export const Route = createFileRoute("/entreprise")({
+  component: EntrepriseLayout,
 });
 
-function AdminLayout() {
+function EntrepriseLayout() {
   const navigate = useNavigate();
   const [ready, setReady] = useState(false);
 
@@ -24,11 +24,11 @@ function AdminLayout() {
       }
       try {
         const me = await fetchAdminMe(token);
-        if (isLogisticsManager(me)) {
-          await navigate({ to: "/entreprise" });
+        if (isAdminUser(me)) {
+          await navigate({ to: "/admin" });
           return;
         }
-        if (!isAdminUser(me)) {
+        if (!isLogisticsManager(me)) {
           clearAdminToken();
           await navigate({ to: "/login" });
           return;
@@ -56,10 +56,10 @@ function AdminLayout() {
 
   return (
     <div className="flex min-h-screen w-full bg-background">
-      <Sidebar className="hidden md:flex" />
+      <EntrepriseSidebar className="hidden md:flex" />
       <div className="flex min-w-0 flex-1 flex-col">
-        <Topbar />
-        <main className="flex-1 px-6 py-8">
+        <EntrepriseTopbar />
+        <main className="flex-1 px-4 py-8 sm:px-6">
           <Outlet />
         </main>
       </div>

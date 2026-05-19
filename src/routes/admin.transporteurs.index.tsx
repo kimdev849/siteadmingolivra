@@ -1,13 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import { Filter, Loader2, Plus, Truck } from "lucide-react";
+import { Filter, Loader2, Plus } from "lucide-react";
 import { PageHeader } from "@/components/admin/PageHeader";
 import { DataTable } from "@/components/admin/DataTable";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
 import {
   Select,
   SelectContent,
@@ -90,7 +89,7 @@ function TransporteursPage() {
     <div>
       <PageHeader
         title="Entreprises de livraison"
-        description="Partenaires qui emploient leurs propres livreurs (flottes internes)"
+        description="Créez et validez les entreprises — elles gèrent ensuite leurs livreurs en autonomie"
         actions={
           <Button asChild size="lg" className="shadow-sm">
             <Link to="/admin/transporteurs/nouveau">
@@ -100,27 +99,6 @@ function TransporteursPage() {
           </Button>
         }
       />
-
-      <Card className="mb-6 border-primary/20 bg-primary/5">
-        <CardContent className="flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex gap-3">
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-primary/15 text-primary">
-              <Truck className="h-5 w-5" />
-            </div>
-            <div>
-              <p className="font-medium text-foreground">Nouvelle entreprise logistique</p>
-              <p className="text-sm text-muted-foreground">
-                Créez l&apos;entreprise et le compte gestionnaire, puis ajoutez des livreurs depuis la fiche détail.
-              </p>
-            </div>
-          </div>
-          <Button asChild className="shrink-0">
-            <Link to="/admin/transporteurs/nouveau">
-              <Plus className="h-4 w-4" /> Créer maintenant
-            </Link>
-          </Button>
-        </CardContent>
-      </Card>
 
       <div className="mb-4 flex flex-wrap items-center gap-2">
         <Input
@@ -152,8 +130,8 @@ function TransporteursPage() {
         <DataTable
           columns={["Nom entreprise", "Statut", "Nombre de livreurs", "Date", "Actions"]}
           rows={rows}
-          emptyTitle="Aucune entreprise logistique"
-          emptyDescription="Cliquez sur « Créer une entreprise » pour enregistrer votre premier partenaire livraison."
+          emptyTitle="Aucune entreprise"
+          emptyDescription="Créez une entreprise de livraison pour commencer."
         />
       )}
     </div>

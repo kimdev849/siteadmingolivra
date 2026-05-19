@@ -59,3 +59,11 @@ export async function logoutAdmin(): Promise<void> {
 export function isAdminUser(user: AdminUser | null | undefined): boolean {
   return user?.role === "admin";
 }
+
+export function isLogisticsManager(user: AdminUser | null | undefined): boolean {
+  return user?.role === "gestionnaire_logistique";
+}
+
+export function isStaffUser(user: AdminUser | null | undefined): boolean {
+  return isAdminUser(user) || isLogisticsManager(user);
+}

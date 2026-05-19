@@ -120,12 +120,12 @@ function MarchandsPage() {
     <div>
       <PageHeader
         title="Restaurants & Boutiques"
-        description="Validation et supervision des marchands de la marketplace"
+        description="Validation des restaurants et boutiques"
       />
 
       <div className="mb-4 flex flex-wrap items-center gap-2">
         <Input
-          placeholder="Rechercher un marchand…"
+          placeholder="Rechercher…"
           className="max-w-xs"
           value={search}
           onChange={(ev) => setSearch(ev.target.value)}
@@ -165,18 +165,18 @@ function MarchandsPage() {
       </div>
 
       {enterprisesQuery.isLoading ? (
-        <p className="text-sm text-muted-foreground">Chargement des marchands…</p>
+        <p className="text-sm text-muted-foreground">Chargement…</p>
       ) : enterprisesQuery.isError ? (
         <p className="text-sm text-destructive">
           {enterprisesQuery.error instanceof Error
             ? enterprisesQuery.error.message
-            : "Impossible de charger les marchands."}
+            : "Impossible de charger la liste."}
         </p>
       ) : (
         <DataTable
           columns={["Nom", "Type", "Statut", "Date d'inscription", "Actions"]}
           rows={rows}
-          emptyTitle="Aucun marchand"
+          emptyTitle="Aucun commerce"
           emptyDescription="Les restaurants et boutiques inscrits apparaîtront ici."
         />
       )}

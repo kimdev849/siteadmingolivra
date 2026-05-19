@@ -69,7 +69,7 @@ function MarchandDetailPage() {
       </Button>
 
       <PageHeader
-        title={enterprise?.nom || "Détail marchand"}
+        title={enterprise?.nom || "Détail"}
         description="Informations, produits et actions de modération"
         actions={
           <>
@@ -161,7 +161,7 @@ function MarchandDetailPage() {
               columns={["Produit", "Catégorie", "Prix", "Statut"]}
               rows={productRows}
               emptyTitle="Aucun produit"
-              emptyDescription="Les produits publiés par ce marchand apparaîtront ici."
+              emptyDescription="Les produits publiés apparaîtront ici."
             />
           </TabsContent>
         </Tabs>

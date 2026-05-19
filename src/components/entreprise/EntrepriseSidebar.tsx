@@ -1,21 +1,24 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import logo from "@/assets/logo.png";
 import { cn } from "@/lib/utils";
-import { adminNavItems } from "@/lib/admin-nav";
+import { entrepriseNavItems } from "@/lib/entreprise-nav";
 
-export function Sidebar({ className }: { className?: string }) {
+export function EntrepriseSidebar({ className }: { className?: string }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   return (
     <aside className={cn("flex w-64 shrink-0 flex-col border-r border-border bg-card", className)}>
       <div className="flex h-16 items-center gap-2 border-b border-border px-5">
         <img src={logo} alt="GoLivra" className="h-9 w-9 object-contain" />
-        <span className="text-lg font-bold tracking-tight text-foreground">
-          Go<span className="text-accent">Livra</span>
-        </span>
+        <div>
+          <span className="text-lg font-bold tracking-tight text-foreground">
+            Go<span className="text-primary">Livra</span>
+          </span>
+          <p className="text-xs text-muted-foreground">Espace entreprise</p>
+        </div>
       </div>
       <nav className="flex-1 space-y-1 px-3 py-4">
-        {adminNavItems.map((item) => {
+        {entrepriseNavItems.map((item) => {
           const active = item.exact
             ? pathname === item.to
             : pathname === item.to || pathname.startsWith(item.to + "/");
@@ -36,18 +39,18 @@ export function Sidebar({ className }: { className?: string }) {
           );
         })}
         <Link
-          to="/admin/transporteurs/nouveau"
+          to="/entreprise/livreurs/nouveau"
           className={cn(
             "mt-2 flex items-center gap-3 rounded-md border border-dashed border-primary/40 px-3 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary/5",
-            pathname === "/admin/transporteurs/nouveau" && "bg-primary/10",
+            pathname === "/entreprise/livreurs/nouveau" && "bg-primary/10",
           )}
         >
           <span className="text-lg leading-none">+</span>
-          Créer entreprise
+          Ajouter un livreur
         </Link>
       </nav>
       <div className="border-t border-border p-4">
-        <p className="text-xs text-muted-foreground">© GoLivra Admin</p>
+        <p className="text-xs text-muted-foreground">© GoLivra Entreprise</p>
       </div>
     </aside>
   );

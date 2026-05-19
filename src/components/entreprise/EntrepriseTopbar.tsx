@@ -1,12 +1,11 @@
-import { Bell, LogOut, Menu, Search } from "lucide-react";
+import { LogOut, Menu } from "lucide-react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { fetchAdminMe, logoutAdmin } from "@/lib/auth-api";
-import { adminNavItems } from "@/lib/admin-nav";
+import { entrepriseNavItems } from "@/lib/entreprise-nav";
 import { cn } from "@/lib/utils";
 import logo from "@/assets/logo.png";
 
@@ -17,14 +16,14 @@ function initials(nom?: string | null, email?: string | null): string {
     return nom.slice(0, 2).toUpperCase();
   }
   if (email) return email.slice(0, 2).toUpperCase();
-  return "AD";
+  return "EN";
 }
 
-export function Topbar() {
+export function EntrepriseTopbar() {
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const meQuery = useQuery({
-    queryKey: ["admin", "me"],
+    queryKey: ["entreprise", "me"],
     queryFn: () => fetchAdminMe(),
     staleTime: 60_000,
   });
@@ -48,11 +47,11 @@ export function Topbar() {
           <SheetHeader className="border-b border-border px-5 py-4 text-left">
             <SheetTitle className="flex items-center gap-2">
               <img src={logo} alt="" className="h-8 w-8" />
-              GoLivra Admin
+              GoLivra Entreprise
             </SheetTitle>
           </SheetHeader>
           <nav className="space-y-1 p-3">
-            {adminNavItems.map((item) => {
+            {entrepriseNavItems.map((item) => {
               const active = item.exact
                 ? pathname === item.to
                 : pathname === item.to || pathname.startsWith(item.to + "/");
@@ -71,23 +70,16 @@ export function Topbar() {
               );
             })}
             <Link
-              to="/admin/transporteurs/nouveau"
+              to="/entreprise/livreurs/nouveau"
               className="mt-2 flex items-center gap-2 rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground"
             >
-              + Créer entreprise
+              + Ajouter un livreur
             </Link>
           </nav>
         </SheetContent>
       </Sheet>
 
-      <div className="relative hidden w-full max-w-md sm:block">
-        <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-        <Input placeholder="Rechercher…" className="pl-9" />
-      </div>
       <div className="ml-auto flex items-center gap-2 sm:gap-3">
-        <Button variant="ghost" size="icon" aria-label="Notifications">
-          <Bell className="h-4 w-4" />
-        </Button>
         <div className="hidden items-center gap-2 sm:flex">
           <Avatar className="h-8 w-8">
             <AvatarFallback className="bg-primary/10 text-xs font-semibold text-primary">
@@ -95,8 +87,8 @@ export function Topbar() {
             </AvatarFallback>
           </Avatar>
           <div className="leading-tight">
-            <p className="max-w-[140px] truncate text-sm font-medium text-foreground">{me?.nom || "Admin"}</p>
-            <p className="max-w-[140px] truncate text-xs text-muted-foreground">{me?.email || "—"}</p>
+            <p className="max-w-[160px] truncate text-sm font-medium text-foreground">{me?.nom || "Responsable"}</p>
+            <p className="max-w-[160px] truncate text-xs text-muted-foreground">{me?.email || "—"}</p>
           </div>
         </div>
         <Button variant="ghost" size="icon" aria-label="Se déconnecter" onClick={() => void handleLogout()}>

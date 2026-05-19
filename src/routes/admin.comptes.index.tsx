@@ -61,8 +61,8 @@ function ComptesPage() {
   return (
     <div>
       <PageHeader
-        title="Comptes marchands"
-        description="Validation des comptes restaurateurs et commerçants"
+        title="Comptes en attente"
+        description="Validation des comptes restaurateurs et boutiques"
         actions={
           <Button variant="outline" asChild>
             <Link to="/admin/marchands">Voir les commerces</Link>
@@ -79,7 +79,7 @@ function ComptesPage() {
           columns={["Nom", "Téléphone", "Rôle", "Statut", "Inscription", "Actions"]}
           rows={rows}
           emptyTitle="Aucun compte en attente"
-          emptyDescription="Les nouveaux marchands inscrits apparaîtront ici."
+          emptyDescription="Les nouveaux comptes inscrits apparaîtront ici."
         />
       )}
     </div>

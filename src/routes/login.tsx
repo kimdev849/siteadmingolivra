@@ -7,14 +7,14 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import logo from "@/assets/logo.png";
-import { fetchAdminMe, isAdminUser, staffLogin } from "@/lib/auth-api";
+import { fetchAdminMe, isAdminUser, isLogisticsManager, isStaffUser, staffLogin } from "@/lib/auth-api";
 import { clearAdminToken, getAdminToken, isRememberMeEnabled, setAdminToken } from "@/lib/auth-session";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
     meta: [
       { title: "Connexion — GoLivra" },
-      { name: "description", content: "Connexion à la plateforme GoLivra." },
+      { name: "description", content: "Connexion admin ou espace entreprise de livraison." },
     ],
   }),
   component: LoginPage,
@@ -45,6 +45,10 @@ function LoginPage() {
           await navigate({ to: "/admin" });
           return;
         }
+        if (isLogisticsManager(me)) {
+          await navigate({ to: "/entreprise" });
+          return;
+        }
         clearAdminToken();
       } catch {
         clearAdminToken();
@@ -72,13 +76,17 @@ function LoginPage() {
       setAdminToken(session.token, remember);
 
       const me = await fetchAdminMe(session.token);
-      if (!isAdminUser(me)) {
+      if (!isStaffUser(me)) {
         clearAdminToken();
-        setError("Ce compte n'est pas autorisé à accéder à GoLivra.");
+        setError("Ce compte n'est pas autorisé. Utilisez un compte admin ou responsable d'entreprise de livraison.");
         return;
       }
 
-      await navigate({ to: "/admin" });
+      if (isLogisticsManager(me)) {
+        await navigate({ to: "/entreprise" });
+      } else {
+        await navigate({ to: "/admin" });
+      }
     } catch (err) {
       clearAdminToken();
       setError(err instanceof Error ? err.message : "Connexion impossible. Vérifiez vos identifiants.");
@@ -106,7 +114,7 @@ function LoginPage() {
           <img src={logo} alt="GoLivra" className="h-12 w-12 rounded-xl bg-white/95 p-1.5 object-contain" />
           <div>
             <p className="text-xl font-bold text-white">GoLivra</p>
-            <p className="text-sm text-white/80">Plateforme GoLivra</p>
+            <p className="text-sm text-white/80">Admin & entreprises de livraison</p>
           </div>
         </div>
 
@@ -133,6 +141,11 @@ function LoginPage() {
               <h1 className="text-2xl font-bold text-foreground">Connexion</h1>
               <p className="mt-2 text-sm text-muted-foreground">
                 Accédez avec vos identifiants GoLivra.
+              </p>
+              <p className="mt-3 rounded-md border border-border bg-muted/40 px-3 py-2 text-left text-xs text-muted-foreground">
+                <strong className="text-foreground">Entreprise de livraison :</strong> connectez-vous avec l&apos;
+                <strong className="text-foreground">e-mail du responsable</strong> (celui défini à la création du
+                compte), pas l&apos;e-mail de contact de l&apos;entreprise. Mot de passe : minimum 6 caractères.
               </p>
             </div>
 

@@ -50,10 +50,10 @@ function AnalyticsPage() {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-2 text-sm text-muted-foreground">
-            <p>Comptes marchands en attente : {stats?.comptes_marchands_en_attente ?? "—"}</p>
+            <p>Comptes en attente : {stats?.comptes_marchands_en_attente ?? "—"}</p>
             <p>Commerces en attente : {stats?.commerces_en_attente ?? "—"}</p>
             <Button className="mt-2" asChild>
-              <Link to="/admin/marchands">Gérer les marchands</Link>
+              <Link to="/admin/marchands">Restaurants & boutiques</Link>
             </Button>
           </CardContent>
         </Card>

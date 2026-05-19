@@ -10,17 +10,27 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as EntrepriseRouteImport } from './routes/entreprise'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as EntrepriseIndexRouteImport } from './routes/entreprise.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as EntrepriseStatistiquesRouteImport } from './routes/entreprise.statistiques'
+import { Route as EntrepriseRetardsRouteImport } from './routes/entreprise.retards'
+import { Route as EntrepriseProfilRouteImport } from './routes/entreprise.profil'
+import { Route as EntrepriseOperationsRouteImport } from './routes/entreprise.operations'
+import { Route as EntrepriseMotDePasseRouteImport } from './routes/entreprise.mot-de-passe'
 import { Route as AdminParametresRouteImport } from './routes/admin.parametres'
 import { Route as AdminLivraisonsRouteImport } from './routes/admin.livraisons'
 import { Route as AdminCommissionsRouteImport } from './routes/admin.commissions'
 import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
+import { Route as EntrepriseLivreursIndexRouteImport } from './routes/entreprise.livreurs.index'
+import { Route as EntrepriseLivraisonsIndexRouteImport } from './routes/entreprise.livraisons.index'
 import { Route as AdminTransporteursIndexRouteImport } from './routes/admin.transporteurs.index'
 import { Route as AdminMarchandsIndexRouteImport } from './routes/admin.marchands.index'
 import { Route as AdminComptesIndexRouteImport } from './routes/admin.comptes.index'
 import { Route as AdminCommandesIndexRouteImport } from './routes/admin.commandes.index'
+import { Route as EntrepriseLivreursNouveauRouteImport } from './routes/entreprise.livreurs.nouveau'
 import { Route as AdminTransporteursNouveauRouteImport } from './routes/admin.transporteurs.nouveau'
 import { Route as AdminTransporteursIdRouteImport } from './routes/admin.transporteurs.$id'
 import { Route as AdminMarchandsIdRouteImport } from './routes/admin.marchands.$id'
@@ -29,6 +39,11 @@ import { Route as AdminCommandesIdRouteImport } from './routes/admin.commandes.$
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EntrepriseRoute = EntrepriseRouteImport.update({
+  id: '/entreprise',
+  path: '/entreprise',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRoute = AdminRouteImport.update({
@@ -41,10 +56,40 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EntrepriseIndexRoute = EntrepriseIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => EntrepriseRoute,
+} as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AdminRoute,
+} as any)
+const EntrepriseStatistiquesRoute = EntrepriseStatistiquesRouteImport.update({
+  id: '/statistiques',
+  path: '/statistiques',
+  getParentRoute: () => EntrepriseRoute,
+} as any)
+const EntrepriseRetardsRoute = EntrepriseRetardsRouteImport.update({
+  id: '/retards',
+  path: '/retards',
+  getParentRoute: () => EntrepriseRoute,
+} as any)
+const EntrepriseProfilRoute = EntrepriseProfilRouteImport.update({
+  id: '/profil',
+  path: '/profil',
+  getParentRoute: () => EntrepriseRoute,
+} as any)
+const EntrepriseOperationsRoute = EntrepriseOperationsRouteImport.update({
+  id: '/operations',
+  path: '/operations',
+  getParentRoute: () => EntrepriseRoute,
+} as any)
+const EntrepriseMotDePasseRoute = EntrepriseMotDePasseRouteImport.update({
+  id: '/mot-de-passe',
+  path: '/mot-de-passe',
+  getParentRoute: () => EntrepriseRoute,
 } as any)
 const AdminParametresRoute = AdminParametresRouteImport.update({
   id: '/parametres',
@@ -66,6 +111,17 @@ const AdminAnalyticsRoute = AdminAnalyticsRouteImport.update({
   path: '/analytics',
   getParentRoute: () => AdminRoute,
 } as any)
+const EntrepriseLivreursIndexRoute = EntrepriseLivreursIndexRouteImport.update({
+  id: '/livreurs/',
+  path: '/livreurs/',
+  getParentRoute: () => EntrepriseRoute,
+} as any)
+const EntrepriseLivraisonsIndexRoute =
+  EntrepriseLivraisonsIndexRouteImport.update({
+    id: '/livraisons/',
+    path: '/livraisons/',
+    getParentRoute: () => EntrepriseRoute,
+  } as any)
 const AdminTransporteursIndexRoute = AdminTransporteursIndexRouteImport.update({
   id: '/transporteurs/',
   path: '/transporteurs/',
@@ -86,6 +142,12 @@ const AdminCommandesIndexRoute = AdminCommandesIndexRouteImport.update({
   path: '/commandes/',
   getParentRoute: () => AdminRoute,
 } as any)
+const EntrepriseLivreursNouveauRoute =
+  EntrepriseLivreursNouveauRouteImport.update({
+    id: '/livreurs/nouveau',
+    path: '/livreurs/nouveau',
+    getParentRoute: () => EntrepriseRoute,
+  } as any)
 const AdminTransporteursNouveauRoute =
   AdminTransporteursNouveauRouteImport.update({
     id: '/transporteurs/nouveau',
@@ -111,20 +173,30 @@ const AdminCommandesIdRoute = AdminCommandesIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
+  '/entreprise': typeof EntrepriseRouteWithChildren
   '/login': typeof LoginRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/commissions': typeof AdminCommissionsRoute
   '/admin/livraisons': typeof AdminLivraisonsRoute
   '/admin/parametres': typeof AdminParametresRoute
+  '/entreprise/mot-de-passe': typeof EntrepriseMotDePasseRoute
+  '/entreprise/operations': typeof EntrepriseOperationsRoute
+  '/entreprise/profil': typeof EntrepriseProfilRoute
+  '/entreprise/retards': typeof EntrepriseRetardsRoute
+  '/entreprise/statistiques': typeof EntrepriseStatistiquesRoute
   '/admin/': typeof AdminIndexRoute
+  '/entreprise/': typeof EntrepriseIndexRoute
   '/admin/commandes/$id': typeof AdminCommandesIdRoute
   '/admin/marchands/$id': typeof AdminMarchandsIdRoute
   '/admin/transporteurs/$id': typeof AdminTransporteursIdRoute
   '/admin/transporteurs/nouveau': typeof AdminTransporteursNouveauRoute
+  '/entreprise/livreurs/nouveau': typeof EntrepriseLivreursNouveauRoute
   '/admin/commandes/': typeof AdminCommandesIndexRoute
   '/admin/comptes/': typeof AdminComptesIndexRoute
   '/admin/marchands/': typeof AdminMarchandsIndexRoute
   '/admin/transporteurs/': typeof AdminTransporteursIndexRoute
+  '/entreprise/livraisons/': typeof EntrepriseLivraisonsIndexRoute
+  '/entreprise/livreurs/': typeof EntrepriseLivreursIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -133,54 +205,83 @@ export interface FileRoutesByTo {
   '/admin/commissions': typeof AdminCommissionsRoute
   '/admin/livraisons': typeof AdminLivraisonsRoute
   '/admin/parametres': typeof AdminParametresRoute
+  '/entreprise/mot-de-passe': typeof EntrepriseMotDePasseRoute
+  '/entreprise/operations': typeof EntrepriseOperationsRoute
+  '/entreprise/profil': typeof EntrepriseProfilRoute
+  '/entreprise/retards': typeof EntrepriseRetardsRoute
+  '/entreprise/statistiques': typeof EntrepriseStatistiquesRoute
   '/admin': typeof AdminIndexRoute
+  '/entreprise': typeof EntrepriseIndexRoute
   '/admin/commandes/$id': typeof AdminCommandesIdRoute
   '/admin/marchands/$id': typeof AdminMarchandsIdRoute
   '/admin/transporteurs/$id': typeof AdminTransporteursIdRoute
   '/admin/transporteurs/nouveau': typeof AdminTransporteursNouveauRoute
+  '/entreprise/livreurs/nouveau': typeof EntrepriseLivreursNouveauRoute
   '/admin/commandes': typeof AdminCommandesIndexRoute
   '/admin/comptes': typeof AdminComptesIndexRoute
   '/admin/marchands': typeof AdminMarchandsIndexRoute
   '/admin/transporteurs': typeof AdminTransporteursIndexRoute
+  '/entreprise/livraisons': typeof EntrepriseLivraisonsIndexRoute
+  '/entreprise/livreurs': typeof EntrepriseLivreursIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
+  '/entreprise': typeof EntrepriseRouteWithChildren
   '/login': typeof LoginRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/commissions': typeof AdminCommissionsRoute
   '/admin/livraisons': typeof AdminLivraisonsRoute
   '/admin/parametres': typeof AdminParametresRoute
+  '/entreprise/mot-de-passe': typeof EntrepriseMotDePasseRoute
+  '/entreprise/operations': typeof EntrepriseOperationsRoute
+  '/entreprise/profil': typeof EntrepriseProfilRoute
+  '/entreprise/retards': typeof EntrepriseRetardsRoute
+  '/entreprise/statistiques': typeof EntrepriseStatistiquesRoute
   '/admin/': typeof AdminIndexRoute
+  '/entreprise/': typeof EntrepriseIndexRoute
   '/admin/commandes/$id': typeof AdminCommandesIdRoute
   '/admin/marchands/$id': typeof AdminMarchandsIdRoute
   '/admin/transporteurs/$id': typeof AdminTransporteursIdRoute
   '/admin/transporteurs/nouveau': typeof AdminTransporteursNouveauRoute
+  '/entreprise/livreurs/nouveau': typeof EntrepriseLivreursNouveauRoute
   '/admin/commandes/': typeof AdminCommandesIndexRoute
   '/admin/comptes/': typeof AdminComptesIndexRoute
   '/admin/marchands/': typeof AdminMarchandsIndexRoute
   '/admin/transporteurs/': typeof AdminTransporteursIndexRoute
+  '/entreprise/livraisons/': typeof EntrepriseLivraisonsIndexRoute
+  '/entreprise/livreurs/': typeof EntrepriseLivreursIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/admin'
+    | '/entreprise'
     | '/login'
     | '/admin/analytics'
     | '/admin/commissions'
     | '/admin/livraisons'
     | '/admin/parametres'
+    | '/entreprise/mot-de-passe'
+    | '/entreprise/operations'
+    | '/entreprise/profil'
+    | '/entreprise/retards'
+    | '/entreprise/statistiques'
     | '/admin/'
+    | '/entreprise/'
     | '/admin/commandes/$id'
     | '/admin/marchands/$id'
     | '/admin/transporteurs/$id'
     | '/admin/transporteurs/nouveau'
+    | '/entreprise/livreurs/nouveau'
     | '/admin/commandes/'
     | '/admin/comptes/'
     | '/admin/marchands/'
     | '/admin/transporteurs/'
+    | '/entreprise/livraisons/'
+    | '/entreprise/livreurs/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -189,38 +290,58 @@ export interface FileRouteTypes {
     | '/admin/commissions'
     | '/admin/livraisons'
     | '/admin/parametres'
+    | '/entreprise/mot-de-passe'
+    | '/entreprise/operations'
+    | '/entreprise/profil'
+    | '/entreprise/retards'
+    | '/entreprise/statistiques'
     | '/admin'
+    | '/entreprise'
     | '/admin/commandes/$id'
     | '/admin/marchands/$id'
     | '/admin/transporteurs/$id'
     | '/admin/transporteurs/nouveau'
+    | '/entreprise/livreurs/nouveau'
     | '/admin/commandes'
     | '/admin/comptes'
     | '/admin/marchands'
     | '/admin/transporteurs'
+    | '/entreprise/livraisons'
+    | '/entreprise/livreurs'
   id:
     | '__root__'
     | '/'
     | '/admin'
+    | '/entreprise'
     | '/login'
     | '/admin/analytics'
     | '/admin/commissions'
     | '/admin/livraisons'
     | '/admin/parametres'
+    | '/entreprise/mot-de-passe'
+    | '/entreprise/operations'
+    | '/entreprise/profil'
+    | '/entreprise/retards'
+    | '/entreprise/statistiques'
     | '/admin/'
+    | '/entreprise/'
     | '/admin/commandes/$id'
     | '/admin/marchands/$id'
     | '/admin/transporteurs/$id'
     | '/admin/transporteurs/nouveau'
+    | '/entreprise/livreurs/nouveau'
     | '/admin/commandes/'
     | '/admin/comptes/'
     | '/admin/marchands/'
     | '/admin/transporteurs/'
+    | '/entreprise/livraisons/'
+    | '/entreprise/livreurs/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRouteWithChildren
+  EntrepriseRoute: typeof EntrepriseRouteWithChildren
   LoginRoute: typeof LoginRoute
 }
 
@@ -231,6 +352,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/entreprise': {
+      id: '/entreprise'
+      path: '/entreprise'
+      fullPath: '/entreprise'
+      preLoaderRoute: typeof EntrepriseRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -247,12 +375,54 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/entreprise/': {
+      id: '/entreprise/'
+      path: '/'
+      fullPath: '/entreprise/'
+      preLoaderRoute: typeof EntrepriseIndexRouteImport
+      parentRoute: typeof EntrepriseRoute
+    }
     '/admin/': {
       id: '/admin/'
       path: '/'
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
+    }
+    '/entreprise/statistiques': {
+      id: '/entreprise/statistiques'
+      path: '/statistiques'
+      fullPath: '/entreprise/statistiques'
+      preLoaderRoute: typeof EntrepriseStatistiquesRouteImport
+      parentRoute: typeof EntrepriseRoute
+    }
+    '/entreprise/retards': {
+      id: '/entreprise/retards'
+      path: '/retards'
+      fullPath: '/entreprise/retards'
+      preLoaderRoute: typeof EntrepriseRetardsRouteImport
+      parentRoute: typeof EntrepriseRoute
+    }
+    '/entreprise/profil': {
+      id: '/entreprise/profil'
+      path: '/profil'
+      fullPath: '/entreprise/profil'
+      preLoaderRoute: typeof EntrepriseProfilRouteImport
+      parentRoute: typeof EntrepriseRoute
+    }
+    '/entreprise/operations': {
+      id: '/entreprise/operations'
+      path: '/operations'
+      fullPath: '/entreprise/operations'
+      preLoaderRoute: typeof EntrepriseOperationsRouteImport
+      parentRoute: typeof EntrepriseRoute
+    }
+    '/entreprise/mot-de-passe': {
+      id: '/entreprise/mot-de-passe'
+      path: '/mot-de-passe'
+      fullPath: '/entreprise/mot-de-passe'
+      preLoaderRoute: typeof EntrepriseMotDePasseRouteImport
+      parentRoute: typeof EntrepriseRoute
     }
     '/admin/parametres': {
       id: '/admin/parametres'
@@ -282,6 +452,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAnalyticsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/entreprise/livreurs/': {
+      id: '/entreprise/livreurs/'
+      path: '/livreurs'
+      fullPath: '/entreprise/livreurs/'
+      preLoaderRoute: typeof EntrepriseLivreursIndexRouteImport
+      parentRoute: typeof EntrepriseRoute
+    }
+    '/entreprise/livraisons/': {
+      id: '/entreprise/livraisons/'
+      path: '/livraisons'
+      fullPath: '/entreprise/livraisons/'
+      preLoaderRoute: typeof EntrepriseLivraisonsIndexRouteImport
+      parentRoute: typeof EntrepriseRoute
+    }
     '/admin/transporteurs/': {
       id: '/admin/transporteurs/'
       path: '/transporteurs'
@@ -309,6 +493,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/commandes/'
       preLoaderRoute: typeof AdminCommandesIndexRouteImport
       parentRoute: typeof AdminRoute
+    }
+    '/entreprise/livreurs/nouveau': {
+      id: '/entreprise/livreurs/nouveau'
+      path: '/livreurs/nouveau'
+      fullPath: '/entreprise/livreurs/nouveau'
+      preLoaderRoute: typeof EntrepriseLivreursNouveauRouteImport
+      parentRoute: typeof EntrepriseRoute
     }
     '/admin/transporteurs/nouveau': {
       id: '/admin/transporteurs/nouveau'
@@ -375,9 +566,38 @@ const AdminRouteChildren: AdminRouteChildren = {
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
+interface EntrepriseRouteChildren {
+  EntrepriseMotDePasseRoute: typeof EntrepriseMotDePasseRoute
+  EntrepriseOperationsRoute: typeof EntrepriseOperationsRoute
+  EntrepriseProfilRoute: typeof EntrepriseProfilRoute
+  EntrepriseRetardsRoute: typeof EntrepriseRetardsRoute
+  EntrepriseStatistiquesRoute: typeof EntrepriseStatistiquesRoute
+  EntrepriseIndexRoute: typeof EntrepriseIndexRoute
+  EntrepriseLivreursNouveauRoute: typeof EntrepriseLivreursNouveauRoute
+  EntrepriseLivraisonsIndexRoute: typeof EntrepriseLivraisonsIndexRoute
+  EntrepriseLivreursIndexRoute: typeof EntrepriseLivreursIndexRoute
+}
+
+const EntrepriseRouteChildren: EntrepriseRouteChildren = {
+  EntrepriseMotDePasseRoute: EntrepriseMotDePasseRoute,
+  EntrepriseOperationsRoute: EntrepriseOperationsRoute,
+  EntrepriseProfilRoute: EntrepriseProfilRoute,
+  EntrepriseRetardsRoute: EntrepriseRetardsRoute,
+  EntrepriseStatistiquesRoute: EntrepriseStatistiquesRoute,
+  EntrepriseIndexRoute: EntrepriseIndexRoute,
+  EntrepriseLivreursNouveauRoute: EntrepriseLivreursNouveauRoute,
+  EntrepriseLivraisonsIndexRoute: EntrepriseLivraisonsIndexRoute,
+  EntrepriseLivreursIndexRoute: EntrepriseLivreursIndexRoute,
+}
+
+const EntrepriseRouteWithChildren = EntrepriseRoute._addFileChildren(
+  EntrepriseRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
+  EntrepriseRoute: EntrepriseRouteWithChildren,
   LoginRoute: LoginRoute,
 }
 export const routeTree = rootRouteImport
