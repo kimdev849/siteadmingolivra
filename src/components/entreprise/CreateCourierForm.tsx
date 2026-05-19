@@ -114,6 +114,11 @@ export function CreateCourierForm({ onSuccess, onCancel, submitLabel = "Créer l
       <p className="text-xs text-muted-foreground">
         Le livreur utilisera ce téléphone et ce mot de passe sur l&apos;application mobile GoLivra.
       </p>
+      <p className="rounded-md border border-border bg-muted/40 px-3 py-2 text-xs text-muted-foreground">
+        Après création, il apparaîtra <strong className="text-foreground">hors ligne</strong> tant qu&apos;il
+        ne s&apos;est pas mis « disponible » sur l&apos;app (ou que vous ne l&apos;activez pas sur sa fiche
+        détail). C&apos;est voulu : un livreur ne reçoit des courses que lorsqu&apos;il est prêt.
+      </p>
 
       {error ? <p className="text-sm text-destructive">{error}</p> : null}
 

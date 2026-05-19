@@ -31,6 +31,7 @@ import { Route as AdminMarchandsIndexRouteImport } from './routes/admin.marchand
 import { Route as AdminComptesIndexRouteImport } from './routes/admin.comptes.index'
 import { Route as AdminCommandesIndexRouteImport } from './routes/admin.commandes.index'
 import { Route as EntrepriseLivreursNouveauRouteImport } from './routes/entreprise.livreurs.nouveau'
+import { Route as EntrepriseLivreursIdRouteImport } from './routes/entreprise.livreurs.$id'
 import { Route as AdminTransporteursNouveauRouteImport } from './routes/admin.transporteurs.nouveau'
 import { Route as AdminTransporteursIdRouteImport } from './routes/admin.transporteurs.$id'
 import { Route as AdminMarchandsIdRouteImport } from './routes/admin.marchands.$id'
@@ -148,6 +149,11 @@ const EntrepriseLivreursNouveauRoute =
     path: '/livreurs/nouveau',
     getParentRoute: () => EntrepriseRoute,
   } as any)
+const EntrepriseLivreursIdRoute = EntrepriseLivreursIdRouteImport.update({
+  id: '/livreurs/$id',
+  path: '/livreurs/$id',
+  getParentRoute: () => EntrepriseRoute,
+} as any)
 const AdminTransporteursNouveauRoute =
   AdminTransporteursNouveauRouteImport.update({
     id: '/transporteurs/nouveau',
@@ -190,6 +196,7 @@ export interface FileRoutesByFullPath {
   '/admin/marchands/$id': typeof AdminMarchandsIdRoute
   '/admin/transporteurs/$id': typeof AdminTransporteursIdRoute
   '/admin/transporteurs/nouveau': typeof AdminTransporteursNouveauRoute
+  '/entreprise/livreurs/$id': typeof EntrepriseLivreursIdRoute
   '/entreprise/livreurs/nouveau': typeof EntrepriseLivreursNouveauRoute
   '/admin/commandes/': typeof AdminCommandesIndexRoute
   '/admin/comptes/': typeof AdminComptesIndexRoute
@@ -216,6 +223,7 @@ export interface FileRoutesByTo {
   '/admin/marchands/$id': typeof AdminMarchandsIdRoute
   '/admin/transporteurs/$id': typeof AdminTransporteursIdRoute
   '/admin/transporteurs/nouveau': typeof AdminTransporteursNouveauRoute
+  '/entreprise/livreurs/$id': typeof EntrepriseLivreursIdRoute
   '/entreprise/livreurs/nouveau': typeof EntrepriseLivreursNouveauRoute
   '/admin/commandes': typeof AdminCommandesIndexRoute
   '/admin/comptes': typeof AdminComptesIndexRoute
@@ -245,6 +253,7 @@ export interface FileRoutesById {
   '/admin/marchands/$id': typeof AdminMarchandsIdRoute
   '/admin/transporteurs/$id': typeof AdminTransporteursIdRoute
   '/admin/transporteurs/nouveau': typeof AdminTransporteursNouveauRoute
+  '/entreprise/livreurs/$id': typeof EntrepriseLivreursIdRoute
   '/entreprise/livreurs/nouveau': typeof EntrepriseLivreursNouveauRoute
   '/admin/commandes/': typeof AdminCommandesIndexRoute
   '/admin/comptes/': typeof AdminComptesIndexRoute
@@ -275,6 +284,7 @@ export interface FileRouteTypes {
     | '/admin/marchands/$id'
     | '/admin/transporteurs/$id'
     | '/admin/transporteurs/nouveau'
+    | '/entreprise/livreurs/$id'
     | '/entreprise/livreurs/nouveau'
     | '/admin/commandes/'
     | '/admin/comptes/'
@@ -301,6 +311,7 @@ export interface FileRouteTypes {
     | '/admin/marchands/$id'
     | '/admin/transporteurs/$id'
     | '/admin/transporteurs/nouveau'
+    | '/entreprise/livreurs/$id'
     | '/entreprise/livreurs/nouveau'
     | '/admin/commandes'
     | '/admin/comptes'
@@ -329,6 +340,7 @@ export interface FileRouteTypes {
     | '/admin/marchands/$id'
     | '/admin/transporteurs/$id'
     | '/admin/transporteurs/nouveau'
+    | '/entreprise/livreurs/$id'
     | '/entreprise/livreurs/nouveau'
     | '/admin/commandes/'
     | '/admin/comptes/'
@@ -501,6 +513,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EntrepriseLivreursNouveauRouteImport
       parentRoute: typeof EntrepriseRoute
     }
+    '/entreprise/livreurs/$id': {
+      id: '/entreprise/livreurs/$id'
+      path: '/livreurs/$id'
+      fullPath: '/entreprise/livreurs/$id'
+      preLoaderRoute: typeof EntrepriseLivreursIdRouteImport
+      parentRoute: typeof EntrepriseRoute
+    }
     '/admin/transporteurs/nouveau': {
       id: '/admin/transporteurs/nouveau'
       path: '/transporteurs/nouveau'
@@ -573,6 +592,7 @@ interface EntrepriseRouteChildren {
   EntrepriseRetardsRoute: typeof EntrepriseRetardsRoute
   EntrepriseStatistiquesRoute: typeof EntrepriseStatistiquesRoute
   EntrepriseIndexRoute: typeof EntrepriseIndexRoute
+  EntrepriseLivreursIdRoute: typeof EntrepriseLivreursIdRoute
   EntrepriseLivreursNouveauRoute: typeof EntrepriseLivreursNouveauRoute
   EntrepriseLivraisonsIndexRoute: typeof EntrepriseLivraisonsIndexRoute
   EntrepriseLivreursIndexRoute: typeof EntrepriseLivreursIndexRoute
@@ -585,6 +605,7 @@ const EntrepriseRouteChildren: EntrepriseRouteChildren = {
   EntrepriseRetardsRoute: EntrepriseRetardsRoute,
   EntrepriseStatistiquesRoute: EntrepriseStatistiquesRoute,
   EntrepriseIndexRoute: EntrepriseIndexRoute,
+  EntrepriseLivreursIdRoute: EntrepriseLivreursIdRoute,
   EntrepriseLivreursNouveauRoute: EntrepriseLivreursNouveauRoute,
   EntrepriseLivraisonsIndexRoute: EntrepriseLivraisonsIndexRoute,
   EntrepriseLivreursIndexRoute: EntrepriseLivreursIndexRoute,

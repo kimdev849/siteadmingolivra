@@ -14,6 +14,7 @@ import { KpiCard } from "@/components/admin/KpiCard";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CourierAvailabilityBadge } from "@/components/entreprise/CourierAvailabilityBadge";
 import { OperationDeliveryCard } from "@/components/entreprise/OperationDeliveryCard";
 import { ENTREPRISE_OPS_REFETCH_MS } from "@/lib/entreprise-nav";
 import { formatStatutLabel } from "@/lib/admin-api";
@@ -170,12 +171,18 @@ function EntrepriseDashboardPage() {
             <p className="text-muted-foreground">Aucun livreur — créez votre première équipe.</p>
           ) : (
             couriers.slice(0, 6).map((l) => (
-              <div key={l.id} className="flex items-center justify-between rounded-md border border-border px-3 py-2">
+              <Link
+                key={l.id}
+                to="/entreprise/livreurs/$id"
+                params={{ id: l.id }}
+                className="flex items-center justify-between rounded-md border border-border px-3 py-2 hover:bg-muted/50"
+              >
                 <span className="font-medium">{l.utilisateur?.nom || "—"}</span>
-                <Badge variant={l.est_disponible ? "default" : "secondary"}>
-                  {l.est_disponible ? "Disponible" : "Indisponible"}
-                </Badge>
-              </div>
+                <CourierAvailabilityBadge
+                  estDisponible={l.est_disponible}
+                  compteActif={l.utilisateur?.est_actif !== false}
+                />
+              </Link>
             ))
           )}
         </CardContent>

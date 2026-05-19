@@ -1,9 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { Ban, Loader2, Plus, UserCheck } from "lucide-react";
+import { Ban, Eye, Loader2, Plus, UserCheck } from "lucide-react";
 import { PageHeader } from "@/components/admin/PageHeader";
 import { DataTable } from "@/components/admin/DataTable";
+import { CourierAvailabilityBadge } from "@/components/entreprise/CourierAvailabilityBadge";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -50,17 +51,31 @@ function LivreursListPage() {
   const rows = (couriersQuery.data ?? []).map((l) => {
     const actif = l.utilisateur?.est_actif !== false;
     return [
-      l.utilisateur?.nom || "—",
+      <Link
+        key={`name-${l.id}`}
+        to="/entreprise/livreurs/$id"
+        params={{ id: l.id }}
+        className="font-medium text-primary hover:underline"
+      >
+        {l.utilisateur?.nom || "—"}
+      </Link>,
       l.utilisateur?.telephone || "—",
       l.type_vehicule || "—",
-      <Badge key={`disp-${l.id}`} variant={l.est_disponible ? "default" : "secondary"}>
-        {l.est_disponible ? "Disponible" : "Indisponible"}
-      </Badge>,
+      <CourierAvailabilityBadge
+        key={`disp-${l.id}`}
+        estDisponible={l.est_disponible}
+        compteActif={actif}
+      />,
       <Badge key={`acc-${l.id}`} variant={actif ? "default" : "destructive"}>
         {actif ? "Actif" : "Suspendu"}
       </Badge>,
       canManage ? (
         <div key={`act-${l.id}`} className="flex flex-wrap gap-1">
+          <Button size="sm" variant="outline" asChild>
+            <Link to="/entreprise/livreurs/$id" params={{ id: l.id }}>
+              <Eye className="h-3 w-3" /> Détail
+            </Link>
+          </Button>
           {actif ? (
             <Button
               size="sm"

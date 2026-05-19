@@ -64,6 +64,36 @@ export type LogisticsDelivery = {
   minutes_retard?: number;
 };
 
+export type CourierDetail = AdminCourier & {
+  compte_actif?: boolean;
+  livraisons_recentes?: LogisticsDelivery[];
+  resume?: {
+    total_historique: number;
+    reussies_historique: number;
+    recentes_total: number;
+    recentes_livrees: number;
+    recentes_en_cours: number;
+  };
+};
+
+export async function fetchMyCourier(livreurId: string): Promise<CourierDetail> {
+  return apiFetch<CourierDetail>(`/api/logistics/livreurs/${livreurId}`, {
+    method: "GET",
+    token: token(),
+  });
+}
+
+export async function setMyCourierAvailability(
+  livreurId: string,
+  disponible: boolean,
+): Promise<AdminCourier> {
+  return apiFetch<AdminCourier>(`/api/logistics/livreurs/${livreurId}/disponibilite`, {
+    method: "PATCH",
+    token: token(),
+    jsonBody: { disponible },
+  });
+}
+
 export type LogisticsStats = {
   seuils_retard: { assignation_minutes: number; livraison_minutes: number };
   livreurs_total: number;
