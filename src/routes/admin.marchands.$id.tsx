@@ -125,7 +125,7 @@ function MarchandDetailPage() {
           {detailQuery.error instanceof Error ? detailQuery.error.message : "Commerce introuvable."}
         </p>
       ) : enterprise ? (
-        <Tabs defaultValue="infos">
+        <Tabs defaultValue={enterprise.stats ? "stats" : "infos"}>
           <TabsList>
             <TabsTrigger value="infos">Infos profil</TabsTrigger>
             <TabsTrigger value="produits">
@@ -189,7 +189,13 @@ function MarchandDetailPage() {
             {enterprise.stats ? (
               <CommerceStatsPanel stats={enterprise.stats} />
             ) : (
-              <p className="text-sm text-muted-foreground">Statistiques indisponibles.</p>
+              <Card>
+                <CardContent className="pt-6 text-sm text-muted-foreground">
+                  Statistiques indisponibles. Redéployez l&apos;API{" "}
+                  <strong>GolivraBack</strong> sur Render (branche <code>main</code>, dernier commit), puis
+                  rechargez cette page.
+                </CardContent>
+              </Card>
             )}
           </TabsContent>
         </Tabs>

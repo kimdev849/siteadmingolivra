@@ -12,6 +12,9 @@ export type AdminStats = {
   commerces_actifs: number;
   comptes_marchands_en_attente: number;
   commandes_total: number;
+  livraisons_total?: number;
+  livraisons_externes?: number;
+  livraisons_en_cours?: number;
 };
 
 export type AdminOwner = {

@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { ShoppingBag, Store, Users, PackageCheck, Truck, Plus } from "lucide-react";
+import { ShoppingBag, Store, Users, PackageCheck, Truck, Plus, Package } from "lucide-react";
 import { PageHeader } from "@/components/admin/PageHeader";
 import { KpiCard } from "@/components/admin/KpiCard";
 import { DashboardCharts } from "@/components/admin/DashboardCharts";
@@ -65,6 +65,27 @@ function DashboardPage() {
           value={stats?.commandes_total}
           hint={statsQuery.isLoading ? "Chargement…" : "Total en base"}
         />
+      </div>
+
+      <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <KpiCard
+          label="Livraisons (total)"
+          icon={Truck}
+          value={stats?.livraisons_total}
+          hint={stats?.livraisons_en_cours != null ? `${stats.livraisons_en_cours} en cours` : undefined}
+        />
+        <KpiCard
+          label="Livraisons externes"
+          icon={Package}
+          value={stats?.livraisons_externes}
+          hint="Créées par les commerces sur l'app"
+        />
+        <Button variant="outline" className="h-auto min-h-[88px] flex-col items-start gap-1 p-4" asChild>
+          <Link to="/admin/livraisons">
+            <span className="text-sm font-semibold">Voir toutes les livraisons</span>
+            <span className="text-xs text-muted-foreground">Commandes clients + externes</span>
+          </Link>
+        </Button>
       </div>
 
       <div className="mt-6">

@@ -20,6 +20,7 @@ import {
   isRememberMeEnabled,
   setAdminToken,
 } from "@/lib/auth-session";
+import { APP_BUILD_ID } from "@/lib/build-info";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
@@ -249,7 +250,7 @@ function LoginPage() {
         </div>
 
         <p className="pb-6 text-center text-xs text-muted-foreground lg:hidden">
-          © GoLivra — Tous droits réservés
+          © GoLivra — build {APP_BUILD_ID.slice(0, 7)}
         </p>
       </div>
     </div>

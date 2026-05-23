@@ -24,4 +24,10 @@ if (fs.existsSync(publicRedirects)) {
   fs.copyFileSync(publicRedirects, path.join(dist, "_redirects"));
 }
 
-console.log("[postbuild] 404.html + _redirects OK");
+const buildId = process.env.VITE_APP_VERSION || process.env.RENDER_GIT_COMMIT || "unknown";
+fs.writeFileSync(
+  path.join(dist, "version.json"),
+  JSON.stringify({ build: buildId, built_at: new Date().toISOString() }, null, 2),
+);
+
+console.log("[postbuild] 404.html + _redirects OK, version", buildId.slice(0, 7));
