@@ -1,15 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { BarChart3, Bike, PackageCheck, Percent, Users } from "lucide-react";
-import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { BarChart3, Bike, PackageCheck, Percent, Users, Wallet } from "lucide-react";
+import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { PageHeader } from "@/components/admin/PageHeader";
 import { KpiCard } from "@/components/admin/KpiCard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -51,8 +43,34 @@ function EntrepriseStatistiquesPage() {
       />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <KpiCard label="Livraisons aujourd'hui" icon={PackageCheck} value={stats?.livraisons_aujourdhui} />
-        <KpiCard label="Livrées aujourd'hui" icon={PackageCheck} value={stats?.livraisons_livrees_aujourdhui} />
+        <KpiCard
+          label="Solde portefeuille"
+          icon={Wallet}
+          value={
+            stats?.portefeuille_solde_fcfa != null
+              ? `${Number(stats.portefeuille_solde_fcfa).toLocaleString("fr-FR")} FCFA`
+              : "—"
+          }
+        />
+        <KpiCard
+          label="Revenus livraison (total)"
+          icon={Wallet}
+          value={
+            stats?.revenus_livraison_total_fcfa != null
+              ? `${Number(stats.revenus_livraison_total_fcfa).toLocaleString("fr-FR")} FCFA`
+              : "—"
+          }
+        />
+        <KpiCard
+          label="Livraisons aujourd'hui"
+          icon={PackageCheck}
+          value={stats?.livraisons_aujourdhui}
+        />
+        <KpiCard
+          label="Livrées aujourd'hui"
+          icon={PackageCheck}
+          value={stats?.livraisons_livrees_aujourdhui}
+        />
         <KpiCard
           label="Taux de réussite"
           icon={Percent}
@@ -123,7 +141,12 @@ function EntrepriseStatistiquesPage() {
       <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
         <KpiCard label="Livreurs actifs" icon={Users} value={stats?.livreurs_actifs} />
         <KpiCard label="Disponibles" icon={Bike} value={stats?.livreurs_disponibles} />
-        <KpiCard label="En retard" icon={PackageCheck} value={stats?.livraisons_en_retard} hint="Voir l'onglet Retards" />
+        <KpiCard
+          label="En retard"
+          icon={PackageCheck}
+          value={stats?.livraisons_en_retard}
+          hint="Voir l'onglet Retards"
+        />
       </div>
     </div>
   );

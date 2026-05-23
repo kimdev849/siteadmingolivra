@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { AlertTriangle, Clock, Loader2, UserPlus } from "lucide-react";
+import { AlertTriangle, Clock, Loader2 } from "lucide-react";
 import { PageHeader } from "@/components/admin/PageHeader";
 import { KpiCard } from "@/components/admin/KpiCard";
 import { DataTable } from "@/components/admin/DataTable";
@@ -29,7 +29,7 @@ function EntrepriseRetardsPage() {
   });
 
   const statut = companyQuery.data?.statut_moderation || companyQuery.data?.statut;
-  const canAssign = statut === "active";
+  const canOperate = statut === "active";
   const data = delaysQuery.data;
   const retards = data?.livraisons ?? [];
 
@@ -42,9 +42,9 @@ function EntrepriseRetardsPage() {
     </Badge>,
     <DeliveryDelayBadge key={`delay-${d.id}`} delivery={d} />,
     `${d.minutes_depuis_creation ?? 0} min`,
-    canAssign ? (
+    canOperate ? (
       <Button key={`act-${d.id}`} size="sm" variant="outline" asChild>
-        <Link to="/entreprise/livraisons">Attribuer</Link>
+        <Link to="/entreprise/livraisons">Voir</Link>
       </Button>
     ) : (
       "—"
@@ -55,7 +55,7 @@ function EntrepriseRetardsPage() {
     <div>
       <PageHeader
         title="Retards"
-        description="Courses dépassant les seuils d'attribution ou de livraison"
+        description="Courses sans livreur ou en retard de livraison — l'attribution est gérée par GoLivra"
       />
 
       <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -67,8 +67,9 @@ function EntrepriseRetardsPage() {
       {data?.seuils_retard ? (
         <Card className="mb-6 border-border">
           <CardContent className="py-4 text-sm text-muted-foreground">
-            Seuils : attribution après <strong>{data.seuils_retard.assignation_minutes} min</strong> sans
-            livreur, livraison après <strong>{data.seuils_retard.livraison_minutes} min</strong> en route.
+            Seuils : attribution après <strong>{data.seuils_retard.assignation_minutes} min</strong>{" "}
+            sans livreur, livraison après{" "}
+            <strong>{data.seuils_retard.livraison_minutes} min</strong> en route.
           </CardContent>
         </Card>
       ) : null}
@@ -99,12 +100,10 @@ function EntrepriseRetardsPage() {
         />
       )}
 
-      {canAssign && retards.length > 0 ? (
+      {canOperate && retards.length > 0 ? (
         <div className="mt-4">
-          <Button asChild>
-            <Link to="/entreprise/livraisons">
-              <UserPlus className="h-4 w-4" /> Gérer les attributions
-            </Link>
+          <Button asChild variant="outline">
+            <Link to="/entreprise/livraisons">Voir toutes les livraisons</Link>
           </Button>
         </div>
       ) : null}

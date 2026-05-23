@@ -1,19 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { Loader2, UserPlus } from "lucide-react";
+import { Loader2, RefreshCw } from "lucide-react";
 import { PageHeader } from "@/components/admin/PageHeader";
 import { DataTable } from "@/components/admin/DataTable";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import {
   Select,
   SelectContent,
@@ -21,15 +13,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
 import { DeliveryDelayBadge } from "@/components/entreprise/DeliveryDelayBadge";
 import { ENTREPRISE_OPS_REFETCH_MS } from "@/lib/entreprise-nav";
-import { formatStatutLabel } from "@/lib/admin-api";
+import { formatDateTimeFr, formatStatutLabel } from "@/lib/admin-api";
 import {
-  assignMyDelivery,
-  fetchMyCouriers,
   fetchMyDeliveries,
   fetchMyLogisticsCompany,
+  retryMyDeliveryDispatch,
   type LogisticsDelivery,
 } from "@/lib/logistics-api";
 
@@ -40,10 +30,8 @@ export const Route = createFileRoute("/entreprise/livraisons/")({
 function EntrepriseLivraisonsPage() {
   const queryClient = useQueryClient();
   const [statusFilter, setStatusFilter] = useState("all");
-  const [assignTarget, setAssignTarget] = useState<LogisticsDelivery | null>(null);
-  const [selectedCourierId, setSelectedCourierId] = useState("");
-  const [assigning, setAssigning] = useState(false);
-  const [assignError, setAssignError] = useState<string | null>(null);
+  const [retryingId, setRetryingId] = useState<string | null>(null);
+  const [retryError, setRetryError] = useState<string | null>(null);
 
   const companyQuery = useQuery({
     queryKey: ["logistics", "company"],
@@ -56,34 +44,20 @@ function EntrepriseLivraisonsPage() {
     refetchInterval: ENTREPRISE_OPS_REFETCH_MS,
   });
 
-  const couriersQuery = useQuery({
-    queryKey: ["logistics", "livreurs"],
-    queryFn: fetchMyCouriers,
-  });
-
   const statut = companyQuery.data?.statut_moderation || companyQuery.data?.statut;
-  const canAssign = statut === "active";
-  const couriers = (couriersQuery.data ?? []).filter((c) => c.utilisateur?.est_actif !== false);
+  const canOperate = statut === "active";
   const deliveries = deliveriesQuery.data ?? [];
 
-  const openAssign = (delivery: LogisticsDelivery) => {
-    setAssignTarget(delivery);
-    setSelectedCourierId(delivery.livreur?.id || "");
-    setAssignError(null);
-  };
-
-  const confirmAssign = async () => {
-    if (!assignTarget || !selectedCourierId) return;
-    setAssigning(true);
-    setAssignError(null);
+  const handleRetryDispatch = async (delivery: LogisticsDelivery) => {
+    setRetryingId(delivery.id);
+    setRetryError(null);
     try {
-      await assignMyDelivery(assignTarget.id, selectedCourierId);
-      await queryClient.invalidateQueries({ queryKey: ["logistics", "livraisons"] });
-      setAssignTarget(null);
+      await retryMyDeliveryDispatch(delivery.id);
+      await queryClient.invalidateQueries({ queryKey: ["logistics"] });
     } catch (e) {
-      setAssignError(e instanceof Error ? e.message : "Attribution impossible.");
+      setRetryError(e instanceof Error ? e.message : "Relance impossible.");
     } finally {
-      setAssigning(false);
+      setRetryingId(null);
     }
   };
 
@@ -97,11 +71,24 @@ function EntrepriseLivraisonsPage() {
         {formatStatutLabel(d.statut)}
       </Badge>,
       <DeliveryDelayBadge key={`delay-${d.id}`} delivery={d} />,
-      `${d.minutes_depuis_creation ?? 0} min`,
-      canAssign && (needsCourier || d.livreur?.id) ? (
-        <Button key={`as-${d.id}`} size="sm" variant="outline" onClick={() => openAssign(d)}>
-          <UserPlus className="h-3 w-3" />
-          {d.livreur?.id ? "Réattribuer" : "Attribuer"}
+      formatDateTimeFr(d.commande_created_at),
+      formatDateTimeFr(d.created_at),
+      formatDateTimeFr(d.attribuee_at),
+      formatDateTimeFr(d.livree_at),
+      canOperate && needsCourier ? (
+        <Button
+          key={`retry-${d.id}`}
+          size="sm"
+          variant="outline"
+          disabled={retryingId === d.id}
+          onClick={() => void handleRetryDispatch(d)}
+        >
+          {retryingId === d.id ? (
+            <Loader2 className="h-3 w-3 animate-spin" />
+          ) : (
+            <RefreshCw className="h-3 w-3" />
+          )}
+          Relancer GoLivra
         </Button>
       ) : (
         "—"
@@ -113,14 +100,16 @@ function EntrepriseLivraisonsPage() {
     <div>
       <PageHeader
         title="Livraisons"
-        description="Consultez les courses et attribuez-les à vos livreurs"
+        description="Suivi des courses créées quand un restaurant ou une boutique marque une commande « prête ». L'attribution des livreurs est gérée par GoLivra."
       />
 
-      {!canAssign ? (
+      {!canOperate ? (
         <p className="mb-4 text-sm text-muted-foreground">
-          Votre entreprise doit être validée (statut actif) pour attribuer des livreurs aux courses.
+          Votre entreprise doit être validée (statut actif) pour suivre les courses de vos livreurs.
         </p>
       ) : null}
+
+      {retryError ? <p className="mb-4 text-sm text-destructive">{retryError}</p> : null}
 
       <div className="mb-4">
         <Select value={statusFilter} onValueChange={setStatusFilter}>
@@ -130,6 +119,7 @@ function EntrepriseLivraisonsPage() {
           <SelectContent>
             <SelectItem value="all">Tous les statuts</SelectItem>
             <SelectItem value="en_attente">En attente</SelectItem>
+            <SelectItem value="attribuee">Attribuée</SelectItem>
             <SelectItem value="en_route">En route</SelectItem>
             <SelectItem value="livree">Livrée</SelectItem>
             <SelectItem value="annulee">Annulée</SelectItem>
@@ -141,58 +131,12 @@ function EntrepriseLivraisonsPage() {
         <p className="text-sm text-muted-foreground">Chargement…</p>
       ) : (
         <DataTable
-          columns={["Commande", "Adresse", "Livreur", "Statut", "Retard", "Durée", "Actions"]}
+          columns={["Commande", "Adresse", "Livreur", "Statut", "Retard", "Cmd. créée", "Livraison créée", "Attribuée", "Terminée", "Actions"]}
           rows={rows}
           emptyTitle="Aucune livraison"
-          emptyDescription="Les nouvelles courses à livrer apparaîtront ici."
+          emptyDescription="Les missions apparaissent ici lorsqu'un commerce marque une sous-commande comme prête."
         />
       )}
-
-      <Dialog open={!!assignTarget} onOpenChange={(open) => !open && setAssignTarget(null)}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Attribuer un livreur</DialogTitle>
-            <DialogDescription>
-              Course {assignTarget?.commande?.numero || assignTarget?.id.slice(0, 8)} —{" "}
-              {assignTarget?.adresse || "adresse non renseignée"}
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="grid gap-2 py-2">
-            <Label>Livreur</Label>
-            <Select value={selectedCourierId} onValueChange={setSelectedCourierId}>
-              <SelectTrigger>
-                <SelectValue placeholder="Choisir un livreur" />
-              </SelectTrigger>
-              <SelectContent>
-                {couriers.map((c) => (
-                  <SelectItem key={c.id} value={c.id}>
-                    {c.utilisateur?.nom || "Livreur"} — {c.utilisateur?.telephone || c.type_vehicule}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            {couriers.length === 0 ? (
-              <p className="text-xs text-muted-foreground">
-                Créez d&apos;abord un livreur dans l&apos;onglet Livreurs.
-              </p>
-            ) : null}
-            {assignError ? <p className="text-sm text-destructive">{assignError}</p> : null}
-          </div>
-
-          <DialogFooter>
-            <Button variant="outline" disabled={assigning} onClick={() => setAssignTarget(null)}>
-              Annuler
-            </Button>
-            <Button
-              disabled={!selectedCourierId || assigning || couriers.length === 0}
-              onClick={() => void confirmAssign()}
-            >
-              {assigning ? <Loader2 className="h-4 w-4 animate-spin" /> : "Confirmer"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }

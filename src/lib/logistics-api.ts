@@ -1,6 +1,6 @@
 import { apiFetch } from "@/lib/api";
 import { getAdminToken } from "@/lib/auth-session";
-import type { AdminCourier, AdminLogistics } from "@/lib/admin-api";
+import type { AdminCourier, AdminLogistics, TimelineStep } from "@/lib/admin-api";
 
 function token() {
   const t = getAdminToken();
@@ -52,11 +52,24 @@ export type LogisticsDelivery = {
   id: string;
   statut: string;
   created_at: string;
+  created_at_label?: string;
   attribuee_at?: string | null;
+  attribuee_at_label?: string | null;
+  collectee_at?: string | null;
+  collectee_at_label?: string | null;
   livree_at?: string | null;
+  livree_at_label?: string | null;
+  commande_created_at?: string | null;
+  commande_created_at_label?: string | null;
+  timeline?: TimelineStep[];
   adresse?: string;
   commande?: { id: string; numero: string; statut: string } | null;
-  livreur?: { id: string; nom?: string | null; telephone?: string | null; type_vehicule?: string } | null;
+  livreur?: {
+    id: string;
+    nom?: string | null;
+    telephone?: string | null;
+    type_vehicule?: string;
+  } | null;
   minutes_depuis_creation?: number;
   minutes_depuis_attribution?: number | null;
   en_retard?: boolean;
@@ -108,6 +121,14 @@ export type LogisticsStats = {
   taux_reussite_pct: number | null;
   delai_moyen_minutes: number | null;
   par_statut: Record<string, number>;
+  revenus_livraison_total_fcfa?: number;
+  revenus_livraison_aujourdhui_fcfa?: number;
+  split_ventes_percent?: { merchant_percent: number; platform_fee_percent: number };
+  split_livraison_percent?: {
+    delivery_logistics_percent: number;
+    delivery_platform_percent: number;
+  };
+  portefeuille_solde_fcfa?: number | null;
   mis_a_jour_le: string;
 };
 
@@ -132,12 +153,53 @@ export type LogisticsDelays = {
   mis_a_jour_le: string;
 };
 
+export type WalletDashboard = {
+  solde_fcfa: number;
+  solde_en_attente_fcfa?: number;
+  transactions: Array<{
+    id: string;
+    type: string;
+    montant: number;
+    solde_apres: number;
+    description?: string | null;
+    created_at: string;
+  }>;
+  retraits: Array<{
+    id: string;
+    montant: number;
+    statut: string;
+    methode: string;
+    numero_compte: string;
+    created_at: string;
+  }>;
+};
+
+export async function fetchMyWallet(): Promise<WalletDashboard> {
+  return apiFetch<WalletDashboard>("/api/logistics/wallet", { method: "GET", token: token() });
+}
+
+export async function requestMyWithdrawal(payload: {
+  montant: number;
+  methode: string;
+  numero_compte: string;
+  note?: string;
+}): Promise<unknown> {
+  return apiFetch("/api/wallet/retraits", {
+    method: "POST",
+    token: token(),
+    jsonBody: payload,
+  });
+}
+
 export async function fetchMyStats(): Promise<LogisticsStats> {
   return apiFetch<LogisticsStats>("/api/logistics/stats", { method: "GET", token: token() });
 }
 
 export async function fetchMyOperations(): Promise<LogisticsOperations> {
-  return apiFetch<LogisticsOperations>("/api/logistics/operations", { method: "GET", token: token() });
+  return apiFetch<LogisticsOperations>("/api/logistics/operations", {
+    method: "GET",
+    token: token(),
+  });
 }
 
 export async function fetchMyDelays(): Promise<LogisticsDelays> {
@@ -153,15 +215,18 @@ export async function fetchMyDeliveries(status?: string): Promise<LogisticsDeliv
   return Array.isArray(data) ? data : [];
 }
 
-export async function assignMyDelivery(deliveryId: string, livreurId: string): Promise<LogisticsDelivery> {
-  return apiFetch<LogisticsDelivery>(`/api/logistics/livraisons/${deliveryId}/assign`, {
-    method: "PATCH",
+/** Relance l'attribution automatique GoLivra (aucun choix manuel de livreur). */
+export async function retryMyDeliveryDispatch(deliveryId: string): Promise<LogisticsDelivery> {
+  return apiFetch<LogisticsDelivery>(`/api/logistics/livraisons/${deliveryId}/retry-dispatch`, {
+    method: "POST",
     token: token(),
-    jsonBody: { livreurId },
   });
 }
 
-export async function changeMyPassword(currentPassword: string, newPassword: string): Promise<void> {
+export async function changeMyPassword(
+  currentPassword: string,
+  newPassword: string,
+): Promise<void> {
   await apiFetch("/api/auth/change-password", {
     method: "POST",
     token: token(),

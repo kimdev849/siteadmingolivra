@@ -38,8 +38,8 @@ function NouveauLivreurPage() {
 
       {!canManage ? (
         <p className="mb-4 text-sm text-muted-foreground">
-          Entreprise <Badge variant="secondary">{formatStatutLabel(statut)}</Badge> — création impossible pour
-          l&apos;instant.
+          Entreprise <Badge variant="secondary">{formatStatutLabel(statut)}</Badge> — création
+          impossible pour l&apos;instant.
         </p>
       ) : (
         <Card className="max-w-xl">

@@ -14,7 +14,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { fetchAdminOrders, formatDateFr, formatStatutLabel } from "@/lib/admin-api";
+import { OrderAmountBreakdown } from "@/components/admin/OrderAmountBreakdown";
+import { ADMIN_LIVE_REFETCH_MS } from "@/lib/admin-nav";
+import { fetchAdminOrders, formatDateTimeFr, formatStatutLabel } from "@/lib/admin-api";
 
 export const Route = createFileRoute("/admin/commandes/")({
   component: CommandesPage,
@@ -31,6 +33,7 @@ function CommandesPage() {
         status: statusFilter === "all" ? undefined : statusFilter,
         q: search.trim() || undefined,
       }),
+    refetchInterval: ADMIN_LIVE_REFETCH_MS,
   });
 
   const rows = useMemo(() => {
@@ -44,11 +47,19 @@ function CommandesPage() {
         {o.numero}
       </Link>,
       o.client?.nom || "—",
-      `${Number(o.total).toLocaleString("fr-FR")} FCFA`,
+      <OrderAmountBreakdown
+        key={`amt-${o.id}`}
+        sousTotal={Number(o.sous_total ?? 0)}
+        fraisLivraison={Number(o.frais_livraison_total ?? 0)}
+        remise={Number(o.remise_totale ?? 0)}
+        total={Number(o.total)}
+        inline
+      />,
       <Badge key={`st-${o.id}`} variant="secondary">
         {formatStatutLabel(o.statut)}
       </Badge>,
-      formatDateFr(o.created_at),
+      formatDateTimeFr(o.created_at),
+      formatDateTimeFr(o.livree_at),
       <Button key={`act-${o.id}`} size="sm" variant="outline" asChild>
         <Link to="/admin/commandes/$id" params={{ id: o.id }}>
           Détail
@@ -82,7 +93,13 @@ function CommandesPage() {
             <SelectItem value="annulee">Annulée</SelectItem>
           </SelectContent>
         </Select>
-        <Button variant="outline" onClick={() => { setStatusFilter("all"); setSearch(""); }}>
+        <Button
+          variant="outline"
+          onClick={() => {
+            setStatusFilter("all");
+            setSearch("");
+          }}
+        >
           <Filter className="h-4 w-4" /> Réinitialiser
         </Button>
       </div>
@@ -91,7 +108,7 @@ function CommandesPage() {
         <p className="text-sm text-muted-foreground">Chargement…</p>
       ) : (
         <DataTable
-          columns={["ID commande", "Client", "Montant total", "Statut", "Date", "Actions"]}
+          columns={["ID commande", "Client", "Montant (produits + livraison)", "Statut", "Créée", "Livrée", "Actions"]}
           rows={rows}
           emptyTitle="Aucune commande"
           emptyDescription="Les commandes clients apparaîtront ici."

@@ -26,7 +26,10 @@ export type ApiFetchOptions = RequestInit & {
   jsonBody?: unknown;
 };
 
-export async function apiFetch<T = unknown>(path: string, options: ApiFetchOptions = {}): Promise<T> {
+export async function apiFetch<T = unknown>(
+  path: string,
+  options: ApiFetchOptions = {},
+): Promise<T> {
   const { token, jsonBody, headers: initHeaders, body, ...rest } = options;
   const headers = new Headers(initHeaders);
 

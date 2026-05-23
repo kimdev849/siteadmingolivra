@@ -140,7 +140,8 @@ export function CreateLogisticsCompanyForm({ onSuccess, onCancel, submitLabel = 
       </div>
 
       <p className="text-xs text-muted-foreground">
-        Le responsable se connecte sur la même page avec son e-mail (espace entreprise, pas l&apos;admin).
+        Le responsable se connecte sur la même page avec son e-mail (espace entreprise, pas
+        l&apos;admin).
       </p>
 
       {error ? <p className="text-sm text-destructive">{error}</p> : null}

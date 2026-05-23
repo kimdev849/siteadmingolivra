@@ -1,4 +1,4 @@
-import { Bell, LogOut, Menu, Search } from "lucide-react";
+import { LogOut, Menu, Search } from "lucide-react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { fetchAdminMe, logoutAdmin } from "@/lib/auth-api";
+import { AdminNotificationsBell } from "@/components/admin/AdminNotificationsBell";
 import { adminNavItems } from "@/lib/admin-nav";
 import { cn } from "@/lib/utils";
 import logo from "@/assets/logo.png";
@@ -85,9 +86,7 @@ export function Topbar() {
         <Input placeholder="Rechercher…" className="pl-9" />
       </div>
       <div className="ml-auto flex items-center gap-2 sm:gap-3">
-        <Button variant="ghost" size="icon" aria-label="Notifications">
-          <Bell className="h-4 w-4" />
-        </Button>
+        <AdminNotificationsBell />
         <div className="hidden items-center gap-2 sm:flex">
           <Avatar className="h-8 w-8">
             <AvatarFallback className="bg-primary/10 text-xs font-semibold text-primary">
@@ -95,11 +94,20 @@ export function Topbar() {
             </AvatarFallback>
           </Avatar>
           <div className="leading-tight">
-            <p className="max-w-[140px] truncate text-sm font-medium text-foreground">{me?.nom || "Admin"}</p>
-            <p className="max-w-[140px] truncate text-xs text-muted-foreground">{me?.email || "—"}</p>
+            <p className="max-w-[140px] truncate text-sm font-medium text-foreground">
+              {me?.nom || "Admin"}
+            </p>
+            <p className="max-w-[140px] truncate text-xs text-muted-foreground">
+              {me?.email || "—"}
+            </p>
           </div>
         </div>
-        <Button variant="ghost" size="icon" aria-label="Se déconnecter" onClick={() => void handleLogout()}>
+        <Button
+          variant="ghost"
+          size="icon"
+          aria-label="Se déconnecter"
+          onClick={() => void handleLogout()}
+        >
           <LogOut className="h-4 w-4" />
         </Button>
       </div>

@@ -3,10 +3,11 @@ import { useQuery } from "@tanstack/react-query";
 import { ShoppingBag, Store, Users, PackageCheck, Truck, Plus } from "lucide-react";
 import { PageHeader } from "@/components/admin/PageHeader";
 import { KpiCard } from "@/components/admin/KpiCard";
-import { ChartPlaceholder } from "@/components/admin/ChartPlaceholder";
+import { DashboardCharts } from "@/components/admin/DashboardCharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { ADMIN_LIVE_REFETCH_MS } from "@/lib/admin-nav";
 import {
   fetchAdminStats,
   fetchPendingEnterprises,
@@ -23,11 +24,13 @@ function DashboardPage() {
   const statsQuery = useQuery({
     queryKey: ["admin", "stats"],
     queryFn: fetchAdminStats,
+    refetchInterval: ADMIN_LIVE_REFETCH_MS,
   });
 
   const pendingQuery = useQuery({
     queryKey: ["admin", "enterprises", "pending"],
     queryFn: fetchPendingEnterprises,
+    refetchInterval: ADMIN_LIVE_REFETCH_MS,
   });
 
   const stats = statsQuery.data;
@@ -64,9 +67,8 @@ function DashboardPage() {
         />
       </div>
 
-      <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <ChartPlaceholder title="Évolution des commandes" description="Bientôt disponible" />
-        <ChartPlaceholder title="Commissions" description="Bientôt disponible" />
+      <div className="mt-6">
+        <DashboardCharts />
       </div>
 
       <Card className="mt-6 border-primary/20 bg-primary/5">
@@ -138,7 +140,10 @@ function DashboardPage() {
               Les restaurants et boutiques créés depuis l’app mobile arrivent avec le statut{" "}
               <Badge variant="secondary">En attente</Badge>.
             </p>
-            <p>Ils ne sont visibles côté clients qu’après validation admin (statut {formatStatutLabel("active")}).</p>
+            <p>
+              Ils ne sont visibles côté clients qu’après validation admin (statut{" "}
+              {formatStatutLabel("active")}).
+            </p>
             <div className="mt-2 flex flex-wrap gap-2">
               <Button asChild>
                 <Link to="/admin/comptes">Comptes en attente</Link>

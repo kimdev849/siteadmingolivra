@@ -32,7 +32,10 @@ function CommissionsPage() {
 
   return (
     <div>
-      <PageHeader title="Commissions" description="Commissions perçues sur les livraisons" />
+      <PageHeader
+        title="Commissions livraison"
+        description="Revenus GoLivra sur les frais de livraison uniquement (0 % sur les ventes produits)"
+      />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <KpiCard
@@ -48,7 +51,11 @@ function CommissionsPage() {
         <KpiCard
           label="Reversements en attente"
           icon={Wallet}
-          value={data ? `${Number(data.reversements_en_attente).toLocaleString("fr-FR")} FCFA` : undefined}
+          value={
+            data
+              ? `${Number(data.reversements_en_attente).toLocaleString("fr-FR")} FCFA`
+              : undefined
+          }
         />
         <KpiCard label="Sous-commandes" icon={Receipt} value={data?.factures_emises} />
       </div>

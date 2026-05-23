@@ -1,10 +1,5 @@
 import { Badge } from "@/components/ui/badge";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 type Props = {
   estDisponible?: boolean;
@@ -30,8 +25,9 @@ export function CourierAvailabilityBadge({ estDisponible, compteActif = true }: 
           </Badge>
         </TooltipTrigger>
         <TooltipContent className="max-w-xs text-xs">
-          Normal après création : le livreur doit passer « disponible » sur l&apos;application mobile GoLivra
-          pour recevoir des courses. Vous pouvez aussi l&apos;activer depuis sa fiche détail.
+          Normal après création : le livreur doit passer « disponible » sur l&apos;application
+          mobile GoLivra pour recevoir des courses. Vous pouvez aussi l&apos;activer depuis sa fiche
+          détail.
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

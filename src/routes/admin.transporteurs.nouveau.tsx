@@ -37,7 +37,8 @@ function NouvelleEntrepriseLogistiquePage() {
         <Alert className="mb-6 max-w-2xl border-primary/30 bg-primary/5">
           <AlertDescription className="space-y-2 text-sm">
             <p className="font-semibold text-foreground">
-              Entreprise « {credentials.nomEntreprise} » créée — transmettez ces identifiants au responsable :
+              Entreprise « {credentials.nomEntreprise} » créée — transmettez ces identifiants au
+              responsable :
             </p>
             <p>
               <span className="text-muted-foreground">Connexion :</span>{" "}
@@ -59,8 +60,8 @@ function NouvelleEntrepriseLogistiquePage() {
               <strong>{credentials.motDePasse}</strong>
             </p>
             <p className="text-xs text-muted-foreground">
-              Ce n&apos;est pas l&apos;e-mail de contact de l&apos;entreprise. Le responsable gère ensuite ses
-              livreurs et livraisons depuis l&apos;espace entreprise.
+              Ce n&apos;est pas l&apos;e-mail de contact de l&apos;entreprise. Le responsable gère
+              ensuite ses livreurs et livraisons depuis l&apos;espace entreprise.
             </p>
             <Button
               className="mt-2"
@@ -76,18 +77,18 @@ function NouvelleEntrepriseLogistiquePage() {
       ) : null}
 
       {!credentials ? (
-      <Card className="max-w-2xl">
-        <CardContent className="pt-6">
-          <CreateLogisticsCompanyForm
-            submitLabel="Créer"
-            onCancel={() => void navigate({ to: "/admin/transporteurs" })}
-            onSuccess={async (creds) => {
-              await queryClient.invalidateQueries({ queryKey: ["admin", "logistics"] });
-              setCredentials(creds);
-            }}
-          />
-        </CardContent>
-      </Card>
+        <Card className="max-w-2xl">
+          <CardContent className="pt-6">
+            <CreateLogisticsCompanyForm
+              submitLabel="Créer"
+              onCancel={() => void navigate({ to: "/admin/transporteurs" })}
+              onSuccess={async (creds) => {
+                await queryClient.invalidateQueries({ queryKey: ["admin", "logistics"] });
+                setCredentials(creds);
+              }}
+            />
+          </CardContent>
+        </Card>
       ) : null}
     </div>
   );

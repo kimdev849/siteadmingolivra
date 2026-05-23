@@ -1,14 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import {
-  Activity,
-  AlertTriangle,
-  BarChart3,
-  Bike,
-  PackageCheck,
-  Plus,
-  Users,
-} from "lucide-react";
+import { Activity, AlertTriangle, BarChart3, Bike, PackageCheck, Plus, Users, Wallet } from "lucide-react";
 import { PageHeader } from "@/components/admin/PageHeader";
 import { KpiCard } from "@/components/admin/KpiCard";
 import { Button } from "@/components/ui/button";
@@ -78,17 +70,62 @@ function EntrepriseDashboardPage() {
       {!canManage ? (
         <Card className="mb-6 border-amber-500/30 bg-amber-500/5">
           <CardContent className="py-4 text-sm text-muted-foreground">
-            Votre entreprise est <Badge variant="secondary">{formatStatutLabel(statut)}</Badge>. Vous pourrez
-            gérer livreurs et livraisons dès validation par GoLivra.
+            Votre entreprise est <Badge variant="secondary">{formatStatutLabel(statut)}</Badge>.
+            Vous pourrez gérer livreurs et livraisons dès validation par GoLivra.
           </CardContent>
         </Card>
       ) : null}
+
+      <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <KpiCard
+          label="Solde portefeuille"
+          icon={Wallet}
+          value={
+            stats?.portefeuille_solde_fcfa != null
+              ? `${Number(stats.portefeuille_solde_fcfa).toLocaleString("fr-FR")} FCFA`
+              : "—"
+          }
+          hint={`${stats?.split_livraison_percent?.delivery_logistics_percent ?? 80} % des frais de livraison`}
+        />
+        <KpiCard
+          label="Revenus livraison (jour)"
+          icon={PackageCheck}
+          value={
+            stats?.revenus_livraison_aujourdhui_fcfa != null
+              ? `${Number(stats.revenus_livraison_aujourdhui_fcfa).toLocaleString("fr-FR")} FCFA`
+              : "—"
+          }
+        />
+        <KpiCard
+          label="Revenus livraison (total)"
+          icon={BarChart3}
+          value={
+            stats?.revenus_livraison_total_fcfa != null
+              ? `${Number(stats.revenus_livraison_total_fcfa).toLocaleString("fr-FR")} FCFA`
+              : "—"
+          }
+        />
+        <KpiCard
+          label="Split livraison"
+          icon={Wallet}
+          value={
+            stats?.split_livraison_percent
+              ? `${stats.split_livraison_percent.delivery_logistics_percent} % / ${stats.split_livraison_percent.delivery_platform_percent} %`
+              : "—"
+          }
+          hint="Entreprise logistique / GoLivra"
+        />
+      </div>
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
         <KpiCard label="En cours" icon={Activity} value={stats?.livraisons_en_cours} />
         <KpiCard label="Retards" icon={AlertTriangle} value={stats?.livraisons_en_retard} />
         <KpiCard label="Sans livreur" icon={PackageCheck} value={stats?.livraisons_sans_livreur} />
-        <KpiCard label="Livrées aujourd'hui" icon={PackageCheck} value={stats?.livraisons_livrees_aujourdhui} />
+        <KpiCard
+          label="Livrées aujourd'hui"
+          icon={PackageCheck}
+          value={stats?.livraisons_livrees_aujourdhui}
+        />
         <KpiCard label="Livreurs" icon={Users} value={stats?.livreurs_total ?? couriers.length} />
         <KpiCard label="Disponibles" icon={Bike} value={stats?.livreurs_disponibles} />
       </div>
@@ -107,9 +144,9 @@ function EntrepriseDashboardPage() {
             ) : alertes.length > 0 ? (
               alertes.slice(0, 4).map((d) => <OperationDeliveryCard key={d.id} delivery={d} />)
             ) : (opsQuery.data?.livraisons_actives?.length ?? 0) > 0 ? (
-              opsQuery.data!.livraisons_actives.slice(0, 4).map((d) => (
-                <OperationDeliveryCard key={d.id} delivery={d} />
-              ))
+              opsQuery
+                .data!.livraisons_actives.slice(0, 4)
+                .map((d) => <OperationDeliveryCard key={d.id} delivery={d} />)
             ) : (
               <p className="text-sm text-muted-foreground">Aucune course active pour le moment.</p>
             )}

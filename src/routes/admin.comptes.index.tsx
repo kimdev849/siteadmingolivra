@@ -42,17 +42,30 @@ function ComptesPage() {
   const rows = users.map((u) => [
     u.nom || "—",
     u.telephone || "—",
-    u.role === "restaurateur" ? "Restaurateur" : u.role === "commercant" ? "Commerçant" : u.role || "—",
+    u.role === "restaurateur"
+      ? "Restaurateur"
+      : u.role === "commercant"
+        ? "Commerçant"
+        : u.role || "—",
     <Badge key={`st-${u.id}`} variant="secondary">
       En attente
     </Badge>,
     formatDateFr(u.created_at),
     <div key={`act-${u.id}`} className="flex flex-wrap gap-1">
       <Button size="sm" disabled={actingId === u.id} onClick={() => void run(u.id, "approve")}>
-        {actingId === u.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <CheckCircle2 className="h-3 w-3" />}
+        {actingId === u.id ? (
+          <Loader2 className="h-3 w-3 animate-spin" />
+        ) : (
+          <CheckCircle2 className="h-3 w-3" />
+        )}
         Approuver
       </Button>
-      <Button size="sm" variant="outline" disabled={actingId === u.id} onClick={() => void run(u.id, "reject")}>
+      <Button
+        size="sm"
+        variant="outline"
+        disabled={actingId === u.id}
+        onClick={() => void run(u.id, "reject")}
+      >
         <XCircle className="h-3 w-3" /> Rejeter
       </Button>
     </div>,

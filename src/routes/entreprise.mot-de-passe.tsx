@@ -51,7 +51,10 @@ function EntrepriseMotDePassePage() {
 
   return (
     <div>
-      <PageHeader title="Mot de passe" description="Modifiez le mot de passe de connexion à l'espace entreprise" />
+      <PageHeader
+        title="Mot de passe"
+        description="Modifiez le mot de passe de connexion à l'espace entreprise"
+      />
 
       <Card className="max-w-md">
         <CardContent className="pt-6">

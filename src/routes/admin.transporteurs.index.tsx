@@ -119,7 +119,13 @@ function TransporteursPage() {
             <SelectItem value="rejetee">Rejeté</SelectItem>
           </SelectContent>
         </Select>
-        <Button variant="outline" onClick={() => { setStatusFilter("en_attente"); setSearch(""); }}>
+        <Button
+          variant="outline"
+          onClick={() => {
+            setStatusFilter("en_attente");
+            setSearch("");
+          }}
+        >
           <Filter className="h-4 w-4" /> En attente
         </Button>
       </div>

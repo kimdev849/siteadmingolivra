@@ -1,4 +1,11 @@
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { EmptyState } from "@/components/admin/EmptyState";
 import type { ReactNode } from "react";
 
@@ -18,7 +25,10 @@ export function DataTable({ columns, rows, emptyTitle, emptyDescription }: DataT
         <TableHeader>
           <TableRow>
             {columns.map((c) => (
-              <TableHead key={c} className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              <TableHead
+                key={c}
+                className="text-xs font-semibold uppercase tracking-wide text-muted-foreground"
+              >
                 {c}
               </TableHead>
             ))}

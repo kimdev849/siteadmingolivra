@@ -40,6 +40,32 @@ export type AdminEnterprise = {
   proprietaire?: AdminOwner | null;
   proprietaire_id?: string;
   products?: AdminProduct[];
+  stats?: AdminCommerceStats;
+};
+
+export type AdminCommercePeriodStats = {
+  commandes: number;
+  commandes_livrees: number;
+  commandes_annulees: number;
+  commandes_en_cours: number;
+  ca_produits_fcfa: number;
+  frais_livraison_fcfa: number;
+  total_paye_client_fcfa: number;
+  panier_moyen_fcfa: number;
+  top_produits: { nom: string; quantite: number; ca_fcfa: number }[];
+};
+
+export type AdminCommerceStats = {
+  source: string;
+  commission_ventes_golivra_fcfa: number;
+  note: string;
+  periodes: {
+    j7: AdminCommercePeriodStats;
+    j30: AdminCommercePeriodStats;
+    j90: AdminCommercePeriodStats;
+    total: AdminCommercePeriodStats;
+  };
+  mis_a_jour_le: string;
 };
 
 export type AdminProduct = {
@@ -168,6 +194,35 @@ export function formatDateFr(iso?: string | null): string {
   }
 }
 
+/** Date et heure (ex. « 23 mai 2026, 14:32 »). */
+export function formatDateTimeFr(iso?: string | null): string {
+  if (!iso) return "—";
+  try {
+    return new Date(iso).toLocaleString("fr-FR", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  } catch {
+    return iso ?? "—";
+  }
+}
+
+export type TimelineStep = {
+  key: string;
+  label: string;
+  at: string;
+  label_fr?: string | null;
+};
+
+export type OrderTimelinePayload = {
+  commande: TimelineStep[];
+  sous_commandes: { id: string; numero?: string; timeline: TimelineStep[] }[];
+  livraisons: { id: string; statut?: string; timeline: TimelineStep[] }[];
+};
+
 export type AdminOrder = {
   id: string;
   numero: string;
@@ -175,9 +230,34 @@ export type AdminOrder = {
   total: number;
   sous_total?: number;
   frais_livraison_total?: number;
+  remise_totale?: number;
   adresse_livraison?: string | null;
   created_at: string;
-  client?: { id: string; nom: string | null; telephone: string | null; email?: string | null } | null;
+  created_at_label?: string;
+  livree_at?: string | null;
+  livree_at_label?: string | null;
+  acceptee_at?: string | null;
+  acceptee_at_label?: string | null;
+  timeline?: OrderTimelinePayload;
+  livraisons?: {
+    id: string;
+    statut: string;
+    timeline: TimelineStep[];
+    created_at?: string;
+    created_at_label?: string;
+    attribuee_at?: string | null;
+    attribuee_at_label?: string | null;
+    collectee_at?: string | null;
+    collectee_at_label?: string | null;
+    livree_at?: string | null;
+    livree_at_label?: string | null;
+  }[];
+  client?: {
+    id: string;
+    nom: string | null;
+    telephone: string | null;
+    email?: string | null;
+  } | null;
   sous_commandes?: AdminSousCommande[];
 };
 
@@ -190,7 +270,13 @@ export type AdminSousCommande = {
   frais_livraison: number;
   commission_ttc: number;
   etablissement?: { id: string; nom: string; type: string } | null;
-  articles: { id: string; nom_produit: string; quantite: number; prix_unitaire: number; sous_total: number }[];
+  articles: {
+    id: string;
+    nom_produit: string;
+    quantite: number;
+    prix_unitaire: number;
+    sous_total: number;
+  }[];
 };
 
 export type AdminCourier = {
@@ -221,7 +307,37 @@ export type AdminLogistics = {
   nb_livreurs?: number;
   created_at?: string;
   gestionnaire?: AdminOwner | null;
-  livreurs?: AdminCourier[];
+  livreurs?: (AdminCourier & { utilisateur?: AdminOwner | null })[];
+  livraisons_recentes?: AdminDelivery[];
+  resume_livraisons?: {
+    en_cours: number;
+    en_retard: number;
+    retards: { id: string; en_retard: boolean; type_retard?: string | null; minutes_retard?: number }[];
+  };
+  stats?: AdminLogisticsStats;
+};
+
+export type AdminLogisticsStats = {
+  livreurs_total: number;
+  livreurs_disponibles: number;
+  livreurs_actifs: number;
+  livraisons_total: number;
+  livraisons_aujourdhui: number;
+  livraisons_en_cours: number;
+  livraisons_en_retard: number;
+  livraisons_sans_livreur: number;
+  livraisons_livrees_aujourdhui: number;
+  taux_reussite_pct: number | null;
+  delai_moyen_minutes: number | null;
+  par_statut: Record<string, number>;
+  revenus_livraison_total_fcfa: number;
+  revenus_livraison_aujourdhui_fcfa: number;
+  portefeuille_solde_fcfa: number | null;
+  split_livraison_percent?: {
+    delivery_logistics_percent: number;
+    delivery_platform_percent: number;
+  };
+  mis_a_jour_le: string;
 };
 
 export type CreateLogisticsCompanyPayload = {
@@ -240,11 +356,49 @@ export type CreateLogisticsCompanyPayload = {
 
 export type AdminDelivery = {
   id: string;
+  type_livraison: "commande" | "externe";
   statut: string;
   created_at: string;
+  attribuee_at?: string | null;
+  collectee_at?: string | null;
+  livree_at?: string | null;
   adresse?: string;
-  commande?: { id: string; numero: string; statut: string } | null;
-  livreur?: { id: string; nom?: string | null; telephone?: string | null; type_vehicule?: string } | null;
+  adresse_retrait?: string;
+  commande?: { id: string; numero: string; statut: string; created_at?: string } | null;
+  commerce?: { id: string; nom: string; type: string } | null;
+  commerce_nom?: string | null;
+  client_nom?: string | null;
+  client_telephone?: string | null;
+  montant_total?: number | null;
+  note?: string | null;
+  livreur?: {
+    id: string;
+    nom?: string | null;
+    telephone?: string | null;
+    type_vehicule?: string;
+    plaque_immatriculation?: string | null;
+  } | null;
+  entreprise_logistique?: { id: string; nom: string; telephone?: string | null } | null;
+  timeline?: TimelineStep[];
+  created_at_label?: string;
+  attribuee_at_label?: string | null;
+  collectee_at_label?: string | null;
+  livree_at_label?: string | null;
+  commande_created_at?: string | null;
+  commande_created_at_label?: string | null;
+  en_retard?: boolean;
+  type_retard?: "assignation" | "livraison" | null;
+  minutes_retard?: number;
+};
+
+export type AppNotification = {
+  id: string;
+  type: string;
+  titre: string;
+  corps?: string | null;
+  data?: Record<string, unknown> | null;
+  est_lue: boolean;
+  created_at: string;
 };
 
 export type AdminCommissions = {
@@ -263,12 +417,18 @@ export type AdminCommissions = {
   }[];
 };
 
-export async function fetchAdminOrders(params?: { status?: string; q?: string }): Promise<AdminOrder[]> {
+export async function fetchAdminOrders(params?: {
+  status?: string;
+  q?: string;
+}): Promise<AdminOrder[]> {
   const qs = new URLSearchParams();
   if (params?.status) qs.set("status", params.status);
   if (params?.q) qs.set("q", params.q);
   const suffix = qs.toString() ? `?${qs.toString()}` : "";
-  const data = await apiFetch<AdminOrder[]>(`/api/admin/orders${suffix}`, { method: "GET", token: token() });
+  const data = await apiFetch<AdminOrder[]>(`/api/admin/orders${suffix}`, {
+    method: "GET",
+    token: token(),
+  });
   return Array.isArray(data) ? data : [];
 }
 
@@ -276,12 +436,18 @@ export async function fetchAdminOrder(id: string): Promise<AdminOrder> {
   return apiFetch<AdminOrder>(`/api/admin/orders/${id}`, { method: "GET", token: token() });
 }
 
-export async function fetchAdminLogistics(params?: { status?: string; q?: string }): Promise<AdminLogistics[]> {
+export async function fetchAdminLogistics(params?: {
+  status?: string;
+  q?: string;
+}): Promise<AdminLogistics[]> {
   const qs = new URLSearchParams();
   if (params?.status) qs.set("status", params.status);
   if (params?.q) qs.set("q", params.q);
   const suffix = qs.toString() ? `?${qs.toString()}` : "";
-  const data = await apiFetch<AdminLogistics[]>(`/api/admin/logistics${suffix}`, { method: "GET", token: token() });
+  const data = await apiFetch<AdminLogistics[]>(`/api/admin/logistics${suffix}`, {
+    method: "GET",
+    token: token(),
+  });
   return Array.isArray(data) ? data : [];
 }
 
@@ -311,14 +477,114 @@ export async function createLogisticsCompanyAdmin(
   });
 }
 
-export async function fetchAdminDeliveries(status?: string): Promise<AdminDelivery[]> {
-  const qs = status ? `?status=${encodeURIComponent(status)}` : "";
-  const data = await apiFetch<AdminDelivery[]>(`/api/admin/deliveries${qs}`, { method: "GET", token: token() });
+export async function fetchAdminDeliveries(opts?: {
+  status?: string;
+  type?: "commande" | "externe";
+}): Promise<AdminDelivery[]> {
+  const params = new URLSearchParams();
+  if (opts?.status) params.set("status", opts.status);
+  if (opts?.type) params.set("type", opts.type);
+  const qs = params.toString() ? `?${params.toString()}` : "";
+  const data = await apiFetch<AdminDelivery[]>(`/api/admin/deliveries${qs}`, {
+    method: "GET",
+    token: token(),
+  });
   return Array.isArray(data) ? data : [];
+}
+
+export async function fetchAdminDeliveryDetail(deliveryId: string): Promise<AdminDelivery> {
+  return apiFetch<AdminDelivery>(`/api/admin/deliveries/${deliveryId}`, {
+    method: "GET",
+    token: token(),
+  });
+}
+
+export async function fetchNotifications(): Promise<AppNotification[]> {
+  const data = await apiFetch<AppNotification[]>("/api/notifications?limit=40", {
+    method: "GET",
+    token: token(),
+  });
+  return Array.isArray(data) ? data : [];
+}
+
+export async function fetchUnreadNotificationCount(): Promise<number> {
+  const data = await apiFetch<{ count: number }>("/api/notifications/unread-count", {
+    method: "GET",
+    token: token(),
+  });
+  return Number(data?.count ?? 0);
+}
+
+export async function markNotificationRead(notificationId: string): Promise<void> {
+  await apiFetch(`/api/notifications/${notificationId}/read`, {
+    method: "PATCH",
+    token: token(),
+  });
+}
+
+export async function markAllNotificationsRead(): Promise<void> {
+  await apiFetch("/api/notifications/read-all", { method: "PATCH", token: token() });
 }
 
 export async function fetchAdminCommissions(): Promise<AdminCommissions> {
   return apiFetch<AdminCommissions>("/api/admin/commissions", { method: "GET", token: token() });
+}
+
+export type WalletTransaction = {
+  id: string;
+  type: string;
+  montant: number;
+  solde_apres: number;
+  description?: string | null;
+  created_at: string;
+};
+
+export type PlatformWallet = {
+  solde_fcfa: number;
+  commissions_livraison_total_fcfa: number;
+  commissions_livraison_mois_fcfa: number;
+  retraits_en_attente_fcfa: number;
+  nb_retraits_en_attente: number;
+  transactions: WalletTransaction[];
+  message?: string;
+};
+
+export type WithdrawalRequest = {
+  id: string;
+  montant: number;
+  methode: string;
+  numero_compte: string;
+  statut: string;
+  note_demandeur?: string | null;
+  note_admin?: string | null;
+  created_at: string;
+  traite_at?: string | null;
+  utilisateur?: { id: string; nom: string | null; telephone: string | null } | null;
+};
+
+export async function fetchAdminPlatformWallet(): Promise<PlatformWallet> {
+  return apiFetch<PlatformWallet>("/api/admin/portefeuille", { method: "GET", token: token() });
+}
+
+export async function fetchAdminWithdrawals(statut?: string): Promise<WithdrawalRequest[]> {
+  const qs = statut ? `?statut=${encodeURIComponent(statut)}` : "";
+  const data = await apiFetch<WithdrawalRequest[]>(`/api/admin/retraits${qs}`, {
+    method: "GET",
+    token: token(),
+  });
+  return Array.isArray(data) ? data : [];
+}
+
+export async function processAdminWithdrawal(
+  retraitId: string,
+  action: "approuver" | "rejeter",
+  note_admin?: string,
+): Promise<WithdrawalRequest> {
+  return apiFetch<WithdrawalRequest>(`/api/admin/retraits/${retraitId}`, {
+    method: "PATCH",
+    token: token(),
+    jsonBody: { action, note_admin },
+  });
 }
 
 export async function rejectUserAdmin(userId: string, raison?: string): Promise<AdminPendingUser> {
@@ -327,4 +593,54 @@ export async function rejectUserAdmin(userId: string, raison?: string): Promise<
     token: token(),
     jsonBody: raison ? { raison } : {},
   });
+}
+
+export type AdminChartDay = {
+  date: string;
+  count?: number;
+  revenue_fcfa?: number;
+  amount_fcfa?: number;
+};
+
+export type AdminCharts = {
+  days: number;
+  orders_by_day: AdminChartDay[];
+  commissions_by_day: AdminChartDay[];
+};
+
+export async function fetchAdminCharts(days = 30): Promise<AdminCharts> {
+  return apiFetch<AdminCharts>(`/api/admin/stats/charts?days=${days}`, {
+    method: "GET",
+    token: token(),
+  });
+}
+
+export type AdminSettingEntry = {
+  valeur: string | number | boolean;
+  type: string;
+  description?: string | null;
+  est_public?: boolean;
+  updated_at?: string;
+};
+
+export async function fetchAdminSettings(): Promise<Record<string, AdminSettingEntry>> {
+  const res = await apiFetch<{ settings: Record<string, AdminSettingEntry> }>("/api/settings/admin", {
+    method: "GET",
+    token: token(),
+  });
+  return res.settings;
+}
+
+export async function updateAdminSettings(
+  patch: Record<string, string | number | boolean>,
+): Promise<Record<string, AdminSettingEntry>> {
+  const res = await apiFetch<{ settings: Record<string, AdminSettingEntry>; message: string }>(
+    "/api/settings/admin",
+    {
+      method: "PATCH",
+      token: token(),
+      jsonBody: patch,
+    },
+  );
+  return res.settings;
 }

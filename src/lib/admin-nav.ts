@@ -8,7 +8,13 @@ import {
   BarChart3,
   Settings,
   Users,
+  Wallet,
+  Receipt,
+  Package,
 } from "lucide-react";
+
+/** Rafraîchissement auto des écrans admin (commandes, livraisons, dashboard). */
+export const ADMIN_LIVE_REFETCH_MS = 15_000;
 
 export type AdminNavItem = {
   to: string;
@@ -23,7 +29,10 @@ export const adminNavItems: AdminNavItem[] = [
   { to: "/admin/comptes", label: "Comptes en attente", icon: Users },
   { to: "/admin/transporteurs", label: "Entreprises de livraison", icon: Truck },
   { to: "/admin/commandes", label: "Commandes", icon: ShoppingBag },
-  { to: "/admin/commissions", label: "Commissions", icon: Percent },
+  { to: "/admin/livraisons", label: "Livraisons", icon: Package },
+  { to: "/admin/portefeuille", label: "Portefeuille GoLivra", icon: Wallet },
+  { to: "/admin/commissions", label: "Commissions livraison", icon: Percent },
+  { to: "/admin/retraits", label: "Retraits", icon: Receipt },
   { to: "/admin/analytics", label: "Analytics", icon: BarChart3 },
   { to: "/admin/parametres", label: "Paramètres", icon: Settings },
 ];

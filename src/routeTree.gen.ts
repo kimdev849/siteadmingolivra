@@ -18,8 +18,11 @@ import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as EntrepriseStatistiquesRouteImport } from './routes/entreprise.statistiques'
 import { Route as EntrepriseRetardsRouteImport } from './routes/entreprise.retards'
 import { Route as EntrepriseProfilRouteImport } from './routes/entreprise.profil'
+import { Route as EntreprisePortefeuilleRouteImport } from './routes/entreprise.portefeuille'
 import { Route as EntrepriseOperationsRouteImport } from './routes/entreprise.operations'
 import { Route as EntrepriseMotDePasseRouteImport } from './routes/entreprise.mot-de-passe'
+import { Route as AdminRetraitsRouteImport } from './routes/admin.retraits'
+import { Route as AdminPortefeuilleRouteImport } from './routes/admin.portefeuille'
 import { Route as AdminParametresRouteImport } from './routes/admin.parametres'
 import { Route as AdminLivraisonsRouteImport } from './routes/admin.livraisons'
 import { Route as AdminCommissionsRouteImport } from './routes/admin.commissions'
@@ -35,6 +38,7 @@ import { Route as EntrepriseLivreursIdRouteImport } from './routes/entreprise.li
 import { Route as AdminTransporteursNouveauRouteImport } from './routes/admin.transporteurs.nouveau'
 import { Route as AdminTransporteursIdRouteImport } from './routes/admin.transporteurs.$id'
 import { Route as AdminMarchandsIdRouteImport } from './routes/admin.marchands.$id'
+import { Route as AdminLivraisonsIdRouteImport } from './routes/admin.livraisons.$id'
 import { Route as AdminCommandesIdRouteImport } from './routes/admin.commandes.$id'
 
 const LoginRoute = LoginRouteImport.update({
@@ -82,6 +86,11 @@ const EntrepriseProfilRoute = EntrepriseProfilRouteImport.update({
   path: '/profil',
   getParentRoute: () => EntrepriseRoute,
 } as any)
+const EntreprisePortefeuilleRoute = EntreprisePortefeuilleRouteImport.update({
+  id: '/portefeuille',
+  path: '/portefeuille',
+  getParentRoute: () => EntrepriseRoute,
+} as any)
 const EntrepriseOperationsRoute = EntrepriseOperationsRouteImport.update({
   id: '/operations',
   path: '/operations',
@@ -91,6 +100,16 @@ const EntrepriseMotDePasseRoute = EntrepriseMotDePasseRouteImport.update({
   id: '/mot-de-passe',
   path: '/mot-de-passe',
   getParentRoute: () => EntrepriseRoute,
+} as any)
+const AdminRetraitsRoute = AdminRetraitsRouteImport.update({
+  id: '/retraits',
+  path: '/retraits',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPortefeuilleRoute = AdminPortefeuilleRouteImport.update({
+  id: '/portefeuille',
+  path: '/portefeuille',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminParametresRoute = AdminParametresRouteImport.update({
   id: '/parametres',
@@ -170,6 +189,11 @@ const AdminMarchandsIdRoute = AdminMarchandsIdRouteImport.update({
   path: '/marchands/$id',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminLivraisonsIdRoute = AdminLivraisonsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AdminLivraisonsRoute,
+} as any)
 const AdminCommandesIdRoute = AdminCommandesIdRouteImport.update({
   id: '/commandes/$id',
   path: '/commandes/$id',
@@ -183,16 +207,20 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/commissions': typeof AdminCommissionsRoute
-  '/admin/livraisons': typeof AdminLivraisonsRoute
+  '/admin/livraisons': typeof AdminLivraisonsRouteWithChildren
   '/admin/parametres': typeof AdminParametresRoute
+  '/admin/portefeuille': typeof AdminPortefeuilleRoute
+  '/admin/retraits': typeof AdminRetraitsRoute
   '/entreprise/mot-de-passe': typeof EntrepriseMotDePasseRoute
   '/entreprise/operations': typeof EntrepriseOperationsRoute
+  '/entreprise/portefeuille': typeof EntreprisePortefeuilleRoute
   '/entreprise/profil': typeof EntrepriseProfilRoute
   '/entreprise/retards': typeof EntrepriseRetardsRoute
   '/entreprise/statistiques': typeof EntrepriseStatistiquesRoute
   '/admin/': typeof AdminIndexRoute
   '/entreprise/': typeof EntrepriseIndexRoute
   '/admin/commandes/$id': typeof AdminCommandesIdRoute
+  '/admin/livraisons/$id': typeof AdminLivraisonsIdRoute
   '/admin/marchands/$id': typeof AdminMarchandsIdRoute
   '/admin/transporteurs/$id': typeof AdminTransporteursIdRoute
   '/admin/transporteurs/nouveau': typeof AdminTransporteursNouveauRoute
@@ -210,16 +238,20 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/commissions': typeof AdminCommissionsRoute
-  '/admin/livraisons': typeof AdminLivraisonsRoute
+  '/admin/livraisons': typeof AdminLivraisonsRouteWithChildren
   '/admin/parametres': typeof AdminParametresRoute
+  '/admin/portefeuille': typeof AdminPortefeuilleRoute
+  '/admin/retraits': typeof AdminRetraitsRoute
   '/entreprise/mot-de-passe': typeof EntrepriseMotDePasseRoute
   '/entreprise/operations': typeof EntrepriseOperationsRoute
+  '/entreprise/portefeuille': typeof EntreprisePortefeuilleRoute
   '/entreprise/profil': typeof EntrepriseProfilRoute
   '/entreprise/retards': typeof EntrepriseRetardsRoute
   '/entreprise/statistiques': typeof EntrepriseStatistiquesRoute
   '/admin': typeof AdminIndexRoute
   '/entreprise': typeof EntrepriseIndexRoute
   '/admin/commandes/$id': typeof AdminCommandesIdRoute
+  '/admin/livraisons/$id': typeof AdminLivraisonsIdRoute
   '/admin/marchands/$id': typeof AdminMarchandsIdRoute
   '/admin/transporteurs/$id': typeof AdminTransporteursIdRoute
   '/admin/transporteurs/nouveau': typeof AdminTransporteursNouveauRoute
@@ -240,16 +272,20 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/commissions': typeof AdminCommissionsRoute
-  '/admin/livraisons': typeof AdminLivraisonsRoute
+  '/admin/livraisons': typeof AdminLivraisonsRouteWithChildren
   '/admin/parametres': typeof AdminParametresRoute
+  '/admin/portefeuille': typeof AdminPortefeuilleRoute
+  '/admin/retraits': typeof AdminRetraitsRoute
   '/entreprise/mot-de-passe': typeof EntrepriseMotDePasseRoute
   '/entreprise/operations': typeof EntrepriseOperationsRoute
+  '/entreprise/portefeuille': typeof EntreprisePortefeuilleRoute
   '/entreprise/profil': typeof EntrepriseProfilRoute
   '/entreprise/retards': typeof EntrepriseRetardsRoute
   '/entreprise/statistiques': typeof EntrepriseStatistiquesRoute
   '/admin/': typeof AdminIndexRoute
   '/entreprise/': typeof EntrepriseIndexRoute
   '/admin/commandes/$id': typeof AdminCommandesIdRoute
+  '/admin/livraisons/$id': typeof AdminLivraisonsIdRoute
   '/admin/marchands/$id': typeof AdminMarchandsIdRoute
   '/admin/transporteurs/$id': typeof AdminTransporteursIdRoute
   '/admin/transporteurs/nouveau': typeof AdminTransporteursNouveauRoute
@@ -273,14 +309,18 @@ export interface FileRouteTypes {
     | '/admin/commissions'
     | '/admin/livraisons'
     | '/admin/parametres'
+    | '/admin/portefeuille'
+    | '/admin/retraits'
     | '/entreprise/mot-de-passe'
     | '/entreprise/operations'
+    | '/entreprise/portefeuille'
     | '/entreprise/profil'
     | '/entreprise/retards'
     | '/entreprise/statistiques'
     | '/admin/'
     | '/entreprise/'
     | '/admin/commandes/$id'
+    | '/admin/livraisons/$id'
     | '/admin/marchands/$id'
     | '/admin/transporteurs/$id'
     | '/admin/transporteurs/nouveau'
@@ -300,14 +340,18 @@ export interface FileRouteTypes {
     | '/admin/commissions'
     | '/admin/livraisons'
     | '/admin/parametres'
+    | '/admin/portefeuille'
+    | '/admin/retraits'
     | '/entreprise/mot-de-passe'
     | '/entreprise/operations'
+    | '/entreprise/portefeuille'
     | '/entreprise/profil'
     | '/entreprise/retards'
     | '/entreprise/statistiques'
     | '/admin'
     | '/entreprise'
     | '/admin/commandes/$id'
+    | '/admin/livraisons/$id'
     | '/admin/marchands/$id'
     | '/admin/transporteurs/$id'
     | '/admin/transporteurs/nouveau'
@@ -329,14 +373,18 @@ export interface FileRouteTypes {
     | '/admin/commissions'
     | '/admin/livraisons'
     | '/admin/parametres'
+    | '/admin/portefeuille'
+    | '/admin/retraits'
     | '/entreprise/mot-de-passe'
     | '/entreprise/operations'
+    | '/entreprise/portefeuille'
     | '/entreprise/profil'
     | '/entreprise/retards'
     | '/entreprise/statistiques'
     | '/admin/'
     | '/entreprise/'
     | '/admin/commandes/$id'
+    | '/admin/livraisons/$id'
     | '/admin/marchands/$id'
     | '/admin/transporteurs/$id'
     | '/admin/transporteurs/nouveau'
@@ -422,6 +470,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EntrepriseProfilRouteImport
       parentRoute: typeof EntrepriseRoute
     }
+    '/entreprise/portefeuille': {
+      id: '/entreprise/portefeuille'
+      path: '/portefeuille'
+      fullPath: '/entreprise/portefeuille'
+      preLoaderRoute: typeof EntreprisePortefeuilleRouteImport
+      parentRoute: typeof EntrepriseRoute
+    }
     '/entreprise/operations': {
       id: '/entreprise/operations'
       path: '/operations'
@@ -435,6 +490,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/entreprise/mot-de-passe'
       preLoaderRoute: typeof EntrepriseMotDePasseRouteImport
       parentRoute: typeof EntrepriseRoute
+    }
+    '/admin/retraits': {
+      id: '/admin/retraits'
+      path: '/retraits'
+      fullPath: '/admin/retraits'
+      preLoaderRoute: typeof AdminRetraitsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/portefeuille': {
+      id: '/admin/portefeuille'
+      path: '/portefeuille'
+      fullPath: '/admin/portefeuille'
+      preLoaderRoute: typeof AdminPortefeuilleRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/parametres': {
       id: '/admin/parametres'
@@ -541,6 +610,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminMarchandsIdRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/livraisons/$id': {
+      id: '/admin/livraisons/$id'
+      path: '/$id'
+      fullPath: '/admin/livraisons/$id'
+      preLoaderRoute: typeof AdminLivraisonsIdRouteImport
+      parentRoute: typeof AdminLivraisonsRoute
+    }
     '/admin/commandes/$id': {
       id: '/admin/commandes/$id'
       path: '/commandes/$id'
@@ -551,11 +627,25 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AdminLivraisonsRouteChildren {
+  AdminLivraisonsIdRoute: typeof AdminLivraisonsIdRoute
+}
+
+const AdminLivraisonsRouteChildren: AdminLivraisonsRouteChildren = {
+  AdminLivraisonsIdRoute: AdminLivraisonsIdRoute,
+}
+
+const AdminLivraisonsRouteWithChildren = AdminLivraisonsRoute._addFileChildren(
+  AdminLivraisonsRouteChildren,
+)
+
 interface AdminRouteChildren {
   AdminAnalyticsRoute: typeof AdminAnalyticsRoute
   AdminCommissionsRoute: typeof AdminCommissionsRoute
-  AdminLivraisonsRoute: typeof AdminLivraisonsRoute
+  AdminLivraisonsRoute: typeof AdminLivraisonsRouteWithChildren
   AdminParametresRoute: typeof AdminParametresRoute
+  AdminPortefeuilleRoute: typeof AdminPortefeuilleRoute
+  AdminRetraitsRoute: typeof AdminRetraitsRoute
   AdminIndexRoute: typeof AdminIndexRoute
   AdminCommandesIdRoute: typeof AdminCommandesIdRoute
   AdminMarchandsIdRoute: typeof AdminMarchandsIdRoute
@@ -570,8 +660,10 @@ interface AdminRouteChildren {
 const AdminRouteChildren: AdminRouteChildren = {
   AdminAnalyticsRoute: AdminAnalyticsRoute,
   AdminCommissionsRoute: AdminCommissionsRoute,
-  AdminLivraisonsRoute: AdminLivraisonsRoute,
+  AdminLivraisonsRoute: AdminLivraisonsRouteWithChildren,
   AdminParametresRoute: AdminParametresRoute,
+  AdminPortefeuilleRoute: AdminPortefeuilleRoute,
+  AdminRetraitsRoute: AdminRetraitsRoute,
   AdminIndexRoute: AdminIndexRoute,
   AdminCommandesIdRoute: AdminCommandesIdRoute,
   AdminMarchandsIdRoute: AdminMarchandsIdRoute,
@@ -588,6 +680,7 @@ const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 interface EntrepriseRouteChildren {
   EntrepriseMotDePasseRoute: typeof EntrepriseMotDePasseRoute
   EntrepriseOperationsRoute: typeof EntrepriseOperationsRoute
+  EntreprisePortefeuilleRoute: typeof EntreprisePortefeuilleRoute
   EntrepriseProfilRoute: typeof EntrepriseProfilRoute
   EntrepriseRetardsRoute: typeof EntrepriseRetardsRoute
   EntrepriseStatistiquesRoute: typeof EntrepriseStatistiquesRoute
@@ -601,6 +694,7 @@ interface EntrepriseRouteChildren {
 const EntrepriseRouteChildren: EntrepriseRouteChildren = {
   EntrepriseMotDePasseRoute: EntrepriseMotDePasseRoute,
   EntrepriseOperationsRoute: EntrepriseOperationsRoute,
+  EntreprisePortefeuilleRoute: EntreprisePortefeuilleRoute,
   EntrepriseProfilRoute: EntrepriseProfilRoute,
   EntrepriseRetardsRoute: EntrepriseRetardsRoute,
   EntrepriseStatistiquesRoute: EntrepriseStatistiquesRoute,

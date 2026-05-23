@@ -1,5 +1,6 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 import { Activity, Loader2, RefreshCw } from "lucide-react";
 import { PageHeader } from "@/components/admin/PageHeader";
 import { KpiCard } from "@/components/admin/KpiCard";
@@ -12,6 +13,7 @@ import {
   fetchMyLogisticsCompany,
   fetchMyOperations,
   fetchMyStats,
+  retryMyDeliveryDispatch,
   type LogisticsDelivery,
 } from "@/lib/logistics-api";
 
@@ -23,14 +25,16 @@ function Column({
   title,
   count,
   deliveries,
-  canAssign,
-  onAssign,
+  canOperate,
+  retryingId,
+  onRetryDispatch,
 }: {
   title: string;
   count: number;
   deliveries: LogisticsDelivery[];
-  canAssign: boolean;
-  onAssign: (d: LogisticsDelivery) => void;
+  canOperate: boolean;
+  retryingId: string | null;
+  onRetryDispatch: (d: LogisticsDelivery) => void;
 }) {
   return (
     <Card className="flex flex-col">
@@ -48,8 +52,9 @@ function Column({
             <OperationDeliveryCard
               key={d.id}
               delivery={d}
-              showAssign={canAssign}
-              onAssign={() => onAssign(d)}
+              showRetryDispatch={canOperate}
+              retrying={retryingId === d.id}
+              onRetryDispatch={() => onRetryDispatch(d)}
             />
           ))
         )}
@@ -59,7 +64,8 @@ function Column({
 }
 
 function EntrepriseOperationsPage() {
-  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const [retryingId, setRetryingId] = useState<string | null>(null);
 
   const companyQuery = useQuery({
     queryKey: ["logistics", "company"],
@@ -79,19 +85,25 @@ function EntrepriseOperationsPage() {
   });
 
   const statut = companyQuery.data?.statut_moderation || companyQuery.data?.statut;
-  const canAssign = statut === "active";
+  const canOperate = statut === "active";
   const ops = opsQuery.data;
   const stats = statsQuery.data;
 
-  const goAssign = (_delivery: LogisticsDelivery) => {
-    void navigate({ to: "/entreprise/livraisons" });
+  const handleRetryDispatch = async (delivery: LogisticsDelivery) => {
+    setRetryingId(delivery.id);
+    try {
+      await retryMyDeliveryDispatch(delivery.id);
+      await queryClient.invalidateQueries({ queryKey: ["logistics"] });
+    } finally {
+      setRetryingId(null);
+    }
   };
 
   return (
     <div>
       <PageHeader
         title="Opérations en direct"
-        description="Suivi temps réel des courses — actualisation automatique toutes les 15 s"
+        description="Suivi des missions créées quand un commerce marque une commande prête. GoLivra attribue les livreurs disponibles."
         actions={
           <Button
             variant="outline"
@@ -113,14 +125,12 @@ function EntrepriseOperationsPage() {
         <Activity className="h-4 w-4 text-primary" />
         <span>
           Dernière mise à jour :{" "}
-          {ops?.mis_a_jour_le
-            ? new Date(ops.mis_a_jour_le).toLocaleTimeString("fr-FR")
-            : "—"}
+          {ops?.mis_a_jour_le ? new Date(ops.mis_a_jour_le).toLocaleTimeString("fr-FR") : "—"}
         </span>
         {(stats?.livraisons_en_retard ?? 0) > 0 ? (
-          <Badge variant="destructive" asChild>
-            <Link to="/entreprise/retards">{stats?.livraisons_en_retard} retard(s)</Link>
-          </Badge>
+          <Link to="/entreprise/retards">
+            <Badge variant="destructive">{stats?.livraisons_en_retard} retard(s)</Badge>
+          </Link>
         ) : null}
       </div>
 
@@ -128,7 +138,11 @@ function EntrepriseOperationsPage() {
         <KpiCard label="En cours" icon={Activity} value={stats?.livraisons_en_cours} />
         <KpiCard label="Sans livreur" icon={Activity} value={stats?.livraisons_sans_livreur} />
         <KpiCard label="Retards" icon={Activity} value={stats?.livraisons_en_retard} />
-        <KpiCard label="Livrées aujourd'hui" icon={Activity} value={stats?.livraisons_livrees_aujourdhui} />
+        <KpiCard
+          label="Livrées aujourd'hui"
+          icon={Activity}
+          value={stats?.livraisons_livrees_aujourdhui}
+        />
         <KpiCard label="Livreurs dispo." icon={Activity} value={stats?.livreurs_disponibles} />
         <KpiCard
           label="Délai moyen"
@@ -153,8 +167,9 @@ function EntrepriseOperationsPage() {
                   <OperationDeliveryCard
                     key={`alert-${d.id}`}
                     delivery={d}
-                    showAssign={canAssign}
-                    onAssign={() => goAssign(d)}
+                    showRetryDispatch={canOperate}
+                    retrying={retryingId === d.id}
+                    onRetryDispatch={() => void handleRetryDispatch(d)}
                   />
                 ))}
               </CardContent>
@@ -163,32 +178,37 @@ function EntrepriseOperationsPage() {
 
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
             <Column
-              title="À attribuer"
+              title="En attente de livreur"
               count={ops.colonnes.sans_livreur.length}
               deliveries={ops.colonnes.sans_livreur}
-              canAssign={canAssign}
-              onAssign={goAssign}
+              canOperate={canOperate}
+              retryingId={retryingId}
+              onRetryDispatch={(d) => void handleRetryDispatch(d)}
             />
             <Column
               title="En route"
               count={ops.colonnes.en_route.length}
               deliveries={ops.colonnes.en_route}
-              canAssign={canAssign}
-              onAssign={goAssign}
+              canOperate={canOperate}
+              retryingId={retryingId}
+              onRetryDispatch={(d) => void handleRetryDispatch(d)}
             />
             <Column
               title="Autres actives"
               count={ops.colonnes.autres.length}
               deliveries={ops.colonnes.autres}
-              canAssign={canAssign}
-              onAssign={goAssign}
+              canOperate={canOperate}
+              retryingId={retryingId}
+              onRetryDispatch={(d) => void handleRetryDispatch(d)}
             />
           </div>
 
           {(ops.livraisons_recentes_livrees?.length ?? 0) > 0 ? (
             <Card className="mt-6">
               <CardHeader>
-                <CardTitle className="text-sm font-semibold">Livrées aujourd&apos;hui (récentes)</CardTitle>
+                <CardTitle className="text-sm font-semibold">
+                  Livrées aujourd&apos;hui (récentes)
+                </CardTitle>
               </CardHeader>
               <CardContent className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
                 {ops.livraisons_recentes_livrees.map((d) => (

@@ -7,8 +7,19 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import logo from "@/assets/logo.png";
-import { fetchAdminMe, isAdminUser, isLogisticsManager, isStaffUser, staffLogin } from "@/lib/auth-api";
-import { clearAdminToken, getAdminToken, isRememberMeEnabled, setAdminToken } from "@/lib/auth-session";
+import {
+  fetchAdminMe,
+  isAdminUser,
+  isLogisticsManager,
+  isStaffUser,
+  staffLogin,
+} from "@/lib/auth-api";
+import {
+  clearAdminToken,
+  getAdminToken,
+  isRememberMeEnabled,
+  setAdminToken,
+} from "@/lib/auth-session";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
@@ -78,7 +89,9 @@ function LoginPage() {
       const me = await fetchAdminMe(session.token);
       if (!isStaffUser(me)) {
         clearAdminToken();
-        setError("Ce compte n'est pas autorisé. Utilisez un compte admin ou responsable d'entreprise de livraison.");
+        setError(
+          "Ce compte n'est pas autorisé. Utilisez un compte admin ou responsable d'entreprise de livraison.",
+        );
         return;
       }
 
@@ -89,7 +102,9 @@ function LoginPage() {
       }
     } catch (err) {
       clearAdminToken();
-      setError(err instanceof Error ? err.message : "Connexion impossible. Vérifiez vos identifiants.");
+      setError(
+        err instanceof Error ? err.message : "Connexion impossible. Vérifiez vos identifiants.",
+      );
     } finally {
       setLoading(false);
     }
@@ -111,7 +126,11 @@ function LoginPage() {
       {/* Panneau gauche — desktop */}
       <div className="relative hidden bg-[#0B6B45] lg:flex lg:w-[44%] lg:flex-col lg:justify-between lg:p-12">
         <div className="flex items-center gap-3">
-          <img src={logo} alt="GoLivra" className="h-12 w-12 rounded-xl bg-white/95 p-1.5 object-contain" />
+          <img
+            src={logo}
+            alt="GoLivra"
+            className="h-12 w-12 rounded-xl bg-white/95 p-1.5 object-contain"
+          />
           <div>
             <p className="text-xl font-bold text-white">GoLivra</p>
             <p className="text-sm text-white/80">Admin & entreprises de livraison</p>
@@ -143,9 +162,11 @@ function LoginPage() {
                 Accédez avec vos identifiants GoLivra.
               </p>
               <p className="mt-3 rounded-md border border-border bg-muted/40 px-3 py-2 text-left text-xs text-muted-foreground">
-                <strong className="text-foreground">Entreprise de livraison :</strong> connectez-vous avec l&apos;
-                <strong className="text-foreground">e-mail du responsable</strong> (celui défini à la création du
-                compte), pas l&apos;e-mail de contact de l&apos;entreprise. Mot de passe : minimum 6 caractères.
+                <strong className="text-foreground">Entreprise de livraison :</strong>{" "}
+                connectez-vous avec l&apos;
+                <strong className="text-foreground">e-mail du responsable</strong> (celui défini à
+                la création du compte), pas l&apos;e-mail de contact de l&apos;entreprise. Mot de
+                passe : minimum 6 caractères.
               </p>
             </div>
 
@@ -182,7 +203,9 @@ function LoginPage() {
                   <button
                     type="button"
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                    aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+                    aria-label={
+                      showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"
+                    }
                     onClick={() => setShowPassword((v) => !v)}
                   >
                     {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -197,7 +220,10 @@ function LoginPage() {
                   disabled={loading}
                   onCheckedChange={(v) => setRemember(v === true)}
                 />
-                <Label htmlFor="remember" className="cursor-pointer text-sm font-normal text-muted-foreground">
+                <Label
+                  htmlFor="remember"
+                  className="cursor-pointer text-sm font-normal text-muted-foreground"
+                >
                   Rester connecté
                 </Label>
               </div>

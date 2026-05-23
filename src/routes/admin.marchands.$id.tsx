@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/admin/DataTable";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+import { CommerceStatsPanel } from "@/components/admin/CommerceStatsPanel";
 import {
   activateEnterpriseAdmin,
   fetchEnterpriseAdmin,
@@ -74,15 +75,31 @@ function MarchandDetailPage() {
         actions={
           <>
             {statut === "active" ? (
-              <Button variant="outline" disabled={!!loading} onClick={() => void runAction("suspend")}>
-                {loading === "suspend" ? <Loader2 className="h-4 w-4 animate-spin" /> : <Ban className="h-4 w-4" />}
+              <Button
+                variant="outline"
+                disabled={!!loading}
+                onClick={() => void runAction("suspend")}
+              >
+                {loading === "suspend" ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Ban className="h-4 w-4" />
+                )}
                 Suspendre
               </Button>
             ) : null}
             {statut === "en_attente" || statut === "suspendue" ? (
               <>
-                <Button variant="outline" disabled={!!loading} onClick={() => void runAction("reject")}>
-                  {loading === "reject" ? <Loader2 className="h-4 w-4 animate-spin" /> : <Ban className="h-4 w-4" />}
+                <Button
+                  variant="outline"
+                  disabled={!!loading}
+                  onClick={() => void runAction("reject")}
+                >
+                  {loading === "reject" ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Ban className="h-4 w-4" />
+                  )}
                   Rejeter
                 </Button>
                 <Button disabled={!!loading} onClick={() => void runAction("activate")}>
@@ -111,7 +128,10 @@ function MarchandDetailPage() {
         <Tabs defaultValue="infos">
           <TabsList>
             <TabsTrigger value="infos">Infos profil</TabsTrigger>
-            <TabsTrigger value="produits">Produits ({enterprise.products?.length ?? 0})</TabsTrigger>
+            <TabsTrigger value="produits">
+              Produits ({enterprise.products?.length ?? 0})
+            </TabsTrigger>
+            <TabsTrigger value="stats">Statistiques</TabsTrigger>
           </TabsList>
 
           <TabsContent value="infos" className="mt-4">
@@ -163,6 +183,14 @@ function MarchandDetailPage() {
               emptyTitle="Aucun produit"
               emptyDescription="Les produits publiés apparaîtront ici."
             />
+          </TabsContent>
+
+          <TabsContent value="stats" className="mt-4">
+            {enterprise.stats ? (
+              <CommerceStatsPanel stats={enterprise.stats} />
+            ) : (
+              <p className="text-sm text-muted-foreground">Statistiques indisponibles.</p>
+            )}
           </TabsContent>
         </Tabs>
       ) : (

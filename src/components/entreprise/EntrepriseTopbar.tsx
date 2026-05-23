@@ -1,3 +1,4 @@
+import { AdminNotificationsBell } from "@/components/admin/AdminNotificationsBell";
 import { LogOut, Menu } from "lucide-react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
@@ -80,6 +81,7 @@ export function EntrepriseTopbar() {
       </Sheet>
 
       <div className="ml-auto flex items-center gap-2 sm:gap-3">
+        <AdminNotificationsBell />
         <div className="hidden items-center gap-2 sm:flex">
           <Avatar className="h-8 w-8">
             <AvatarFallback className="bg-primary/10 text-xs font-semibold text-primary">
@@ -87,11 +89,20 @@ export function EntrepriseTopbar() {
             </AvatarFallback>
           </Avatar>
           <div className="leading-tight">
-            <p className="max-w-[160px] truncate text-sm font-medium text-foreground">{me?.nom || "Responsable"}</p>
-            <p className="max-w-[160px] truncate text-xs text-muted-foreground">{me?.email || "—"}</p>
+            <p className="max-w-[160px] truncate text-sm font-medium text-foreground">
+              {me?.nom || "Responsable"}
+            </p>
+            <p className="max-w-[160px] truncate text-xs text-muted-foreground">
+              {me?.email || "—"}
+            </p>
           </div>
         </div>
-        <Button variant="ghost" size="icon" aria-label="Se déconnecter" onClick={() => void handleLogout()}>
+        <Button
+          variant="ghost"
+          size="icon"
+          aria-label="Se déconnecter"
+          onClick={() => void handleLogout()}
+        >
           <LogOut className="h-4 w-4" />
         </Button>
       </div>

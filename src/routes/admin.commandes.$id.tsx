@@ -7,7 +7,10 @@ import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/admin/EmptyState";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import { fetchAdminOrder, formatStatutLabel, formatTypeLabel } from "@/lib/admin-api";
+import { EventTimeline } from "@/components/admin/EventTimeline";
+import { OrderAmountBreakdown } from "@/components/admin/OrderAmountBreakdown";
+import { ADMIN_LIVE_REFETCH_MS } from "@/lib/admin-nav";
+import { fetchAdminOrder, formatDateTimeFr, formatStatutLabel, formatTypeLabel } from "@/lib/admin-api";
 
 export const Route = createFileRoute("/admin/commandes/$id")({
   component: CommandeDetailPage,
@@ -19,6 +22,7 @@ function CommandeDetailPage() {
   const detailQuery = useQuery({
     queryKey: ["admin", "order", id],
     queryFn: () => fetchAdminOrder(id),
+    refetchInterval: ADMIN_LIVE_REFETCH_MS,
   });
 
   const order = detailQuery.data;
@@ -55,7 +59,10 @@ function CommandeDetailPage() {
                 </CardHeader>
                 <CardContent>
                   {sc.articles.length === 0 ? (
-                    <EmptyState title="Aucun produit" description="Les lignes de la commande apparaîtront ici." />
+                    <EmptyState
+                      title="Aucun produit"
+                      description="Les lignes de la commande apparaîtront ici."
+                    />
                   ) : (
                     <ul className="space-y-2 text-sm">
                       {sc.articles.map((a) => (
@@ -69,24 +76,12 @@ function CommandeDetailPage() {
                     </ul>
                   )}
                   <Separator className="my-4" />
-                  <dl className="space-y-2 text-sm">
-                    <div className="flex justify-between text-muted-foreground">
-                      <dt>Sous-total</dt>
-                      <dd>{Number(sc.sous_total).toLocaleString("fr-FR")} FCFA</dd>
-                    </div>
-                    <div className="flex justify-between text-muted-foreground">
-                      <dt>Livraison</dt>
-                      <dd>{Number(sc.frais_livraison).toLocaleString("fr-FR")} FCFA</dd>
-                    </div>
-                    <div className="flex justify-between text-muted-foreground">
-                      <dt>Commission</dt>
-                      <dd>{Number(sc.commission_ttc).toLocaleString("fr-FR")} FCFA</dd>
-                    </div>
-                    <div className="flex justify-between border-t border-border pt-2 font-semibold text-foreground">
-                      <dt>Total boutique</dt>
-                      <dd>{Number(sc.total).toLocaleString("fr-FR")} FCFA</dd>
-                    </div>
-                  </dl>
+                  <OrderAmountBreakdown
+                    sousTotal={Number(sc.sous_total)}
+                    fraisLivraison={Number(sc.frais_livraison)}
+                    total={Number(sc.total)}
+                    showCommissionNote={false}
+                  />
                 </CardContent>
               </Card>
             ))}
@@ -121,23 +116,43 @@ function CommandeDetailPage() {
 
             <Card>
               <CardHeader>
+                <CardTitle className="text-sm font-semibold">Horaires</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <dl className="space-y-2 text-sm">
+                  <div>
+                    <dt className="text-xs text-muted-foreground">Commande passée</dt>
+                    <dd>{formatDateTimeFr(order.created_at)}</dd>
+                  </div>
+                  <div>
+                    <dt className="text-xs text-muted-foreground">Commande livrée</dt>
+                    <dd>{formatDateTimeFr(order.livree_at)}</dd>
+                  </div>
+                </dl>
+                {order.timeline?.commande?.length ? (
+                  <EventTimeline steps={order.timeline.commande} title="Étapes commande" />
+                ) : null}
+                {(order.livraisons ?? []).map((liv) => (
+                  <EventTimeline
+                    key={liv.id}
+                    steps={liv.timeline}
+                    title={`Livraison ${liv.id.slice(0, 8)}`}
+                  />
+                ))}
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
                 <CardTitle className="text-sm font-semibold">Récapitulatif</CardTitle>
               </CardHeader>
               <CardContent>
-                <dl className="space-y-2 text-sm">
-                  <div className="flex justify-between text-muted-foreground">
-                    <dt>Sous-total</dt>
-                    <dd>{Number(order.sous_total ?? 0).toLocaleString("fr-FR")} FCFA</dd>
-                  </div>
-                  <div className="flex justify-between text-muted-foreground">
-                    <dt>Livraison totale</dt>
-                    <dd>{Number(order.frais_livraison_total ?? 0).toLocaleString("fr-FR")} FCFA</dd>
-                  </div>
-                  <div className="flex justify-between border-t border-border pt-2 font-semibold text-foreground">
-                    <dt>Total</dt>
-                    <dd>{Number(order.total).toLocaleString("fr-FR")} FCFA</dd>
-                  </div>
-                </dl>
+                <OrderAmountBreakdown
+                  sousTotal={Number(order.sous_total ?? 0)}
+                  fraisLivraison={Number(order.frais_livraison_total ?? 0)}
+                  remise={Number(order.remise_totale ?? 0)}
+                  total={Number(order.total)}
+                />
               </CardContent>
             </Card>
           </div>

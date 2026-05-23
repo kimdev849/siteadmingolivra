@@ -13,7 +13,10 @@ export const Route = createFileRoute("/admin/analytics")({
 
 function AnalyticsPage() {
   const statsQuery = useQuery({ queryKey: ["admin", "stats"], queryFn: fetchAdminStats });
-  const commissionsQuery = useQuery({ queryKey: ["admin", "commissions"], queryFn: fetchAdminCommissions });
+  const commissionsQuery = useQuery({
+    queryKey: ["admin", "commissions"],
+    queryFn: fetchAdminCommissions,
+  });
 
   const stats = statsQuery.data;
   const commissions = commissionsQuery.data;

@@ -1,17 +1,23 @@
 import { Clock, MapPin, User } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { formatStatutLabel } from "@/lib/admin-api";
+import { formatDateTimeFr, formatStatutLabel } from "@/lib/admin-api";
 import type { LogisticsDelivery } from "@/lib/logistics-api";
 import { DeliveryDelayBadge } from "@/components/entreprise/DeliveryDelayBadge";
 
 type Props = {
   delivery: LogisticsDelivery;
-  onAssign?: () => void;
-  showAssign?: boolean;
+  onRetryDispatch?: () => void;
+  showRetryDispatch?: boolean;
+  retrying?: boolean;
 };
 
-export function OperationDeliveryCard({ delivery, onAssign, showAssign }: Props) {
+export function OperationDeliveryCard({
+  delivery,
+  onRetryDispatch,
+  showRetryDispatch,
+  retrying,
+}: Props) {
   return (
     <Card className={delivery.en_retard ? "border-destructive/50 bg-destructive/5" : undefined}>
       <CardContent className="space-y-2 p-4">
@@ -28,7 +34,12 @@ export function OperationDeliveryCard({ delivery, onAssign, showAssign }: Props)
           <Badge variant="secondary">{formatStatutLabel(delivery.statut)}</Badge>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+          {delivery.commande_created_at_label ? (
+            <span>Commande : {delivery.commande_created_at_label}</span>
+          ) : null}
+          {delivery.created_at_label ? <span>Livraison : {delivery.created_at_label}</span> : null}
+          {delivery.livree_at_label ? <span>Terminée : {delivery.livree_at_label}</span> : null}
           <span className="inline-flex items-center gap-1">
             <Clock className="h-3 w-3" />
             {delivery.minutes_depuis_creation ?? 0} min
@@ -45,13 +56,14 @@ export function OperationDeliveryCard({ delivery, onAssign, showAssign }: Props)
 
         <DeliveryDelayBadge delivery={delivery} />
 
-        {showAssign && onAssign ? (
+        {showRetryDispatch && onRetryDispatch && !delivery.livreur?.id ? (
           <button
             type="button"
-            className="text-xs font-medium text-primary hover:underline"
-            onClick={onAssign}
+            className="text-xs font-medium text-primary hover:underline disabled:opacity-50"
+            disabled={retrying}
+            onClick={onRetryDispatch}
           >
-            {delivery.livreur?.id ? "Réattribuer" : "Attribuer un livreur"} →
+            {retrying ? "Relance en cours…" : "Relancer attribution GoLivra →"}
           </button>
         ) : null}
       </CardContent>
