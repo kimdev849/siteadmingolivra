@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { ShoppingBag, Store, Users, PackageCheck, Truck, Plus, Package } from "lucide-react";
+import { ShoppingBag, Store, Users, PackageCheck, Truck, Plus, Package, AlertTriangle } from "lucide-react";
 import { PageHeader } from "@/components/admin/PageHeader";
 import { KpiCard } from "@/components/admin/KpiCard";
 import { DashboardCharts } from "@/components/admin/DashboardCharts";
@@ -39,6 +39,28 @@ function DashboardPage() {
   return (
     <div>
       <PageHeader title="Dashboard" description="Vue d'ensemble de la plateforme GoLivra" />
+
+      {(stats?.incidents_ouverts ?? 0) > 0 ? (
+        <Card className="mb-4 border-destructive/40 bg-destructive/5">
+          <CardContent className="flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-start gap-3">
+              <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-destructive" />
+              <div>
+                <p className="font-semibold text-foreground">
+                  {stats?.incidents_ouverts} incident{(stats?.incidents_ouverts ?? 0) > 1 ? "s" : ""} ouvert
+                  {(stats?.incidents_ouverts ?? 0) > 1 ? "s" : ""} sur l&apos;application
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  Erreurs mobile, API ou admin — consultez la cause probable et le requestId pour diagnostiquer.
+                </p>
+              </div>
+            </div>
+            <Button variant="destructive" asChild>
+              <Link to="/admin/observabilite">Voir Observabilité</Link>
+            </Button>
+          </CardContent>
+        </Card>
+      ) : null}
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <KpiCard

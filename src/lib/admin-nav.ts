@@ -11,6 +11,7 @@ import {
   Wallet,
   Receipt,
   Package,
+  AlertTriangle,
 } from "lucide-react";
 
 /** Rafraîchissement auto des écrans admin (commandes, livraisons, dashboard). */
@@ -30,6 +31,7 @@ export const adminNavItems: AdminNavItem[] = [
   { to: "/admin/transporteurs", label: "Entreprises de livraison", icon: Truck },
   { to: "/admin/commandes", label: "Commandes", icon: ShoppingBag },
   { to: "/admin/livraisons", label: "Livraisons", icon: Package },
+  { to: "/admin/observabilite", label: "Observabilité", icon: AlertTriangle },
   { to: "/admin/portefeuille", label: "Portefeuille GoLivra", icon: Wallet },
   { to: "/admin/commissions", label: "Commissions livraison", icon: Percent },
   { to: "/admin/retraits", label: "Retraits", icon: Receipt },

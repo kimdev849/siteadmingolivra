@@ -24,6 +24,7 @@ import { Route as EntrepriseMotDePasseRouteImport } from './routes/entreprise.mo
 import { Route as AdminRetraitsRouteImport } from './routes/admin.retraits'
 import { Route as AdminPortefeuilleRouteImport } from './routes/admin.portefeuille'
 import { Route as AdminParametresRouteImport } from './routes/admin.parametres'
+import { Route as AdminObservabiliteRouteImport } from './routes/admin.observabilite'
 import { Route as AdminLivraisonsRouteImport } from './routes/admin.livraisons'
 import { Route as AdminCommissionsRouteImport } from './routes/admin.commissions'
 import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
@@ -37,6 +38,7 @@ import { Route as EntrepriseLivreursNouveauRouteImport } from './routes/entrepri
 import { Route as EntrepriseLivreursIdRouteImport } from './routes/entreprise.livreurs.$id'
 import { Route as AdminTransporteursNouveauRouteImport } from './routes/admin.transporteurs.nouveau'
 import { Route as AdminTransporteursIdRouteImport } from './routes/admin.transporteurs.$id'
+import { Route as AdminObservabiliteIdRouteImport } from './routes/admin.observabilite.$id'
 import { Route as AdminMarchandsIdRouteImport } from './routes/admin.marchands.$id'
 import { Route as AdminLivraisonsIdRouteImport } from './routes/admin.livraisons.$id'
 import { Route as AdminCommandesIdRouteImport } from './routes/admin.commandes.$id'
@@ -116,6 +118,11 @@ const AdminParametresRoute = AdminParametresRouteImport.update({
   path: '/parametres',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminObservabiliteRoute = AdminObservabiliteRouteImport.update({
+  id: '/observabilite',
+  path: '/observabilite',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminLivraisonsRoute = AdminLivraisonsRouteImport.update({
   id: '/livraisons',
   path: '/livraisons',
@@ -184,6 +191,11 @@ const AdminTransporteursIdRoute = AdminTransporteursIdRouteImport.update({
   path: '/transporteurs/$id',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminObservabiliteIdRoute = AdminObservabiliteIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AdminObservabiliteRoute,
+} as any)
 const AdminMarchandsIdRoute = AdminMarchandsIdRouteImport.update({
   id: '/marchands/$id',
   path: '/marchands/$id',
@@ -208,6 +220,7 @@ export interface FileRoutesByFullPath {
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/commissions': typeof AdminCommissionsRoute
   '/admin/livraisons': typeof AdminLivraisonsRouteWithChildren
+  '/admin/observabilite': typeof AdminObservabiliteRouteWithChildren
   '/admin/parametres': typeof AdminParametresRoute
   '/admin/portefeuille': typeof AdminPortefeuilleRoute
   '/admin/retraits': typeof AdminRetraitsRoute
@@ -222,6 +235,7 @@ export interface FileRoutesByFullPath {
   '/admin/commandes/$id': typeof AdminCommandesIdRoute
   '/admin/livraisons/$id': typeof AdminLivraisonsIdRoute
   '/admin/marchands/$id': typeof AdminMarchandsIdRoute
+  '/admin/observabilite/$id': typeof AdminObservabiliteIdRoute
   '/admin/transporteurs/$id': typeof AdminTransporteursIdRoute
   '/admin/transporteurs/nouveau': typeof AdminTransporteursNouveauRoute
   '/entreprise/livreurs/$id': typeof EntrepriseLivreursIdRoute
@@ -239,6 +253,7 @@ export interface FileRoutesByTo {
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/commissions': typeof AdminCommissionsRoute
   '/admin/livraisons': typeof AdminLivraisonsRouteWithChildren
+  '/admin/observabilite': typeof AdminObservabiliteRouteWithChildren
   '/admin/parametres': typeof AdminParametresRoute
   '/admin/portefeuille': typeof AdminPortefeuilleRoute
   '/admin/retraits': typeof AdminRetraitsRoute
@@ -253,6 +268,7 @@ export interface FileRoutesByTo {
   '/admin/commandes/$id': typeof AdminCommandesIdRoute
   '/admin/livraisons/$id': typeof AdminLivraisonsIdRoute
   '/admin/marchands/$id': typeof AdminMarchandsIdRoute
+  '/admin/observabilite/$id': typeof AdminObservabiliteIdRoute
   '/admin/transporteurs/$id': typeof AdminTransporteursIdRoute
   '/admin/transporteurs/nouveau': typeof AdminTransporteursNouveauRoute
   '/entreprise/livreurs/$id': typeof EntrepriseLivreursIdRoute
@@ -273,6 +289,7 @@ export interface FileRoutesById {
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/commissions': typeof AdminCommissionsRoute
   '/admin/livraisons': typeof AdminLivraisonsRouteWithChildren
+  '/admin/observabilite': typeof AdminObservabiliteRouteWithChildren
   '/admin/parametres': typeof AdminParametresRoute
   '/admin/portefeuille': typeof AdminPortefeuilleRoute
   '/admin/retraits': typeof AdminRetraitsRoute
@@ -287,6 +304,7 @@ export interface FileRoutesById {
   '/admin/commandes/$id': typeof AdminCommandesIdRoute
   '/admin/livraisons/$id': typeof AdminLivraisonsIdRoute
   '/admin/marchands/$id': typeof AdminMarchandsIdRoute
+  '/admin/observabilite/$id': typeof AdminObservabiliteIdRoute
   '/admin/transporteurs/$id': typeof AdminTransporteursIdRoute
   '/admin/transporteurs/nouveau': typeof AdminTransporteursNouveauRoute
   '/entreprise/livreurs/$id': typeof EntrepriseLivreursIdRoute
@@ -308,6 +326,7 @@ export interface FileRouteTypes {
     | '/admin/analytics'
     | '/admin/commissions'
     | '/admin/livraisons'
+    | '/admin/observabilite'
     | '/admin/parametres'
     | '/admin/portefeuille'
     | '/admin/retraits'
@@ -322,6 +341,7 @@ export interface FileRouteTypes {
     | '/admin/commandes/$id'
     | '/admin/livraisons/$id'
     | '/admin/marchands/$id'
+    | '/admin/observabilite/$id'
     | '/admin/transporteurs/$id'
     | '/admin/transporteurs/nouveau'
     | '/entreprise/livreurs/$id'
@@ -339,6 +359,7 @@ export interface FileRouteTypes {
     | '/admin/analytics'
     | '/admin/commissions'
     | '/admin/livraisons'
+    | '/admin/observabilite'
     | '/admin/parametres'
     | '/admin/portefeuille'
     | '/admin/retraits'
@@ -353,6 +374,7 @@ export interface FileRouteTypes {
     | '/admin/commandes/$id'
     | '/admin/livraisons/$id'
     | '/admin/marchands/$id'
+    | '/admin/observabilite/$id'
     | '/admin/transporteurs/$id'
     | '/admin/transporteurs/nouveau'
     | '/entreprise/livreurs/$id'
@@ -372,6 +394,7 @@ export interface FileRouteTypes {
     | '/admin/analytics'
     | '/admin/commissions'
     | '/admin/livraisons'
+    | '/admin/observabilite'
     | '/admin/parametres'
     | '/admin/portefeuille'
     | '/admin/retraits'
@@ -386,6 +409,7 @@ export interface FileRouteTypes {
     | '/admin/commandes/$id'
     | '/admin/livraisons/$id'
     | '/admin/marchands/$id'
+    | '/admin/observabilite/$id'
     | '/admin/transporteurs/$id'
     | '/admin/transporteurs/nouveau'
     | '/entreprise/livreurs/$id'
@@ -512,6 +536,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminParametresRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/observabilite': {
+      id: '/admin/observabilite'
+      path: '/observabilite'
+      fullPath: '/admin/observabilite'
+      preLoaderRoute: typeof AdminObservabiliteRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/livraisons': {
       id: '/admin/livraisons'
       path: '/livraisons'
@@ -603,6 +634,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminTransporteursIdRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/observabilite/$id': {
+      id: '/admin/observabilite/$id'
+      path: '/$id'
+      fullPath: '/admin/observabilite/$id'
+      preLoaderRoute: typeof AdminObservabiliteIdRouteImport
+      parentRoute: typeof AdminObservabiliteRoute
+    }
     '/admin/marchands/$id': {
       id: '/admin/marchands/$id'
       path: '/marchands/$id'
@@ -639,10 +677,22 @@ const AdminLivraisonsRouteWithChildren = AdminLivraisonsRoute._addFileChildren(
   AdminLivraisonsRouteChildren,
 )
 
+interface AdminObservabiliteRouteChildren {
+  AdminObservabiliteIdRoute: typeof AdminObservabiliteIdRoute
+}
+
+const AdminObservabiliteRouteChildren: AdminObservabiliteRouteChildren = {
+  AdminObservabiliteIdRoute: AdminObservabiliteIdRoute,
+}
+
+const AdminObservabiliteRouteWithChildren =
+  AdminObservabiliteRoute._addFileChildren(AdminObservabiliteRouteChildren)
+
 interface AdminRouteChildren {
   AdminAnalyticsRoute: typeof AdminAnalyticsRoute
   AdminCommissionsRoute: typeof AdminCommissionsRoute
   AdminLivraisonsRoute: typeof AdminLivraisonsRouteWithChildren
+  AdminObservabiliteRoute: typeof AdminObservabiliteRouteWithChildren
   AdminParametresRoute: typeof AdminParametresRoute
   AdminPortefeuilleRoute: typeof AdminPortefeuilleRoute
   AdminRetraitsRoute: typeof AdminRetraitsRoute
@@ -661,6 +711,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminAnalyticsRoute: AdminAnalyticsRoute,
   AdminCommissionsRoute: AdminCommissionsRoute,
   AdminLivraisonsRoute: AdminLivraisonsRouteWithChildren,
+  AdminObservabiliteRoute: AdminObservabiliteRouteWithChildren,
   AdminParametresRoute: AdminParametresRoute,
   AdminPortefeuilleRoute: AdminPortefeuilleRoute,
   AdminRetraitsRoute: AdminRetraitsRoute,
