@@ -138,7 +138,7 @@ function ObservabilitePage() {
       ) : null}
 
       <DataTable
-        headers={[
+        columns={[
           "Request ID",
           "Gravité",
           "Source",
@@ -151,7 +151,7 @@ function ObservabilitePage() {
           "",
         ]}
         rows={rows}
-        emptyMessage={
+        emptyTitle={
           incidentsQuery.isLoading
             ? "Chargement des incidents…"
             : "Aucun incident pour ces filtres."
