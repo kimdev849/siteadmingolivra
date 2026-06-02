@@ -14,9 +14,10 @@ interface DataTableProps {
   rows?: ReactNode[][];
   emptyTitle?: string;
   emptyDescription?: string;
+  onRowClick?: (index: number) => void;
 }
 
-export function DataTable({ columns, rows, emptyTitle, emptyDescription }: DataTableProps) {
+export function DataTable({ columns, rows, emptyTitle, emptyDescription, onRowClick }: DataTableProps) {
   const hasRows = rows && rows.length > 0;
 
   return (
@@ -37,9 +38,17 @@ export function DataTable({ columns, rows, emptyTitle, emptyDescription }: DataT
         <TableBody>
           {hasRows ? (
             rows.map((row, i) => (
-              <TableRow key={i}>
+              <TableRow
+                key={i}
+                onClick={onRowClick ? () => onRowClick(i) : undefined}
+                className={onRowClick ? "cursor-pointer hover:bg-muted/50" : undefined}
+              >
                 {row.map((cell, j) => (
-                  <TableCell key={j} className="text-sm">
+                  <TableCell
+                    key={j}
+                    className="text-sm"
+                    onClick={onRowClick ? (e) => e.stopPropagation() : undefined}
+                  >
                     {cell}
                   </TableCell>
                 ))}

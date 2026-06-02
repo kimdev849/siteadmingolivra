@@ -1,7 +1,7 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import { Activity, Filter, Layers, X } from "lucide-react";
+import { Activity, Eye, Filter, Layers, X } from "lucide-react";
 import { PageHeader } from "@/components/admin/PageHeader";
 import { DataTable } from "@/components/admin/DataTable";
 import { Input } from "@/components/ui/input";
@@ -46,6 +46,7 @@ function severityVariant(severity: string): "destructive" | "secondary" | "outli
 }
 
 function ObservabilitePage() {
+  const navigate = useNavigate();
   const [view, setView] = useState<GroupView>("list");
   const [statusFilter, setStatusFilter] = useState<"ouvert" | "resolu" | "all">("ouvert");
   const [stateFilter, setStateFilter] = useState<IncidentState | typeof ALL>(ALL);
@@ -120,10 +121,15 @@ function ObservabilitePage() {
     formatDateTimeFr(inc.last_seen_at),
     <Button key={`act-${inc.id}`} size="sm" variant="outline" asChild>
       <Link to="/admin/observabilite/$id" params={{ id: inc.id }}>
-        Analyser
+        <Eye className="h-3.5 w-3.5" /> Analyser
       </Link>
     </Button>,
   ]);
+
+  const handleRowClick = (index: number) => {
+    const inc = items[index];
+    if (inc) void navigate({ to: "/admin/observabilite/$id", params: { id: inc.id } });
+  };
 
   return (
     <div>
@@ -271,6 +277,7 @@ function ObservabilitePage() {
             "",
           ]}
           rows={rows}
+          onRowClick={handleRowClick}
           emptyTitle={
             incidentsQuery.isLoading ? "Chargement des incidents…" : "Aucun incident pour ces filtres."
           }

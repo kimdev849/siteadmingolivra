@@ -34,7 +34,7 @@ export const adminNavItems: AdminNavItem[] = [
   { to: "/admin/commandes", label: "Commandes", icon: ShoppingBag },
   { to: "/admin/livraisons", label: "Livraisons", icon: Package },
   { to: "/admin/observabilite", label: "Observabilité", icon: AlertTriangle },
-  { to: "/admin/sante-endpoints", label: "Santé endpoints", icon: Activity },
+  { to: "/admin/sante-endpoints", label: "Santé plateforme", icon: Activity },
   { to: "/admin/alertes", label: "Alertes", icon: Bell },
   { to: "/admin/portefeuille", label: "Portefeuille GoLivra", icon: Wallet },
   { to: "/admin/commissions", label: "Commissions livraison", icon: Percent },
