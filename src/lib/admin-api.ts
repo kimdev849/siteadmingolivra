@@ -480,19 +480,38 @@ export async function createLogisticsCompanyAdmin(
   });
 }
 
+export type AdminDeliveryList = {
+  items: AdminDelivery[];
+  total: number;
+  limit: number;
+  offset: number;
+};
+
 export async function fetchAdminDeliveries(opts?: {
   status?: string;
   type?: "commande" | "externe";
-}): Promise<AdminDelivery[]> {
+  since?: string;
+  until?: string;
+  limit?: number;
+  offset?: number;
+}): Promise<AdminDeliveryList> {
   const params = new URLSearchParams();
   if (opts?.status) params.set("status", opts.status);
   if (opts?.type) params.set("type", opts.type);
+  if (opts?.since) params.set("since", opts.since);
+  if (opts?.until) params.set("until", opts.until);
+  if (opts?.limit != null) params.set("limit", String(opts.limit));
+  if (opts?.offset != null) params.set("offset", String(opts.offset));
   const qs = params.toString() ? `?${params.toString()}` : "";
-  const data = await apiFetch<AdminDelivery[]>(`/api/admin/deliveries${qs}`, {
+  const data = await apiFetch<AdminDeliveryList | AdminDelivery[]>(`/api/admin/deliveries${qs}`, {
     method: "GET",
     token: token(),
   });
-  return Array.isArray(data) ? data : [];
+  // Tolère l'ancien format (tableau brut) pour rétro-compat.
+  if (Array.isArray(data)) {
+    return { items: data, total: data.length, limit: data.length, offset: 0 };
+  }
+  return data || { items: [], total: 0, limit: 0, offset: 0 };
 }
 
 export async function fetchAdminDeliveryDetail(deliveryId: string): Promise<AdminDelivery> {

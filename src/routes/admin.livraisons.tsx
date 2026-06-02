@@ -20,26 +20,54 @@ export const Route = createFileRoute("/admin/livraisons")({
   component: LivraisonsPage,
 });
 
+const PERIODS = [
+  { value: "7", label: "7 derniers jours" },
+  { value: "30", label: "30 derniers jours" },
+  { value: "90", label: "90 derniers jours" },
+  { value: "365", label: "12 derniers mois" },
+  { value: "all", label: "Tout l'historique" },
+];
+
+function isoDaysAgo(days: string | number | undefined | null): string | undefined {
+  if (!days || days === "all") return undefined;
+  const d = new Date();
+  d.setHours(0, 0, 0, 0);
+  d.setDate(d.getDate() - Number(days) + 1);
+  return d.toISOString();
+}
+
 function LivraisonsPage() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");
   const [search, setSearch] = useState("");
+  const [period, setPeriod] = useState("30");
+  const [page, setPage] = useState(0);
+  const pageSize = 100;
+
+  const since = isoDaysAgo(period);
 
   const deliveriesQuery = useQuery({
-    queryKey: ["admin", "deliveries", statusFilter, typeFilter],
+    queryKey: ["admin", "deliveries", statusFilter, typeFilter, period, page],
     queryFn: () =>
       fetchAdminDeliveries({
         status: statusFilter === "all" ? undefined : statusFilter,
         type: typeFilter === "all" ? undefined : (typeFilter as "commande" | "externe"),
+        since,
+        limit: pageSize,
+        offset: page * pageSize,
       }),
     refetchInterval: ADMIN_LIVE_REFETCH_MS,
+    placeholderData: (prev) => prev,
   });
 
+  const allItems = deliveriesQuery.data?.items ?? [];
+  const total = deliveriesQuery.data?.total ?? 0;
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+
   const deliveries = useMemo(() => {
-    const list = deliveriesQuery.data ?? [];
     const q = search.trim().toLowerCase();
-    if (!q) return list;
-    return list.filter((d) => {
+    if (!q) return allItems;
+    return allItems.filter((d) => {
       const hay = [
         d.id,
         d.commande?.numero,
@@ -53,10 +81,15 @@ function LivraisonsPage() {
         .toLowerCase();
       return hay.includes(q);
     });
-  }, [deliveriesQuery.data, search]);
+  }, [allItems, search]);
 
   const rows = deliveries.map((d) => [
-    <Link key={`id-${d.id}`} to="/admin/livraisons/$id" params={{ id: d.id }} className="font-mono text-primary hover:underline">
+    <Link
+      key={`id-${d.id}`}
+      to="/admin/livraisons/$id"
+      params={{ id: d.id }}
+      className="font-mono text-primary hover:underline"
+    >
       {d.id.slice(0, 8)}
     </Link>,
     <Badge key={`type-${d.id}`} variant="outline">
@@ -64,7 +97,7 @@ function LivraisonsPage() {
     </Badge>,
     d.commande?.numero || d.commerce_nom || d.client_nom || "—",
     d.livreur?.nom || "—",
-    <span key={`addr-${d.id}`} className="max-w-[200px] truncate block">
+    <span key={`addr-${d.id}`} className="block max-w-[200px] truncate">
       {d.adresse || "—"}
     </span>,
     <Badge key={`st-${d.id}`} variant={d.en_retard ? "destructive" : "secondary"}>
@@ -117,10 +150,59 @@ function LivraisonsPage() {
             <SelectItem value="annulee">Annulée</SelectItem>
           </SelectContent>
         </Select>
+        <Select value={period} onValueChange={(v) => { setPeriod(v); setPage(0); }}>
+          <SelectTrigger className="w-48">
+            <SelectValue placeholder="Période" />
+          </SelectTrigger>
+          <SelectContent>
+            {PERIODS.map((p) => (
+              <SelectItem key={p.value} value={p.value}>
+                {p.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
-      {deliveriesQuery.isLoading ? (
-        <p className="text-sm text-muted-foreground">Chargement…</p>
+      <div className="mb-2 flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground">
+        <p>
+          {deliveriesQuery.isLoading
+            ? "Chargement…"
+            : `${total.toLocaleString("fr-FR")} livraison(s) sur la période`}
+        </p>
+        {totalPages > 1 ? (
+          <div className="flex items-center gap-2">
+            <Button
+              size="sm"
+              variant="outline"
+              disabled={page === 0 || deliveriesQuery.isFetching}
+              onClick={() => setPage((p) => Math.max(0, p - 1))}
+            >
+              ← Précédent
+            </Button>
+            <span>
+              Page {page + 1} / {totalPages}
+            </span>
+            <Button
+              size="sm"
+              variant="outline"
+              disabled={page >= totalPages - 1 || deliveriesQuery.isFetching}
+              onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
+            >
+              Suivant →
+            </Button>
+          </div>
+        ) : null}
+      </div>
+
+      {deliveriesQuery.isError ? (
+        <p className="text-sm text-destructive">
+          Erreur de chargement des livraisons. Réessayez ou réduisez la période.
+        </p>
+      ) : deliveries.length === 0 && !deliveriesQuery.isLoading ? (
+        <p className="text-sm text-muted-foreground">
+          Aucune livraison pour ces filtres. Élargissez la période ou changez le statut.
+        </p>
       ) : (
         <DataTable
           columns={[
@@ -136,8 +218,6 @@ function LivraisonsPage() {
             "",
           ]}
           rows={rows}
-          emptyTitle="Aucune livraison"
-          emptyDescription="Les livraisons commandes et externes apparaîtront ici."
         />
       )}
     </div>
