@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { ArrowLeft, CheckCircle2, Eye, MessageCircle, RotateCcw, Search } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Eye, FileCode2, GitBranch, Github, MessageCircle, RefreshCcw, RotateCcw, Search } from "lucide-react";
 import { PageHeader } from "@/components/admin/PageHeader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,12 +9,19 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import {
   fetchIncidentDetail,
+  formatActorKind,
+  formatEventType,
   formatIncidentSeverity,
   formatIncidentSource,
   formatIncidentState,
   formatErrorType,
+  stateVariant,
   transitionIncident,
   addIncidentNote,
+  reanalyzeIncidentStack,
+  type AppIncident,
+  type IncidentCodeContext,
+  type IncidentFrame,
   type IncidentState,
 } from "@/lib/observability-api";
 import { formatDateTimeFr } from "@/lib/admin-api";
@@ -29,11 +36,136 @@ function severityVariant(severity: string): "destructive" | "secondary" | "outli
   return "outline";
 }
 
-function stateVariant(state: IncidentState): "destructive" | "default" | "secondary" | "outline" {
-  if (state === "open") return "destructive";
-  if (state === "investigating") return "default";
-  if (state === "acknowledged") return "secondary";
-  return "outline";
+function eventDotClass(eventType: string): string {
+  if (eventType === "resolu") return "bg-emerald-500";
+  if (eventType === "reouvert" || eventType === "occurrence") return "bg-amber-500";
+  if (eventType === "note") return "bg-blue-500";
+  return "bg-primary";
+}
+
+function CodeContextBlock({ ctx, topLine }: { ctx: IncidentCodeContext; topLine?: number }) {
+  return (
+    <pre className="overflow-auto rounded-md bg-zinc-950 p-3 text-xs leading-5 text-zinc-100">
+      <code>
+        {ctx.lines.map((l) => (
+          <div
+            key={l.line}
+            className={
+              "flex gap-3 " +
+              (l.highlight ? "bg-amber-500/15 ring-1 ring-amber-500/40 -mx-1 px-1" : "")
+            }
+          >
+            <span className="w-10 shrink-0 select-none text-right text-zinc-500">{l.line}</span>
+            <span className="whitespace-pre">{l.text || " "}</span>
+          </div>
+        ))}
+      </code>
+    </pre>
+  );
+}
+
+function FrameRow({ frame, idx }: { frame: IncidentFrame; idx: number }) {
+  return (
+    <div className="flex items-start gap-2 text-xs">
+      <span className="mt-0.5 inline-block w-5 shrink-0 text-right text-muted-foreground">#{idx + 1}</span>
+      <code className={"flex-1 break-all " + (frame.in_app ? "text-foreground" : "text-muted-foreground")}>
+        {frame.function || "<anonyme>"} @ {frame.file || frame.abs_path || "?"}
+        {frame.line ? `:${frame.line}` : ""}
+        {frame.column ? `:${frame.column}` : ""}
+        {frame.in_app ? <Badge variant="outline" className="ml-2">app</Badge> : null}
+      </code>
+      {frame.github_url ? (
+        <a
+          href={frame.github_url}
+          target="_blank"
+          rel="noreferrer noopener"
+          className="shrink-0 text-muted-foreground hover:text-foreground"
+          title="Ouvrir sur GitHub"
+        >
+          <Github className="h-3.5 w-3.5" />
+        </a>
+      ) : null}
+    </div>
+  );
+}
+
+function AnalyserPanel({ inc }: { inc: AppIncident }) {
+  const top = inc.source_location;
+  const ctx = inc.code_context;
+  const frames = inc.frames || [];
+  const inAppFrames = frames.filter((f) => f.in_app);
+  const hasAnything = top || frames.length > 0 || inc.github_url;
+
+  if (!hasAnything) {
+    return (
+      <div>
+        <p className="mb-1 font-semibold">Analyser (où est le bug ?)</p>
+        <p className="text-sm text-muted-foreground">
+          Pas de stack exploitable pour cet incident. Soit il a été créé sans stack, soit
+          l’erreur est survenue côté client (mobile / admin) avant la capture.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-3">
+      <div>
+        <p className="mb-1 font-semibold">Analyser (où est le bug ?)</p>
+        {top ? (
+          <div className="rounded-md border border-border bg-muted/30 p-3 text-sm">
+            <div className="flex flex-wrap items-center gap-2">
+              <FileCode2 className="h-4 w-4 shrink-0 text-amber-500" />
+              <code className="break-all font-mono text-foreground">
+                {top.function || "<anonyme>"}
+              </code>
+              <span className="text-muted-foreground">·</span>
+              <code className="break-all font-mono">
+                {top.file || top.abs_path || "?"}
+                {top.line ? `:${top.line}` : ""}
+                {top.column ? `:${top.column}` : ""}
+              </code>
+              {top.in_app ? <Badge variant="outline">app</Badge> : null}
+              {inc.github_url ? (
+                <Button asChild size="sm" variant="outline" className="ml-auto h-7 px-2">
+                  <a href={inc.github_url} target="_blank" rel="noreferrer noopener">
+                    <Github className="h-3.5 w-3.5" /> Voir sur GitHub
+                  </a>
+                </Button>
+              ) : null}
+            </div>
+          </div>
+        ) : null}
+      </div>
+
+      {ctx ? (
+        <div>
+          <p className="mb-1 flex items-center gap-2 text-xs font-semibold text-muted-foreground">
+            <FileCode2 className="h-3.5 w-3.5" /> Extrait de code (5 lignes avant / après)
+          </p>
+          <CodeContextBlock ctx={ctx} />
+        </div>
+      ) : top?.file && top.in_app ? (
+        <p className="text-xs text-muted-foreground">
+          Contexte de code non disponible (fichier non accessible sur le serveur). Seule
+          l’URL GitHub est générée si <code>BACKEND_GITHUB_REPO_URL</code> est défini côté backend.
+        </p>
+      ) : null}
+
+      {frames.length > 0 ? (
+        <details className="text-xs">
+          <summary className="cursor-pointer text-muted-foreground hover:text-foreground">
+            Toutes les frames ({frames.length}) · {inAppFrames.length} applicatives
+          </summary>
+          <div className="mt-2 space-y-1 rounded-md border border-border p-2">
+            {frames.map((f, i) => (
+              <FrameRow key={`${f.file}-${f.line}-${i}`} frame={f} idx={i} />
+            ))}
+          </div>
+        </details>
+      ) : null}
+    </div>
+  );
 }
 
 function IncidentDetailPage() {
@@ -69,9 +201,17 @@ function IncidentDetailPage() {
     },
   });
 
+  const reanalyzeMutation = useMutation({
+    mutationFn: () => reanalyzeIncidentStack(id),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ["admin", "incident", id] });
+    },
+  });
+
   const inc = detailQuery.data?.incident;
   const events = detailQuery.data?.events ?? [];
   const related = detailQuery.data?.related ?? [];
+  const canReanalyze = Boolean(inc?.stack);
 
   return (
     <div>
@@ -132,14 +272,35 @@ function IncidentDetailPage() {
                     <code className="rounded bg-muted px-1 text-foreground">{inc.fingerprint}</code>
                   </p>
                 ) : null}
+
+                <AnalyserPanel inc={inc} />
+
                 {inc.stack ? (
-                  <div>
-                    <p className="mb-1 font-semibold">Stack trace</p>
-                    <pre className="max-h-64 overflow-auto rounded-md bg-muted p-3 text-xs whitespace-pre-wrap">
+                  <details className="text-xs">
+                    <summary className="cursor-pointer text-muted-foreground hover:text-foreground">
+                      Stack brute (debug avancé)
+                    </summary>
+                    <pre className="mt-2 max-h-64 overflow-auto rounded-md bg-muted p-3 text-xs whitespace-pre-wrap">
                       {inc.stack}
                     </pre>
-                  </div>
+                    {canReanalyze ? (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="mt-2"
+                        disabled={reanalyzeMutation.isPending}
+                        onClick={() => reanalyzeMutation.mutate()}
+                      >
+                        <RefreshCcw className="h-3.5 w-3.5" />
+                        {reanalyzeMutation.isPending ? "Ré-analyse…" : "Ré-analyser la stack"}
+                      </Button>
+                    ) : null}
+                    {reanalyzeMutation.isError ? (
+                      <p className="mt-1 text-xs text-destructive">Échec de la ré-analyse.</p>
+                    ) : null}
+                  </details>
                 ) : null}
+
                 {inc.request_payload ? (
                   <div>
                     <p className="mb-1 font-semibold">Payload de la requête</p>
@@ -173,20 +334,14 @@ function IncidentDetailPage() {
                         <span
                           className={
                             "mt-1 inline-block h-2 w-2 shrink-0 rounded-full " +
-                            (ev.event_type === "resolved"
-                              ? "bg-emerald-500"
-                              : ev.event_type === "reopened" || ev.event_type === "occurrence"
-                              ? "bg-amber-500"
-                              : ev.event_type === "note"
-                              ? "bg-blue-500"
-                              : "bg-primary")
+                            eventDotClass(ev.event_type)
                           }
                         />
                         <div className="flex-1">
                           <div className="flex flex-wrap items-center gap-2 text-xs">
-                            <Badge variant="outline">{ev.event_type}</Badge>
+                            <Badge variant="outline">{formatEventType(ev.event_type)}</Badge>
                             <span className="text-muted-foreground">
-                              {ev.actor_kind} · {formatDateTimeFr(ev.created_at)}
+                              {formatActorKind(ev.actor_kind)} · {formatDateTimeFr(ev.created_at)}
                             </span>
                           </div>
                           {ev.message ? (
@@ -291,10 +446,18 @@ function IncidentDetailPage() {
                     {inc.environment} {inc.release ? `(v${inc.release})` : ""}
                   </p>
                 ) : null}
+                {inc.release ? (
+                  <p>
+                    <span className="text-muted-foreground">Release : </span>
+                    <Badge variant="outline" className="ml-1">
+                      <GitBranch className="mr-1 h-3 w-3" />v{inc.release}
+                    </Badge>
+                  </p>
+                ) : null}
               </CardContent>
             </Card>
 
-            {inc.state !== "resolved" ? (
+            {inc.state !== "resolu" ? (
               <Card>
                 <CardHeader>
                   <CardTitle className="text-sm font-semibold">Actions</CardTitle>
@@ -307,23 +470,23 @@ function IncidentDetailPage() {
                     rows={3}
                   />
                   <div className="grid grid-cols-1 gap-2">
-                    {inc.state === "open" ? (
+                    {inc.state === "ouvert" ? (
                       <Button
                         variant="secondary"
                         disabled={transitionMutation.isPending}
                         onClick={() =>
-                          transitionMutation.mutate({ state: "acknowledged", note: adminNote.trim() || undefined })
+                          transitionMutation.mutate({ state: "acquitte", note: adminNote.trim() || undefined })
                         }
                       >
                         <Eye className="h-4 w-4" /> Acquitter (je l’ai vu)
                       </Button>
                     ) : null}
-                    {inc.state !== "investigating" ? (
+                    {inc.state !== "en_cours" ? (
                       <Button
                         variant="default"
                         disabled={transitionMutation.isPending}
                         onClick={() =>
-                          transitionMutation.mutate({ state: "investigating", note: adminNote.trim() || undefined })
+                          transitionMutation.mutate({ state: "en_cours", note: adminNote.trim() || undefined })
                         }
                       >
                         <Search className="h-4 w-4" /> Passer en investigation
@@ -333,7 +496,7 @@ function IncidentDetailPage() {
                       variant="destructive"
                       disabled={transitionMutation.isPending}
                       onClick={() =>
-                        transitionMutation.mutate({ state: "resolved", note: adminNote.trim() || undefined })
+                        transitionMutation.mutate({ state: "resolu", note: adminNote.trim() || undefined })
                       }
                     >
                       <CheckCircle2 className="h-4 w-4" /> Marquer résolu
@@ -351,7 +514,7 @@ function IncidentDetailPage() {
                     variant="outline"
                     className="w-full"
                     disabled={transitionMutation.isPending}
-                    onClick={() => transitionMutation.mutate({ state: "open" })}
+                    onClick={() => transitionMutation.mutate({ state: "ouvert" })}
                   >
                     <RotateCcw className="h-4 w-4" /> Rouvrir l’incident
                   </Button>

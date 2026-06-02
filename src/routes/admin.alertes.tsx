@@ -128,9 +128,9 @@ function AlertesPage() {
                       <td className="py-1.5">
                         <Badge
                           variant={
-                            h.status === "sent"
+                            h.status === "envoye"
                               ? "default"
-                              : h.status === "failed"
+                              : h.status === "echec"
                               ? "destructive"
                               : "secondary"
                           }

@@ -22,6 +22,7 @@ import {
   formatIncidentSource,
   formatIncidentState,
   formatErrorType,
+  stateVariant,
   type IncidentState,
   type IncidentSeverity,
   type IncidentSource,
@@ -44,16 +45,9 @@ function severityVariant(severity: string): "destructive" | "secondary" | "outli
   return "outline";
 }
 
-function stateVariant(state: IncidentState): "destructive" | "default" | "secondary" | "outline" {
-  if (state === "open") return "destructive";
-  if (state === "investigating") return "default";
-  if (state === "acknowledged") return "secondary";
-  return "outline";
-}
-
 function ObservabilitePage() {
   const [view, setView] = useState<GroupView>("list");
-  const [statusFilter, setStatusFilter] = useState<"open" | "resolved" | "all">("open");
+  const [statusFilter, setStatusFilter] = useState<"ouvert" | "resolu" | "all">("ouvert");
   const [stateFilter, setStateFilter] = useState<IncidentState | typeof ALL>(ALL);
   const [sourceFilter, setSourceFilter] = useState<IncidentSource | typeof ALL>(ALL);
   const [errorTypeFilter, setErrorTypeFilter] = useState<ErrorType | typeof ALL>(ALL);
@@ -65,7 +59,7 @@ function ObservabilitePage() {
     queryFn: () =>
       fetchIncidents({
         limit: 80,
-        resolved: statusFilter === "open" ? false : statusFilter === "resolved" ? true : undefined,
+        resolved: statusFilter === "resolu" ? true : statusFilter === "ouvert" ? false : undefined,
         state: stateFilter === ALL ? undefined : (stateFilter as IncidentState),
         source: sourceFilter === ALL ? undefined : (sourceFilter as IncidentSource),
         error_type: errorTypeFilter === ALL ? undefined : (errorTypeFilter as ErrorType),
@@ -80,7 +74,7 @@ function ObservabilitePage() {
       fetchIncidentGroups({
         window_min: 60,
         source: sourceFilter === ALL ? undefined : (sourceFilter as IncidentSource),
-        state: statusFilter === "open" ? "open" : statusFilter === "resolved" ? "resolved" : undefined,
+        state: statusFilter === "ouvert" ? "ouvert" : statusFilter === "resolu" ? "resolu" : undefined,
       }),
     refetchInterval: ADMIN_LIVE_REFETCH_MS,
     enabled: view === "groups",
@@ -176,8 +170,8 @@ function ObservabilitePage() {
                   <SelectValue placeholder="Statut" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="open">Ouverts</SelectItem>
-                  <SelectItem value="resolved">Résolus</SelectItem>
+                  <SelectItem value="ouvert">Ouverts</SelectItem>
+                  <SelectItem value="resolu">Résolus</SelectItem>
                   <SelectItem value="all">Tous</SelectItem>
                 </SelectContent>
               </Select>
@@ -187,10 +181,10 @@ function ObservabilitePage() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value={ALL}>Tous états</SelectItem>
-                  <SelectItem value="open">Ouvert</SelectItem>
-                  <SelectItem value="acknowledged">Acquitté</SelectItem>
-                  <SelectItem value="investigating">En cours</SelectItem>
-                  <SelectItem value="resolved">Résolu</SelectItem>
+                  <SelectItem value="ouvert">Ouvert</SelectItem>
+                  <SelectItem value="acquitte">Acquitté</SelectItem>
+                  <SelectItem value="en_cours">En cours</SelectItem>
+                  <SelectItem value="resolu">Résolu</SelectItem>
                 </SelectContent>
               </Select>
               <Select value={sourceFilter} onValueChange={(v) => setSourceFilter(v as IncidentSource | typeof ALL)}>
@@ -232,8 +226,8 @@ function ObservabilitePage() {
                   <SelectValue placeholder="Statut" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="open">Ouverts</SelectItem>
-                  <SelectItem value="resolved">Résolus</SelectItem>
+                  <SelectItem value="ouvert">Ouverts</SelectItem>
+                  <SelectItem value="resolu">Résolus</SelectItem>
                   <SelectItem value="all">Tous</SelectItem>
                 </SelectContent>
               </Select>

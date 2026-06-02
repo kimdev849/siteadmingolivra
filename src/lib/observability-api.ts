@@ -7,7 +7,7 @@ function token() {
   return t;
 }
 
-export type IncidentState = "open" | "acknowledged" | "investigating" | "resolved";
+export type IncidentState = "ouvert" | "acquitte" | "en_cours" | "resolu";
 export type IncidentSeverity = "error" | "warn" | "info";
 export type IncidentSource = "mobile" | "admin" | "backend" | "api";
 export type ErrorType =
@@ -19,6 +19,32 @@ export type ErrorType =
   | "PaymentError"
   | "RuntimeError"
   | "UnknownError";
+
+export type IncidentFrame = {
+  function: string;
+  file: string | null;
+  abs_path: string | null;
+  line: number;
+  column: number;
+  in_app: boolean;
+  source?: string | null;
+  github_url?: string | null;
+};
+
+export type IncidentCodeContext = {
+  start_line: number;
+  lines: { line: number; text: string; highlight: boolean }[];
+};
+
+export type SourceLocation = {
+  function: string;
+  file: string | null;
+  abs_path: string | null;
+  line: number;
+  column: number;
+  in_app: boolean;
+  github_url?: string | null;
+};
 
 export type AppIncident = {
   id: string;
@@ -33,6 +59,10 @@ export type AppIncident = {
   message: string;
   cause: string | null;
   stack: string | null;
+  frames: IncidentFrame[] | null;
+  source_location: SourceLocation | null;
+  code_context: IncidentCodeContext | null;
+  github_url: string | null;
   http_method: string | null;
   http_path: string | null;
   http_status: number | null;
@@ -62,16 +92,16 @@ export type IncidentEvent = {
   id: string;
   incident_id: string;
   event_type:
-    | "created"
+    | "cree"
     | "occurrence"
-    | "acknowledged"
-    | "investigating"
-    | "resolved"
-    | "reopened"
+    | "acquitte"
+    | "en_cours"
+    | "resolu"
+    | "reouvert"
     | "note"
-    | "status_changed";
+    | "changement_statut";
   actor_id: string | null;
-  actor_kind: "admin" | "system" | "mobile" | "backend";
+  actor_kind: "admin" | "systeme" | "mobile" | "backend";
   message: string | null;
   metadata: Record<string, unknown>;
   created_at: string;
@@ -196,7 +226,7 @@ export type AlertHistoryEntry = {
   rule_id: string | null;
   channel_id: string | null;
   incident_id: string | null;
-  status: "sent" | "failed" | "skipped_cooldown";
+  status: "envoye" | "echec" | "skip_cooldown";
   message: string | null;
   metadata: Record<string, unknown>;
   created_at: string;
@@ -311,6 +341,13 @@ export async function addIncidentNote(incidentId: string, message: string): Prom
     token: token(),
     jsonBody: { message },
   });
+}
+
+export async function reanalyzeIncidentStack(incidentId: string): Promise<AppIncident> {
+  return apiFetch<AppIncident>(
+    `/api/admin/observability/incidents/${incidentId}/reanalyze-stack`,
+    { method: "POST", token: token(), jsonBody: {} },
+  );
 }
 
 export async function fetchObservabilityDashboard(windowMin = 60): Promise<ObservabilityDashboard> {
@@ -459,12 +496,55 @@ export function formatIncidentSeverity(severity: AppIncident["severity"]): strin
 
 export function formatIncidentState(state: IncidentState): string {
   const map: Record<IncidentState, string> = {
-    open: "Ouvert",
-    acknowledged: "Acquitté",
-    investigating: "En cours",
-    resolved: "Résolu",
+    ouvert: "Ouvert",
+    acquitte: "Acquitté",
+    en_cours: "En cours",
+    resolu: "Résolu",
   };
   return map[state] || state;
+}
+
+export function formatEventType(eventType: IncidentEvent["event_type"]): string {
+  const map: Record<IncidentEvent["event_type"], string> = {
+    cree: "Créé",
+    occurrence: "Occurrence",
+    acquitte: "Acquitté",
+    en_cours: "En cours",
+    resolu: "Résolu",
+    reouvert: "Réouvert",
+    note: "Note",
+    changement_statut: "Changement d'état",
+  };
+  return map[eventType] || eventType;
+}
+
+export function formatActorKind(kind: IncidentEvent["actor_kind"]): string {
+  const map: Record<IncidentEvent["actor_kind"], string> = {
+    admin: "Admin",
+    systeme: "Système",
+    mobile: "Mobile",
+    backend: "Backend",
+  };
+  return map[kind] || kind;
+}
+
+export function formatAlertStatus(status: AlertHistoryEntry["status"]): string {
+  const map: Record<AlertHistoryEntry["status"], string> = {
+    envoye: "Envoyé",
+    echec: "Échec",
+    skip_cooldown: "Skip (cooldown)",
+  };
+  return map[status] || status;
+}
+
+export function stateVariant(state: IncidentState): "destructive" | "secondary" | "outline" | "default" {
+  switch (state) {
+    case "ouvert": return "destructive";
+    case "acquitte": return "secondary";
+    case "en_cours": return "default";
+    case "resolu": return "outline";
+    default: return "outline";
+  }
 }
 
 export function formatErrorType(t: ErrorType | null | undefined): string {
