@@ -666,3 +666,42 @@ export async function updateAdminSettings(
   );
   return res.settings;
 }
+
+export type AdminZone = {
+  id: string;
+  name: string;
+  label: string;
+  price_base: number;
+  is_active: boolean;
+  sort_order: number;
+};
+
+export type AdminArrondissement = {
+  id: string;
+  name: string;
+  zone_id: string | null;
+  sort_order: number;
+};
+
+export type AdminZonesBoard = {
+  zones: AdminZone[];
+  arrondissements: AdminArrondissement[];
+};
+
+export async function fetchAdminZonesBoard(): Promise<AdminZonesBoard> {
+  return apiFetch<AdminZonesBoard>("/api/zones/admin", {
+    method: "GET",
+    token: token(),
+  });
+}
+
+export async function updateAdminZonesBoard(body: {
+  zones: { id: string; price_base: number; is_active: boolean }[];
+  assignments: { arrondissement_id: string; zone_id: string | null }[];
+}): Promise<AdminZonesBoard> {
+  return apiFetch<AdminZonesBoard>("/api/zones/admin", {
+    method: "PATCH",
+    token: token(),
+    jsonBody: body,
+  });
+}

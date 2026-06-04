@@ -21,6 +21,7 @@ import { Route as EntrepriseProfilRouteImport } from './routes/entreprise.profil
 import { Route as EntreprisePortefeuilleRouteImport } from './routes/entreprise.portefeuille'
 import { Route as EntrepriseOperationsRouteImport } from './routes/entreprise.operations'
 import { Route as EntrepriseMotDePasseRouteImport } from './routes/entreprise.mot-de-passe'
+import { Route as AdminZonesRouteImport } from './routes/admin.zones'
 import { Route as AdminSanteEndpointsRouteImport } from './routes/admin.sante-endpoints'
 import { Route as AdminRetraitsRouteImport } from './routes/admin.retraits'
 import { Route as AdminPortefeuilleRouteImport } from './routes/admin.portefeuille'
@@ -104,6 +105,11 @@ const EntrepriseMotDePasseRoute = EntrepriseMotDePasseRouteImport.update({
   id: '/mot-de-passe',
   path: '/mot-de-passe',
   getParentRoute: () => EntrepriseRoute,
+} as any)
+const AdminZonesRoute = AdminZonesRouteImport.update({
+  id: '/zones',
+  path: '/zones',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminSanteEndpointsRoute = AdminSanteEndpointsRouteImport.update({
   id: '/sante-endpoints',
@@ -238,6 +244,7 @@ export interface FileRoutesByFullPath {
   '/admin/portefeuille': typeof AdminPortefeuilleRoute
   '/admin/retraits': typeof AdminRetraitsRoute
   '/admin/sante-endpoints': typeof AdminSanteEndpointsRoute
+  '/admin/zones': typeof AdminZonesRoute
   '/entreprise/mot-de-passe': typeof EntrepriseMotDePasseRoute
   '/entreprise/operations': typeof EntrepriseOperationsRoute
   '/entreprise/portefeuille': typeof EntreprisePortefeuilleRoute
@@ -273,6 +280,7 @@ export interface FileRoutesByTo {
   '/admin/portefeuille': typeof AdminPortefeuilleRoute
   '/admin/retraits': typeof AdminRetraitsRoute
   '/admin/sante-endpoints': typeof AdminSanteEndpointsRoute
+  '/admin/zones': typeof AdminZonesRoute
   '/entreprise/mot-de-passe': typeof EntrepriseMotDePasseRoute
   '/entreprise/operations': typeof EntrepriseOperationsRoute
   '/entreprise/portefeuille': typeof EntreprisePortefeuilleRoute
@@ -311,6 +319,7 @@ export interface FileRoutesById {
   '/admin/portefeuille': typeof AdminPortefeuilleRoute
   '/admin/retraits': typeof AdminRetraitsRoute
   '/admin/sante-endpoints': typeof AdminSanteEndpointsRoute
+  '/admin/zones': typeof AdminZonesRoute
   '/entreprise/mot-de-passe': typeof EntrepriseMotDePasseRoute
   '/entreprise/operations': typeof EntrepriseOperationsRoute
   '/entreprise/portefeuille': typeof EntreprisePortefeuilleRoute
@@ -350,6 +359,7 @@ export interface FileRouteTypes {
     | '/admin/portefeuille'
     | '/admin/retraits'
     | '/admin/sante-endpoints'
+    | '/admin/zones'
     | '/entreprise/mot-de-passe'
     | '/entreprise/operations'
     | '/entreprise/portefeuille'
@@ -385,6 +395,7 @@ export interface FileRouteTypes {
     | '/admin/portefeuille'
     | '/admin/retraits'
     | '/admin/sante-endpoints'
+    | '/admin/zones'
     | '/entreprise/mot-de-passe'
     | '/entreprise/operations'
     | '/entreprise/portefeuille'
@@ -422,6 +433,7 @@ export interface FileRouteTypes {
     | '/admin/portefeuille'
     | '/admin/retraits'
     | '/admin/sante-endpoints'
+    | '/admin/zones'
     | '/entreprise/mot-de-passe'
     | '/entreprise/operations'
     | '/entreprise/portefeuille'
@@ -538,6 +550,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/entreprise/mot-de-passe'
       preLoaderRoute: typeof EntrepriseMotDePasseRouteImport
       parentRoute: typeof EntrepriseRoute
+    }
+    '/admin/zones': {
+      id: '/admin/zones'
+      path: '/zones'
+      fullPath: '/admin/zones'
+      preLoaderRoute: typeof AdminZonesRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/sante-endpoints': {
       id: '/admin/sante-endpoints'
@@ -736,6 +755,7 @@ interface AdminRouteChildren {
   AdminPortefeuilleRoute: typeof AdminPortefeuilleRoute
   AdminRetraitsRoute: typeof AdminRetraitsRoute
   AdminSanteEndpointsRoute: typeof AdminSanteEndpointsRoute
+  AdminZonesRoute: typeof AdminZonesRoute
   AdminIndexRoute: typeof AdminIndexRoute
   AdminCommandesIdRoute: typeof AdminCommandesIdRoute
   AdminMarchandsIdRoute: typeof AdminMarchandsIdRoute
@@ -757,6 +777,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminPortefeuilleRoute: AdminPortefeuilleRoute,
   AdminRetraitsRoute: AdminRetraitsRoute,
   AdminSanteEndpointsRoute: AdminSanteEndpointsRoute,
+  AdminZonesRoute: AdminZonesRoute,
   AdminIndexRoute: AdminIndexRoute,
   AdminCommandesIdRoute: AdminCommandesIdRoute,
   AdminMarchandsIdRoute: AdminMarchandsIdRoute,
