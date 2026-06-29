@@ -728,6 +728,80 @@ export async function updateAdminZonesBoard(body: {
   });
 }
 
+// ── Admin : campagnes marketing ─────────────────────────────────────────────
+
+export type MarketingCampagne = {
+  id: string;
+  nom: string;
+  description: string | null;
+  type: string;
+  image_url: string | null;
+  date_debut: string | null;
+  date_fin: string | null;
+  est_actif: boolean;
+  created_at: string;
+  updated_at: string;
+  ville_ids: string[];
+  villes: { id: string; nom: string; pays_id: string; sort_order: number }[];
+};
+
+export async function fetchAdminCampagnes(): Promise<MarketingCampagne[]> {
+  const data = await apiFetch<MarketingCampagne[]>("/api/admin/campagnes", {
+    method: "GET",
+    token: token(),
+  });
+  return Array.isArray(data) ? data : [];
+}
+
+export async function fetchAdminCampagne(id: string): Promise<MarketingCampagne> {
+  return apiFetch<MarketingCampagne>(`/api/admin/campagnes/${id}`, {
+    method: "GET",
+    token: token(),
+  });
+}
+
+export async function createAdminCampagne(body: {
+  nom: string;
+  description?: string;
+  type?: string;
+  date_debut?: string;
+  date_fin?: string;
+  est_actif?: boolean;
+  ville_ids?: string[];
+}): Promise<MarketingCampagne> {
+  return apiFetch<MarketingCampagne>("/api/admin/campagnes", {
+    method: "POST",
+    token: token(),
+    jsonBody: body,
+  });
+}
+
+export async function updateAdminCampagne(
+  id: string,
+  body: Partial<{
+    nom: string;
+    description: string;
+    type: string;
+    date_debut: string | null;
+    date_fin: string | null;
+    est_actif: boolean;
+    ville_ids: string[];
+  }>,
+): Promise<MarketingCampagne> {
+  return apiFetch<MarketingCampagne>(`/api/admin/campagnes/${id}`, {
+    method: "PATCH",
+    token: token(),
+    jsonBody: body,
+  });
+}
+
+export async function deleteAdminCampagne(id: string): Promise<void> {
+  await apiFetch(`/api/admin/campagnes/${id}`, {
+    method: "DELETE",
+    token: token(),
+  });
+}
+
 // ── Admin : pays / villes / arrondissements ─────────────────────────────────
 
 export type AdminPays = {
