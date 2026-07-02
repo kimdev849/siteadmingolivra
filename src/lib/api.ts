@@ -1,13 +1,9 @@
 /**
  * Base URL du backend (sans suffixe /api).
  */
-export const DEFAULT_API_ORIGIN = "http://localhost:3000";
+export const DEFAULT_API_ORIGIN = "https://golivra-api.onrender.com";
 
 export function getApiOrigin(): string {
-  if (import.meta.env.PROD) {
-    return DEFAULT_API_ORIGIN;
-  }
-
   const raw = import.meta.env.VITE_PUBLIC_API_BASE_URL as string | undefined;
   const trimmed = raw?.trim();
   if (trimmed && trimmed !== "/" && trimmed !== "") {

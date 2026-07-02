@@ -15,4 +15,4 @@ services:
         destination: /index.html
     envVars:
       - key: VITE_PUBLIC_API_BASE_URL
-        value: https://golivraback.onrender.com
+        value: https://golivra-api.onrender.com

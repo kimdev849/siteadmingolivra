@@ -10,14 +10,14 @@ cp .env.example .env
 npm run dev
 ```
 
-Ouvrir l’URL affichée (souvent `http://localhost:8080`). L’API pointe par défaut vers `https://golivraback.onrender.com`.
+Ouvrir l’URL affichée (souvent `http://localhost:8080`). L’API pointe par défaut vers `https://golivra-api.onrender.com`.
 
 ## Déploiement Render
 
 1. Ce dépôt est connecté à [kimdev849/siteadmingolivra](https://github.com/kimdev849/siteadmingolivra).
 2. Render → **New** → **Static Site** → connecter le repo (ou importer `render.yaml`).
 3. Build : `npm ci && npm run build` — dossier publié : `dist` (contient `index.html`).
-4. Variable d'environnement (build) : `VITE_PUBLIC_API_BASE_URL=https://golivraback.onrender.com`.
+4. Variable d'environnement (build) : `VITE_PUBLIC_API_BASE_URL=https://golivra-api.onrender.com`.
 5. Sur le service API **golivraback**, ajouter l'URL du site admin dans `CORS_ORIGINS` (ex. `https://golivra-admin.onrender.com`).
 
 ## Écosystème GoLivra
@@ -30,4 +30,4 @@ Ouvrir l’URL affichée (souvent `http://localhost:8080`). L’API pointe par d
 
 ## API backend
 
-- Production : https://golivraback.onrender.com
+- Production : https://golivra-api.onrender.com
