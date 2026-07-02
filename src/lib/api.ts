@@ -1,7 +1,7 @@
 /**
  * Base URL du backend (sans suffixe /api).
  */
-export const DEFAULT_API_ORIGIN = "https://golivraback.onrender.com";
+export const DEFAULT_API_ORIGIN = "http://localhost:3000";
 
 export function getApiOrigin(): string {
   if (import.meta.env.PROD) {
@@ -76,7 +76,7 @@ export async function apiFetch<T = unknown>(
     const hint =
       origin.includes("localhost") || origin.includes("127.0.0.1")
         ? "Vérifiez que le backend tourne (cd golivra-backendcd && npm run dev, port 3000)."
-        : "Vérifiez votre connexion et que le backend Render est actif.";
+        : "Vérifiez votre connexion internet.";
     const message = `Impossible de joindre l'API (${origin}). ${hint}`;
     if (!skipIncidentReport) {
       const { reportAdminIncident } = await import("@/lib/error-reporting");

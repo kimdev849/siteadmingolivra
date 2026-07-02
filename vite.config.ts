@@ -24,7 +24,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: process.env.VITE_PROXY_API_TARGET || "https://golivraback.onrender.com",
+        target: process.env.VITE_PROXY_API_TARGET || "http://localhost:3000",
         changeOrigin: true,
         secure: true,
       },
