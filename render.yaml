@@ -4,7 +4,7 @@
 
 services:
   - type: web
-    name: golivra-admin
+    name: admin-golivra
     runtime: static
     branch: main
     buildCommand: npm ci && VITE_APP_VERSION=$RENDER_GIT_COMMIT npm run build
