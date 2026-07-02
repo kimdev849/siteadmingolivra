@@ -29,6 +29,7 @@ import { Route as AdminParametresRouteImport } from './routes/admin.parametres'
 import { Route as AdminObservabiliteRouteImport } from './routes/admin.observabilite'
 import { Route as AdminLivraisonsRouteImport } from './routes/admin.livraisons'
 import { Route as AdminCommissionsRouteImport } from './routes/admin.commissions'
+import { Route as AdminCampagnesRouteImport } from './routes/admin.campagnes'
 import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
 import { Route as AdminAlertesRouteImport } from './routes/admin.alertes'
 import { Route as EntrepriseLivreursIndexRouteImport } from './routes/entreprise.livreurs.index'
@@ -146,6 +147,11 @@ const AdminCommissionsRoute = AdminCommissionsRouteImport.update({
   path: '/commissions',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminCampagnesRoute = AdminCampagnesRouteImport.update({
+  id: '/campagnes',
+  path: '/campagnes',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminAnalyticsRoute = AdminAnalyticsRouteImport.update({
   id: '/analytics',
   path: '/analytics',
@@ -237,6 +243,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/admin/alertes': typeof AdminAlertesRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
+  '/admin/campagnes': typeof AdminCampagnesRoute
   '/admin/commissions': typeof AdminCommissionsRoute
   '/admin/livraisons': typeof AdminLivraisonsRouteWithChildren
   '/admin/observabilite': typeof AdminObservabiliteRouteWithChildren
@@ -273,6 +280,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/admin/alertes': typeof AdminAlertesRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
+  '/admin/campagnes': typeof AdminCampagnesRoute
   '/admin/commissions': typeof AdminCommissionsRoute
   '/admin/livraisons': typeof AdminLivraisonsRouteWithChildren
   '/admin/observabilite': typeof AdminObservabiliteRouteWithChildren
@@ -312,6 +320,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/admin/alertes': typeof AdminAlertesRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
+  '/admin/campagnes': typeof AdminCampagnesRoute
   '/admin/commissions': typeof AdminCommissionsRoute
   '/admin/livraisons': typeof AdminLivraisonsRouteWithChildren
   '/admin/observabilite': typeof AdminObservabiliteRouteWithChildren
@@ -352,6 +361,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/admin/alertes'
     | '/admin/analytics'
+    | '/admin/campagnes'
     | '/admin/commissions'
     | '/admin/livraisons'
     | '/admin/observabilite'
@@ -388,6 +398,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/admin/alertes'
     | '/admin/analytics'
+    | '/admin/campagnes'
     | '/admin/commissions'
     | '/admin/livraisons'
     | '/admin/observabilite'
@@ -426,6 +437,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/admin/alertes'
     | '/admin/analytics'
+    | '/admin/campagnes'
     | '/admin/commissions'
     | '/admin/livraisons'
     | '/admin/observabilite'
@@ -607,6 +619,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminCommissionsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/campagnes': {
+      id: '/admin/campagnes'
+      path: '/campagnes'
+      fullPath: '/admin/campagnes'
+      preLoaderRoute: typeof AdminCampagnesRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/analytics': {
       id: '/admin/analytics'
       path: '/analytics'
@@ -748,6 +767,7 @@ const AdminObservabiliteRouteWithChildren =
 interface AdminRouteChildren {
   AdminAlertesRoute: typeof AdminAlertesRoute
   AdminAnalyticsRoute: typeof AdminAnalyticsRoute
+  AdminCampagnesRoute: typeof AdminCampagnesRoute
   AdminCommissionsRoute: typeof AdminCommissionsRoute
   AdminLivraisonsRoute: typeof AdminLivraisonsRouteWithChildren
   AdminObservabiliteRoute: typeof AdminObservabiliteRouteWithChildren
@@ -770,6 +790,7 @@ interface AdminRouteChildren {
 const AdminRouteChildren: AdminRouteChildren = {
   AdminAlertesRoute: AdminAlertesRoute,
   AdminAnalyticsRoute: AdminAnalyticsRoute,
+  AdminCampagnesRoute: AdminCampagnesRoute,
   AdminCommissionsRoute: AdminCommissionsRoute,
   AdminLivraisonsRoute: AdminLivraisonsRouteWithChildren,
   AdminObservabiliteRoute: AdminObservabiliteRouteWithChildren,
