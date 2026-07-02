@@ -25,6 +25,7 @@ import { Route as AdminZonesRouteImport } from './routes/admin.zones'
 import { Route as AdminSanteEndpointsRouteImport } from './routes/admin.sante-endpoints'
 import { Route as AdminRetraitsRouteImport } from './routes/admin.retraits'
 import { Route as AdminPortefeuilleRouteImport } from './routes/admin.portefeuille'
+import { Route as AdminPaysRouteImport } from './routes/admin.pays'
 import { Route as AdminParametresRouteImport } from './routes/admin.parametres'
 import { Route as AdminObservabiliteRouteImport } from './routes/admin.observabilite'
 import { Route as AdminLivraisonsRouteImport } from './routes/admin.livraisons'
@@ -125,6 +126,11 @@ const AdminRetraitsRoute = AdminRetraitsRouteImport.update({
 const AdminPortefeuilleRoute = AdminPortefeuilleRouteImport.update({
   id: '/portefeuille',
   path: '/portefeuille',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPaysRoute = AdminPaysRouteImport.update({
+  id: '/pays',
+  path: '/pays',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminParametresRoute = AdminParametresRouteImport.update({
@@ -248,6 +254,7 @@ export interface FileRoutesByFullPath {
   '/admin/livraisons': typeof AdminLivraisonsRouteWithChildren
   '/admin/observabilite': typeof AdminObservabiliteRouteWithChildren
   '/admin/parametres': typeof AdminParametresRoute
+  '/admin/pays': typeof AdminPaysRoute
   '/admin/portefeuille': typeof AdminPortefeuilleRoute
   '/admin/retraits': typeof AdminRetraitsRoute
   '/admin/sante-endpoints': typeof AdminSanteEndpointsRoute
@@ -285,6 +292,7 @@ export interface FileRoutesByTo {
   '/admin/livraisons': typeof AdminLivraisonsRouteWithChildren
   '/admin/observabilite': typeof AdminObservabiliteRouteWithChildren
   '/admin/parametres': typeof AdminParametresRoute
+  '/admin/pays': typeof AdminPaysRoute
   '/admin/portefeuille': typeof AdminPortefeuilleRoute
   '/admin/retraits': typeof AdminRetraitsRoute
   '/admin/sante-endpoints': typeof AdminSanteEndpointsRoute
@@ -325,6 +333,7 @@ export interface FileRoutesById {
   '/admin/livraisons': typeof AdminLivraisonsRouteWithChildren
   '/admin/observabilite': typeof AdminObservabiliteRouteWithChildren
   '/admin/parametres': typeof AdminParametresRoute
+  '/admin/pays': typeof AdminPaysRoute
   '/admin/portefeuille': typeof AdminPortefeuilleRoute
   '/admin/retraits': typeof AdminRetraitsRoute
   '/admin/sante-endpoints': typeof AdminSanteEndpointsRoute
@@ -366,6 +375,7 @@ export interface FileRouteTypes {
     | '/admin/livraisons'
     | '/admin/observabilite'
     | '/admin/parametres'
+    | '/admin/pays'
     | '/admin/portefeuille'
     | '/admin/retraits'
     | '/admin/sante-endpoints'
@@ -403,6 +413,7 @@ export interface FileRouteTypes {
     | '/admin/livraisons'
     | '/admin/observabilite'
     | '/admin/parametres'
+    | '/admin/pays'
     | '/admin/portefeuille'
     | '/admin/retraits'
     | '/admin/sante-endpoints'
@@ -442,6 +453,7 @@ export interface FileRouteTypes {
     | '/admin/livraisons'
     | '/admin/observabilite'
     | '/admin/parametres'
+    | '/admin/pays'
     | '/admin/portefeuille'
     | '/admin/retraits'
     | '/admin/sante-endpoints'
@@ -589,6 +601,13 @@ declare module '@tanstack/react-router' {
       path: '/portefeuille'
       fullPath: '/admin/portefeuille'
       preLoaderRoute: typeof AdminPortefeuilleRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/pays': {
+      id: '/admin/pays'
+      path: '/pays'
+      fullPath: '/admin/pays'
+      preLoaderRoute: typeof AdminPaysRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/parametres': {
@@ -772,6 +791,7 @@ interface AdminRouteChildren {
   AdminLivraisonsRoute: typeof AdminLivraisonsRouteWithChildren
   AdminObservabiliteRoute: typeof AdminObservabiliteRouteWithChildren
   AdminParametresRoute: typeof AdminParametresRoute
+  AdminPaysRoute: typeof AdminPaysRoute
   AdminPortefeuilleRoute: typeof AdminPortefeuilleRoute
   AdminRetraitsRoute: typeof AdminRetraitsRoute
   AdminSanteEndpointsRoute: typeof AdminSanteEndpointsRoute
@@ -795,6 +815,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminLivraisonsRoute: AdminLivraisonsRouteWithChildren,
   AdminObservabiliteRoute: AdminObservabiliteRouteWithChildren,
   AdminParametresRoute: AdminParametresRoute,
+  AdminPaysRoute: AdminPaysRoute,
   AdminPortefeuilleRoute: AdminPortefeuilleRoute,
   AdminRetraitsRoute: AdminRetraitsRoute,
   AdminSanteEndpointsRoute: AdminSanteEndpointsRoute,

@@ -40,6 +40,7 @@ export const adminNavItems: AdminNavItem[] = [
   { to: "/admin/alertes", label: "Alertes", icon: Bell },
   { to: "/admin/portefeuille", label: "Portefeuille GoLivra", icon: Wallet },
   { to: "/admin/commissions", label: "Commissions livraison", icon: Percent },
+  { to: "/admin/pays", label: "Pays & Villes", icon: Globe },
   { to: "/admin/zones", label: "Zones livraison", icon: MapPin },
   { to: "/admin/retraits", label: "Retraits", icon: Receipt },
   { to: "/admin/campagnes", label: "Campagnes", icon: Megaphone },
