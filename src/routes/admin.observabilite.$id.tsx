@@ -90,9 +90,11 @@ function FrameRow({ frame, idx }: { frame: IncidentFrame; idx: number }) {
 }
 
 function AnalyserPanel({ inc }: { inc: AppIncident }) {
-  const top = inc.source_location;
-  const ctx = inc.code_context;
-  const frames = inc.frames || [];
+  const top =
+    inc.source_location && typeof inc.source_location === "object" ? inc.source_location : null;
+  const ctx =
+    inc.code_context && typeof inc.code_context === "object" ? inc.code_context : null;
+  const frames = Array.isArray(inc.frames) ? inc.frames : [];
   const inAppFrames = frames.filter((f) => f.in_app);
   const hasAnything = top || frames.length > 0 || inc.github_url;
 
