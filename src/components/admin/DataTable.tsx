@@ -7,7 +7,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { EmptyState } from "@/components/admin/EmptyState";
-import type { ReactNode } from "react";
+import type { MouseEvent as ReactMouseEvent, ReactNode } from "react";
 
 interface DataTableProps {
   columns: string[];
@@ -37,23 +37,31 @@ export function DataTable({ columns, rows, emptyTitle, emptyDescription, onRowCl
         </TableHeader>
         <TableBody>
           {hasRows ? (
-            rows.map((row, i) => (
-              <TableRow
-                key={i}
-                onClick={onRowClick ? () => onRowClick(i) : undefined}
-                className={onRowClick ? "cursor-pointer hover:bg-muted/50" : undefined}
-              >
-                {row.map((cell, j) => (
-                  <TableCell
-                    key={j}
-                    className="text-sm"
-                    onClick={onRowClick ? (e) => e.stopPropagation() : undefined}
-                  >
-                    {cell}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))
+            rows.map((row, i) => {
+              const handleRowClick = onRowClick
+                ? (e: ReactMouseEvent<HTMLTableRowElement>) => {
+                    // Les éléments interactifs (liens, boutons, champs) gèrent
+                    // leur propre clic : on laisse la navigation au Link/Button
+                    // et on évite le double déclenchement.
+                    const target = e.target as HTMLElement | null;
+                    if (target?.closest?.("a, button, input, select, textarea")) return;
+                    onRowClick(i);
+                  }
+                : undefined;
+              return (
+                <TableRow
+                  key={i}
+                  onClick={handleRowClick}
+                  className={onRowClick ? "cursor-pointer hover:bg-muted/50" : undefined}
+                >
+                  {row.map((cell, j) => (
+                    <TableCell key={j} className="text-sm">
+                      {cell}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              );
+            })
           ) : (
             <TableRow className="hover:bg-transparent">
               <TableCell colSpan={columns.length} className="p-0">

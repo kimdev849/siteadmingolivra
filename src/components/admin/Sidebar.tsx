@@ -15,7 +15,7 @@ export function Sidebar({ className }: { className?: string }) {
           Go<span className="text-accent">Livra</span>
         </span>
       </div>
-      <nav className="flex-1 space-y-1 px-3 py-4">
+      <nav className="min-h-0 flex-1 space-y-1 overflow-y-auto px-3 py-4">
         {adminNavItems.map((item) => {
           const active = item.exact
             ? pathname === item.to

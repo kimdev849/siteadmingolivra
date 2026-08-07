@@ -17,7 +17,7 @@ export function EntrepriseSidebar({ className }: { className?: string }) {
           <p className="text-xs text-muted-foreground">Espace entreprise</p>
         </div>
       </div>
-      <nav className="flex-1 space-y-1 px-3 py-4">
+      <nav className="min-h-0 flex-1 space-y-1 overflow-y-auto px-3 py-4">
         {entrepriseNavItems.map((item) => {
           const active = item.exact
             ? pathname === item.to

@@ -54,14 +54,14 @@ export function Topbar() {
             <Menu className="h-4 w-4" />
           </Button>
         </SheetTrigger>
-        <SheetContent side="left" className="w-72 p-0">
-          <SheetHeader className="border-b border-border px-5 py-4 text-left">
+        <SheetContent side="left" className="flex w-72 flex-col overflow-hidden p-0">
+          <SheetHeader className="shrink-0 border-b border-border px-5 py-4 text-left">
             <SheetTitle className="flex items-center gap-2">
               <img src={logo} alt="" className="h-8 w-8" />
               GoLivra Admin
             </SheetTitle>
           </SheetHeader>
-          <nav className="space-y-1 p-3">
+          <nav className="min-h-0 flex-1 space-y-1 overflow-y-auto p-3">
             {adminNavItems.map((item) => {
               const active = item.exact
                 ? pathname === item.to
