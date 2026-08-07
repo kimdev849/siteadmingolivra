@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   ChevronDown,
   ChevronRight,
@@ -169,6 +169,19 @@ function ZonesTarifsPage() {
     [zones, zoneDrafts],
   );
 
+  // Prix « en direct » d'une zone : reflète immédiatement la saisie dans le
+  // panneau « Tarifs par zone », sans attendre la sauvegarde. Utilisé dans le
+  // sélecteur de zone des arrondissements.
+  const priceOfZone = useCallback(
+    (zoneId: string): number => {
+      const raw = zoneDrafts[zoneId]?.price_base;
+      if (raw === undefined || raw === "") return 0;
+      const n = Number(raw);
+      return Number.isFinite(n) ? n : 0;
+    },
+    [zoneDrafts],
+  );
+
   const handleAddClick = (villeId: string, villeNom: string) => {
     setAddVilleId(villeId);
     setAddVilleNom(villeNom);
@@ -203,7 +216,7 @@ function ZonesTarifsPage() {
           <CardHeader>
             <CardTitle className="text-sm font-semibold">Tarifs par zone</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-5">
+          <CardContent className="max-h-[600px] space-y-5 overflow-y-auto pr-1">
             {boardQuery.isLoading ? (
               <p className="text-sm text-muted-foreground">Chargement…</p>
             ) : (
@@ -301,8 +314,10 @@ function ZonesTarifsPage() {
                                   zoneId={assignments[a.id] ?? a.zone_id ?? UNASSIGNED_ZONE}
                                   onZoneChange={(zoneId) =>
                                     setAssignments((prev) => ({ ...prev, [a.id]: zoneId }))
-                                  }                    onDelete={() => deleteArrMutation.mutate(a.id)}
-                    isDeleting={deletingArrId === a.id}
+                                  }
+                                  onDelete={() => deleteArrMutation.mutate(a.id)}
+                                  isDeleting={deletingArrId === a.id}
+                                  priceOfZone={priceOfZone}
                                 />
                               ))}
 
@@ -342,6 +357,7 @@ function ZonesTarifsPage() {
                     }
                     onDelete={() => deleteArrMutation.mutate(a.id)}
                     isDeleting={deletingArrId === a.id}
+                    priceOfZone={priceOfZone}
                   />
                 ))}
               </div>
@@ -462,6 +478,7 @@ function ArrondissementRow({
   onZoneChange,
   onDelete,
   isDeleting,
+  priceOfZone,
 }: {
   name: string;
   zones: AdminZone[];
@@ -469,6 +486,7 @@ function ArrondissementRow({
   onZoneChange: (zoneId: string) => void;
   onDelete?: () => void;
   isDeleting?: boolean;
+  priceOfZone?: (zoneId: string) => number;
 }) {
   const assigned = zoneId !== UNASSIGNED_ZONE;
 
@@ -484,12 +502,15 @@ function ArrondissementRow({
           </SelectTrigger>
           <SelectContent>
             <SelectItem value={UNASSIGNED_ZONE}>— Non assigné —</SelectItem>
-            {zones.map((z) => (
-              <SelectItem key={z.id} value={z.id}>
-                Zone {z.name}
-                {z.price_base > 0 ? ` · ${z.price_base.toLocaleString("fr-FR")} F` : " · prix à définir"}
-              </SelectItem>
-            ))}
+            {zones.map((z) => {
+              const p = priceOfZone ? priceOfZone(z.id) : z.price_base;
+              return (
+                <SelectItem key={z.id} value={z.id}>
+                  Zone {z.name}
+                  {p > 0 ? ` · ${p.toLocaleString("fr-FR")} F` : " · prix à définir"}
+                </SelectItem>
+              );
+            })}
           </SelectContent>
         </Select>
         {onDelete && (
