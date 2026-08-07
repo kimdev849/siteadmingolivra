@@ -107,7 +107,7 @@ function EntreprisePortefeuillePage() {
           </CardHeader>
           <CardContent className="space-y-2 max-h-80 overflow-y-auto">
             {(w?.transactions ?? []).map((t) => (
-              <div key={t.id} className="flex justify-between text-sm border-b border-border py-2">
+              <div key={t.id} className="flex flex-wrap items-center justify-between gap-2 text-sm border-b border-border py-2">
                 <span>{t.description || t.type}</span>
                 <span className={t.type === "debit" ? "text-red-600" : "text-emerald-700"}>
                   {t.type === "debit" ? "-" : "+"}
@@ -125,7 +125,7 @@ function EntreprisePortefeuillePage() {
         </CardHeader>
         <CardContent className="space-y-2">
           {(w?.retraits ?? []).map((r) => (
-            <div key={r.id} className="flex justify-between items-center text-sm py-2 border-b">
+            <div key={r.id} className="flex flex-wrap items-center justify-between gap-2 text-sm py-2 border-b">
               <span>
                 {Number(r.montant).toLocaleString("fr-FR")} FCFA — {formatDateFr(r.created_at)}
               </span>

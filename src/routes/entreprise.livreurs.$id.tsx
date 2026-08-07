@@ -176,7 +176,7 @@ function LivreurDetailPage() {
               </div>
 
               {canManage && compteActif && !detailPartial ? (
-                <div className="flex items-center justify-between rounded-md border border-border px-3 py-3">
+                <div className="flex flex-wrap items-center justify-between gap-2 rounded-md border border-border px-3 py-3">
                   <Label htmlFor="dispo-switch" className="text-sm">
                     Disponible pour les courses
                   </Label>

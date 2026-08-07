@@ -473,13 +473,13 @@ function ArrondissementRow({
   const assigned = zoneId !== UNASSIGNED_ZONE;
 
   return (
-    <div className="flex items-center justify-between gap-2 group">
-      <span className={`text-sm font-medium ${!assigned ? "text-muted-foreground" : ""}`}>
+    <div className="flex flex-wrap items-center justify-between gap-2 group">
+      <span className={`min-w-0 flex-1 truncate text-sm font-medium ${!assigned ? "text-muted-foreground" : ""}`}>
         {name}
       </span>
-      <div className="flex items-center gap-1">
+      <div className="flex w-full min-w-0 items-center gap-1 sm:w-auto">
         <Select value={zoneId || UNASSIGNED_ZONE} onValueChange={onZoneChange}>
-          <SelectTrigger className="w-[168px] h-8">
+          <SelectTrigger className="h-8 flex-1 sm:w-[168px] sm:flex-none">
             <SelectValue placeholder="Choisir une zone" />
           </SelectTrigger>
           <SelectContent>
@@ -496,7 +496,7 @@ function ArrondissementRow({
           <button
             type="button"
             onClick={onDelete}
-            className="opacity-0 group-hover:opacity-100 transition-opacity p-1 text-muted-foreground hover:text-destructive"
+            className="opacity-100 transition-opacity p-1 text-muted-foreground hover:text-destructive md:opacity-0 md:group-hover:opacity-100"
             title="Supprimer"
           >
             {isDeleting ? (

@@ -169,10 +169,10 @@ function ObservabilitePage() {
                 placeholder="Rechercher (titre, message, requestId, endpoint, fingerprint, cause…)"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="max-w-md"
+                className="w-full sm:max-w-md"
               />
               <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v as typeof statusFilter)}>
-                <SelectTrigger className="w-[160px]">
+                <SelectTrigger className="w-full sm:w-[160px]">
                   <SelectValue placeholder="Statut" />
                 </SelectTrigger>
                 <SelectContent>
@@ -182,7 +182,7 @@ function ObservabilitePage() {
                 </SelectContent>
               </Select>
               <Select value={stateFilter} onValueChange={(v) => setStateFilter(v as IncidentState | typeof ALL)}>
-                <SelectTrigger className="w-[160px]">
+                <SelectTrigger className="w-full sm:w-[160px]">
                   <SelectValue placeholder="État" />
                 </SelectTrigger>
                 <SelectContent>
@@ -194,7 +194,7 @@ function ObservabilitePage() {
                 </SelectContent>
               </Select>
               <Select value={sourceFilter} onValueChange={(v) => setSourceFilter(v as IncidentSource | typeof ALL)}>
-                <SelectTrigger className="w-[180px]">
+                <SelectTrigger className="w-full sm:w-[180px]">
                   <SelectValue placeholder="Source" />
                 </SelectTrigger>
                 <SelectContent>
@@ -209,7 +209,7 @@ function ObservabilitePage() {
                 value={errorTypeFilter}
                 onValueChange={(v) => setErrorTypeFilter(v as ErrorType | typeof ALL)}
               >
-                <SelectTrigger className="w-[200px]">
+                <SelectTrigger className="w-full sm:w-[200px]">
                   <SelectValue placeholder="Type d'erreur" />
                 </SelectTrigger>
                 <SelectContent>
@@ -228,7 +228,7 @@ function ObservabilitePage() {
           ) : (
             <>
               <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v as typeof statusFilter)}>
-                <SelectTrigger className="w-[160px]">
+                <SelectTrigger className="w-full sm:w-[160px]">
                   <SelectValue placeholder="Statut" />
                 </SelectTrigger>
                 <SelectContent>
@@ -238,7 +238,7 @@ function ObservabilitePage() {
                 </SelectContent>
               </Select>
               <Select value={sourceFilter} onValueChange={(v) => setSourceFilter(v as IncidentSource | typeof ALL)}>
-                <SelectTrigger className="w-[180px]">
+                <SelectTrigger className="w-full sm:w-[180px]">
                   <SelectValue placeholder="Source" />
                 </SelectTrigger>
                 <SelectContent>

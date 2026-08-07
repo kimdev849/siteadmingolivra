@@ -212,7 +212,7 @@ function EntrepriseDashboardPage() {
                 key={l.id}
                 to="/entreprise/livreurs/$id"
                 params={{ id: l.id }}
-                className="flex items-center justify-between rounded-md border border-border px-3 py-2 hover:bg-muted/50"
+                className="flex flex-wrap items-center justify-between gap-2 rounded-md border border-border px-3 py-2 hover:bg-muted/50"
               >
                 <span className="font-medium">{l.utilisateur?.nom || "—"}</span>
                 <CourierAvailabilityBadge

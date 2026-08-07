@@ -113,7 +113,7 @@ function EntrepriseLivraisonsPage() {
 
       <div className="mb-4">
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-48">
+          <SelectTrigger className="w-full sm:w-48">
             <SelectValue placeholder="Filtrer par statut" />
           </SelectTrigger>
           <SelectContent>

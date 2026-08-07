@@ -195,6 +195,83 @@ export type EndpointHealthResponse = {
   endpoints: EndpointHealth[];
 };
 
+export type ServiceStatus = "ok" | "degraded" | "down" | "unknown";
+
+export type ControlCenter = {
+  generated_at: string;
+  window_min: number;
+  global_status: ServiceStatus;
+  services: {
+    api: { status: ServiceStatus; label: string };
+    database: { status: ServiceStatus; label: string };
+    payments: { status: ServiceStatus; label: string };
+    mobile: { status: ServiceStatus; label: string };
+  } | null;
+  technical: {
+    request_count: number;
+    error_count: number;
+    success_rate: number;
+    error_rate: number;
+    by_status: {
+      c2xx: number;
+      c3xx: number;
+      c400: number;
+      c401: number;
+      c404: number;
+      c4xx: number;
+      c5xx: number;
+    };
+    latency: { p50_ms: number; p95_ms: number; p99_ms: number };
+  } | null;
+  business: {
+    orders: { total: number; acceptees: number; livrees: number; annulees: number; en_cours: number };
+    payments: {
+      methode: string;
+      total: number;
+      reussis: number;
+      echoues: number;
+      taux_reussite: number;
+    }[];
+  } | null;
+  actors: {
+    boutiques: { total: number; actives: number };
+    restaurants: { total: number; actives: number };
+    livreurs: { total: number; disponibles: number; en_livraison: number };
+    clients: { total: number; actifs_aujourdhui: number };
+  } | null;
+  mobile: {
+    incidents_7j: number;
+    crash_rate_7j: number;
+    versions: { app_version: string; count: number }[];
+    dernier_crash: {
+      title: string;
+      app_version: string | null;
+      platform: string | null;
+      created_at: string;
+    } | null;
+  } | null;
+  incidents: {
+    open_count: number;
+    top: {
+      fingerprint: string;
+      error_type: ErrorType | null;
+      title: string;
+      severity: IncidentSeverity;
+      state: IncidentState;
+      http_path: string | null;
+      occurrence_count: number;
+      last_seen_at: string;
+    }[];
+  };
+};
+
+export async function fetchControlCenter(windowMin = 60): Promise<ControlCenter> {
+  return apiFetch<ControlCenter>(
+    `/api/admin/observability/control-center?window_min=${windowMin}`,
+    { method: "GET", token: token() },
+  );
+}
+
 export type AlertChannel = {
   id: string;
   nom: string;

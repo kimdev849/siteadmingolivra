@@ -35,7 +35,12 @@ function DashboardPage() {
   });
 
   const stats = statsQuery.data;
-  const pending = pendingQuery.data ?? [];
+  // Ne montrer que les commerces réellement en attente (défense en profondeur :
+  // certains marchands validés via « Comptes en attente » gardaient un statut
+  // en_attente côté commerce).
+  const pending = (pendingQuery.data ?? []).filter(
+    (e) => (e.statut_moderation || e.statut || "") === "en_attente",
+  );
 
   return (
     <div>

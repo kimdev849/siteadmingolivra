@@ -1,6 +1,7 @@
 import { LogOut, Menu, Search } from "lucide-react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -24,11 +25,19 @@ function initials(nom?: string | null, email?: string | null): string {
 export function Topbar() {
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const [menuOpen, setMenuOpen] = useState(false);
   const meQuery = useQuery({
     queryKey: ["admin", "me"],
     queryFn: () => fetchAdminMe(),
     staleTime: 60_000,
   });
+
+  // Fermeture automatique du menu mobile dès que la navigation aboutit
+  // (indépendamment de la façon dont elle est déclenchée : clic, clavier,
+  // navigate(), bouton retour…).
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [pathname]);
 
   const handleLogout = async () => {
     await logoutAdmin();
@@ -39,7 +48,7 @@ export function Topbar() {
 
   return (
     <header className="sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-border bg-background/80 px-4 backdrop-blur sm:px-6">
-      <Sheet>
+      <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
         <SheetTrigger asChild>
           <Button variant="outline" size="icon" className="md:hidden" aria-label="Menu">
             <Menu className="h-4 w-4" />
@@ -61,6 +70,7 @@ export function Topbar() {
                 <Link
                   key={item.to}
                   to={item.to}
+                  onClick={() => setMenuOpen(false)}
                   className={cn(
                     "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium",
                     active ? "bg-primary/10 text-primary" : "text-muted-foreground",
@@ -73,6 +83,7 @@ export function Topbar() {
             })}
             <Link
               to="/admin/transporteurs/nouveau"
+              onClick={() => setMenuOpen(false)}
               className="mt-2 flex items-center gap-2 rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground"
             >
               + Créer entreprise

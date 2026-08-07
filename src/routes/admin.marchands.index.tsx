@@ -126,12 +126,12 @@ function MarchandsPage() {
       <div className="mb-4 flex flex-wrap items-center gap-2">
         <Input
           placeholder="Rechercher…"
-          className="max-w-xs"
+          className="w-full sm:max-w-xs"
           value={search}
           onChange={(ev) => setSearch(ev.target.value)}
         />
         <Select value={typeFilter} onValueChange={setTypeFilter}>
-          <SelectTrigger className="w-40">
+          <SelectTrigger className="w-full sm:w-40">
             <SelectValue placeholder="Type" />
           </SelectTrigger>
           <SelectContent>
@@ -141,7 +141,7 @@ function MarchandsPage() {
           </SelectContent>
         </Select>
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-44">
+          <SelectTrigger className="w-full sm:w-44">
             <SelectValue placeholder="Statut" />
           </SelectTrigger>
           <SelectContent>

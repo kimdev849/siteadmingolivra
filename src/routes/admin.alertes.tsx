@@ -213,7 +213,7 @@ function ChannelsCard({
             {channels.map((c) => (
               <div
                 key={c.id}
-                className="flex items-center justify-between rounded border border-border bg-card px-3 py-2"
+                className="flex flex-wrap items-center justify-between gap-2 rounded border border-border bg-card px-3 py-2"
               >
                 <div>
                   <p className="text-sm font-medium text-foreground">{c.nom}</p>
@@ -221,7 +221,7 @@ function ChannelsCard({
                     {c.type} · {c.est_actif ? "actif" : "désactivé"}
                   </p>
                 </div>
-                <div className="flex gap-1">
+                <div className="flex flex-wrap gap-1">
                   <Button
                     size="sm"
                     variant="outline"
@@ -380,7 +380,7 @@ function RulesCard({
             {rules.map((r) => (
               <div
                 key={r.id}
-                className="flex items-center justify-between rounded border border-border bg-card px-3 py-2"
+                className="flex flex-wrap items-center justify-between gap-2 rounded border border-border bg-card px-3 py-2"
               >
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-medium text-foreground">{r.nom}</p>
@@ -390,7 +390,7 @@ function RulesCard({
                     {r.last_fired_at ? ` · dernier: ${formatDateTimeFr(r.last_fired_at)}` : ""}
                   </p>
                 </div>
-                <div className="flex gap-1">
+                <div className="flex flex-wrap gap-1">
                   <Button
                     size="sm"
                     variant="outline"

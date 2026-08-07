@@ -125,7 +125,7 @@ function EntrepriseStatistiquesPage() {
               topCouriers.map((c) => (
                 <div
                   key={c.id}
-                  className="flex items-center justify-between rounded-md border border-border px-3 py-2 text-sm"
+                  className="flex flex-wrap items-center justify-between gap-2 rounded-md border border-border px-3 py-2 text-sm"
                 >
                   <span className="font-medium">{c.utilisateur?.nom || "—"}</span>
                   <span className="text-muted-foreground">

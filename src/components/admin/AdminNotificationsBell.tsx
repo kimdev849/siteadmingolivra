@@ -80,7 +80,7 @@ export function AdminNotificationsBell() {
           ) : null}
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-80">
+      <DropdownMenuContent align="end" className="w-80 max-w-[calc(100vw-2rem)]">
         <DropdownMenuLabel className="flex items-center justify-between gap-2">
           <span>Notifications</span>
           {unread > 0 ? (

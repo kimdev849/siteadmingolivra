@@ -77,7 +77,7 @@ function AdminPortefeuillePage() {
             (w?.transactions ?? []).map((t) => (
               <div
                 key={t.id}
-                className="flex items-center justify-between rounded-md border border-border px-3 py-2 text-sm"
+                className="flex flex-wrap items-center justify-between gap-2 rounded-md border border-border px-3 py-2 text-sm"
               >
                 <div>
                   <p className="font-medium">{t.description || t.type}</p>

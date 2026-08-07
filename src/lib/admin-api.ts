@@ -522,19 +522,30 @@ export async function fetchAdminDeliveryDetail(deliveryId: string): Promise<Admi
 }
 
 export async function fetchNotifications(): Promise<AppNotification[]> {
-  const data = await apiFetch<AppNotification[]>("/api/notifications?limit=40", {
-    method: "GET",
-    token: token(),
-  });
-  return Array.isArray(data) ? data : [];
+  // Le backend renvoie { items, unread_count } ; on tolère aussi l'ancien
+  // format tableau brut pour rétro-compat.
+  const data = await apiFetch<{ items?: AppNotification[]; unread_count?: number } | AppNotification[]>(
+    "/api/notifications?limit=40",
+    {
+      method: "GET",
+      token: token(),
+    },
+  );
+  if (Array.isArray(data)) return data;
+  return Array.isArray(data?.items) ? data.items : [];
 }
 
 export async function fetchUnreadNotificationCount(): Promise<number> {
-  const data = await apiFetch<{ count: number }>("/api/notifications/unread-count", {
-    method: "GET",
-    token: token(),
-  });
-  return Number(data?.count ?? 0);
+  // Le backend renvoie { unread_count } ; on tolère aussi { count }.
+  const data = await apiFetch<{ unread_count?: number; count?: number }>(
+    "/api/notifications/unread-count",
+    {
+      method: "GET",
+      token: token(),
+    },
+  );
+  const count = data?.unread_count ?? data?.count ?? 0;
+  return Number(count) || 0;
 }
 
 export async function markNotificationRead(notificationId: string): Promise<void> {

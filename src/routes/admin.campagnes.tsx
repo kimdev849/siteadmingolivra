@@ -346,7 +346,7 @@ function CampagnesPage() {
         </Alert>
       )}
 
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <p className="text-sm text-muted-foreground">
             <strong className="text-foreground">{campagnes.length}</strong> campagne(s)
@@ -441,7 +441,7 @@ function CampagnesPage() {
                         </Badge>
                       </div>
                     </div>
-                    <div className="flex shrink-0 gap-0.5 opacity-0 transition-opacity group-hover:opacity-100">
+                    <div className="flex shrink-0 gap-0.5 opacity-100 transition-opacity md:opacity-0 md:group-hover:opacity-100">
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>

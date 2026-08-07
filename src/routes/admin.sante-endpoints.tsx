@@ -8,10 +8,20 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "@tanstack/react-router";
 import {
+  fetchControlCenter,
   fetchEndpointHealth,
   fetchObservabilityDashboard,
 } from "@/lib/observability-api";
 import { ADMIN_LIVE_REFETCH_MS } from "@/lib/admin-nav";
+import {
+  ActorsSection,
+  BusinessSection,
+  ControlCenterHero,
+  ControlCenterSkeleton,
+  MobileSection,
+  StatusBreakdown,
+  TopIncidents,
+} from "@/components/admin/control-center";
 
 const WINDOWS = [
   { value: 15, label: "15 min" },
@@ -191,6 +201,12 @@ function SanteEndpointsPage() {
   const [windowMin, setWindowMin] = useState(60);
   const [minRequests, setMinRequests] = useState(10);
 
+  const controlCenterQuery = useQuery({
+    queryKey: ["admin", "observability", "control-center", windowMin],
+    queryFn: () => fetchControlCenter(windowMin),
+    refetchInterval: ADMIN_LIVE_REFETCH_MS,
+  });
+
   const healthQuery = useQuery({
     queryKey: ["admin", "observability", "endpoints", windowMin, minRequests],
     queryFn: () => fetchEndpointHealth(windowMin, minRequests),
@@ -233,6 +249,33 @@ function SanteEndpointsPage() {
           <Link to="/admin/observabilite">Voir les incidents →</Link>
         </Button>
       </div>
+
+      {/* ── Centre de contrôle : statut global, business, acteurs, mobile ── */}
+      {controlCenterQuery.isLoading && !controlCenterQuery.data ? (
+        <ControlCenterSkeleton />
+      ) : (
+        <>
+          <div className="mb-4">
+            <ControlCenterHero
+              data={controlCenterQuery.data}
+              isLoading={controlCenterQuery.isLoading}
+            />
+          </div>
+
+          <div className="mb-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
+            <StatusBreakdown data={controlCenterQuery.data} />
+            <div className="lg:col-span-2">
+              <TopIncidents data={controlCenterQuery.data} />
+            </div>
+          </div>
+
+          <div className="mb-6 space-y-6">
+            <BusinessSection data={controlCenterQuery.data} />
+            <ActorsSection data={controlCenterQuery.data} />
+            <MobileSection data={controlCenterQuery.data} />
+          </div>
+        </>
+      )}
 
       <ObservabilityPanel windowMin={windowMin} />
 
