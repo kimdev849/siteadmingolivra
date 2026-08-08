@@ -775,6 +775,7 @@ export async function createAdminCampagne(body: {
   nom: string;
   description?: string;
   type?: string;
+  image_url?: string;
   date_debut?: string;
   date_fin?: string;
   est_actif?: boolean;
@@ -793,6 +794,7 @@ export async function updateAdminCampagne(
     nom: string;
     description: string;
     type: string;
+    image_url: string | null;
     date_debut: string | null;
     date_fin: string | null;
     est_actif: boolean;
@@ -947,3 +949,63 @@ export async function deleteAdminArrondissement(arrId: string): Promise<void> {
     token: token(),
   });
 }
+
+/* ──────────────────────────────────────────────────────────────
+ * Catégories globales du catalogue (GoLivra organise)
+ * type = "produits" (boutiques) | "menus" (restaurants)
+ * ────────────────────────────────────────────────────────────── */
+
+export type AdminProductCategory = {
+  id: string;
+  nom: string;
+  description?: string | null;
+  image_url?: string | null;
+  ordre: number;
+  est_active: boolean;
+  created_at?: string;
+};
+
+export type AdminCategoryKind = "produits" | "menus";
+
+export async function fetchAdminCategories(kind: AdminCategoryKind): Promise<AdminProductCategory[]> {
+  const data = await apiFetch<AdminProductCategory[]>(`/api/admin/categories?type=${kind}`, {
+    method: "GET",
+    token: token(),
+  });
+  return Array.isArray(data) ? data : [];
+}
+
+export async function createAdminCategory(
+  kind: AdminCategoryKind,
+  body: { nom: string; description?: string; image_url?: string; ordre?: number; est_active?: boolean },
+): Promise<AdminProductCategory> {
+  return apiFetch<AdminProductCategory>("/api/admin/categories", {
+    method: "POST",
+    token: token(),
+    jsonBody: { ...body, type: kind },
+  });
+}
+
+export async function updateAdminCategory(
+  kind: AdminCategoryKind,
+  categoryId: string,
+  body: Partial<{ nom: string; description: string; image_url: string; ordre: number; est_active: boolean }>,
+): Promise<AdminProductCategory> {
+  return apiFetch<AdminProductCategory>(`/api/admin/categories/${categoryId}`, {
+    method: "PATCH",
+    token: token(),
+    jsonBody: { ...body, type: kind },
+  });
+}
+
+export async function deleteAdminCategory(kind: AdminCategoryKind, categoryId: string): Promise<void> {
+  await apiFetch(`/api/admin/categories/${categoryId}?type=${kind}`, {
+    method: "DELETE",
+    token: token(),
+  });
+}
+
+export const CATEGORY_KIND_LABELS: Record<AdminCategoryKind, string> = {
+  produits: "Produits (boutiques)",
+  menus: "Plats (restaurants)",
+};

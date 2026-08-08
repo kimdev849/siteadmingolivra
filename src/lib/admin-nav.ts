@@ -17,6 +17,7 @@ import {
   Activity,
   Bell,
   Megaphone,
+  Tags,
 } from "lucide-react";
 
 /** Rafraîchissement auto des écrans admin (commandes, livraisons, dashboard). */
@@ -43,6 +44,7 @@ export const adminNavItems: AdminNavItem[] = [
   { to: "/admin/commissions", label: "Commissions livraison", icon: Percent },
   { to: "/admin/pays", label: "Pays & Villes", icon: Globe },
   { to: "/admin/zones", label: "Zones livraison", icon: MapPin },
+  { to: "/admin/categories", label: "Catégories", icon: Tags },
   { to: "/admin/retraits", label: "Retraits", icon: Receipt },
   { to: "/admin/campagnes", label: "Campagnes", icon: Megaphone },
   { to: "/admin/analytics", label: "Analytics", icon: BarChart3 },

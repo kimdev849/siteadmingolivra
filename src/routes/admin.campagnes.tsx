@@ -327,14 +327,13 @@ function CampagnesPage() {
       <PageHeader
         title="Campagnes & Merchandising"
         description="Créez et gérez les campagnes marketing, offres du jour et promotions. Ces campagnes sont diffusées sur l'accueil de l'app mobile GoLivra."
-      >
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <Sparkles className="h-4 w-4 text-amber-500" />
-          <span>
+        actions={
+          <span className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Sparkles className="h-4 w-4 text-amber-500" />
             Les campagnes actives apparaissent sur l'accueil de l'application mobile
           </span>
-        </div>
-      </PageHeader>
+        }
+      />
 
       {campagnesQuery.isError && (
         <Alert variant="destructive">
