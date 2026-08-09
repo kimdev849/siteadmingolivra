@@ -1,4 +1,4 @@
-﻿import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, type FormEvent } from "react";
 import { Eye, EyeOff, Loader2, Lock, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -20,13 +20,12 @@ import {
   isRememberMeEnabled,
   setAdminToken,
 } from "@/lib/auth-session";
-import { APP_BUILD_ID } from "@/lib/build-info";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
     meta: [
       { title: "Connexion — GoLivra" },
-      { name: "description", content: "Connexion admin ou espace entreprise de livraison." },
+      { name: "description", content: "Connectez-vous à votre espace GoLivra." },
     ],
   }),
   component: LoginPage,
@@ -123,136 +122,105 @@ function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col lg:flex-row">
-      {/* Panneau gauche — desktop */}
-      <div className="relative hidden bg-[#0B6B45] lg:flex lg:w-[44%] lg:flex-col lg:justify-between lg:p-12">
-        <div className="flex items-center gap-3">
-          <img
-            src={logo}
-            alt="GoLivra"
-            className="h-12 w-12 rounded-xl bg-white/95 p-1.5 object-contain"
-          />
-          <div>
-            <p className="text-xl font-bold text-white">GoLivra</p>
-            <p className="text-sm text-white/80">Admin & entreprises de livraison</p>
+    <div className="flex min-h-screen flex-col bg-background">
+      {/* Zone centrale : logo + formulaire */}
+      <div className="flex flex-1 items-center justify-center px-4 py-12">
+        <div className="w-full max-w-sm">
+          {/* Logo GoLivra */}
+          <div className="mb-8 flex flex-col items-center gap-3">
+            <img src={logo} alt="GoLivra" className="h-16 w-16 object-contain" />
+            <h1 className="text-3xl font-extrabold tracking-tight text-foreground">GoLivra</h1>
           </div>
-        </div>
 
-        <div className="space-y-4 text-white/90">
-          <p className="max-w-md text-base leading-relaxed">
-            Accédez à votre espace sécurisé pour gérer votre activité sur GoLivra.
-          </p>
-          <p className="max-w-md text-sm leading-relaxed text-white/75">
-            Suivez en temps réel les opérations, les commandes et les mises à jour de la plateforme.
-          </p>
-        </div>
+          <div className="mb-6">
+            <h2 className="text-xl font-bold text-foreground">Connexion</h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Connectez-vous à votre espace GoLivra.
+            </p>
+          </div>
 
-        <p className="text-xs text-white/60">© GoLivra — Tous droits réservés</p>
-      </div>
-
-      {/* Formulaire */}
-      <div className="flex flex-1 flex-col bg-background">
-        <div className="flex flex-1 items-center justify-center px-4 py-10">
-          <div className="w-full max-w-md">
-            <div className="mb-8 text-center lg:text-left">
-              <div className="mb-4 flex justify-center lg:hidden">
-                <img src={logo} alt="GoLivra" className="h-14 w-14 object-contain" />
+          <form className="space-y-5" onSubmit={(e) => void handleSubmit(e)}>
+            <div className="space-y-2">
+              <Label htmlFor="email">Adresse e-mail</Label>
+              <div className="relative">
+                <Mail className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  id="email"
+                  type="email"
+                  autoComplete="email"
+                  placeholder="vous@exemple.com"
+                  className="pl-10"
+                  value={email}
+                  disabled={loading}
+                  onChange={(ev) => setEmail(ev.target.value)}
+                />
               </div>
-              <h1 className="text-2xl font-bold text-foreground">Connexion</h1>
-              <p className="mt-2 text-sm text-muted-foreground">
-                Accédez avec vos identifiants GoLivra.
-              </p>
-              <p className="mt-3 rounded-md border border-border bg-muted/40 px-3 py-2 text-left text-xs text-muted-foreground">
-                <strong className="text-foreground">Entreprise de livraison :</strong>{" "}
-                connectez-vous avec l&apos;
-                <strong className="text-foreground">e-mail du responsable</strong> (celui défini à
-                la création du compte), pas l&apos;e-mail de contact de l&apos;entreprise. Mot de
-                passe : minimum 6 caractères.
-              </p>
             </div>
 
-            <form className="space-y-5" onSubmit={(e) => void handleSubmit(e)}>
-              <div className="space-y-2">
-                <Label htmlFor="email">Adresse e-mail</Label>
-                <div className="relative">
-                  <Mail className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                  <Input
-                    id="email"
-                    type="email"
-                    autoComplete="email"
-                    className="pl-10"
-                    value={email}
-                    disabled={loading}
-                    onChange={(ev) => setEmail(ev.target.value)}
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="password">Mot de passe</Label>
-                <div className="relative">
-                  <Lock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                  <Input
-                    id="password"
-                    type={showPassword ? "text" : "password"}
-                    autoComplete="current-password"
-                    className="pl-10 pr-10"
-                    value={password}
-                    disabled={loading}
-                    onChange={(ev) => setPassword(ev.target.value)}
-                  />
-                  <button
-                    type="button"
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                    aria-label={
-                      showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"
-                    }
-                    onClick={() => setShowPassword((v) => !v)}
-                  >
-                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </button>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <Checkbox
-                  id="remember"
-                  checked={remember}
+            <div className="space-y-2">
+              <Label htmlFor="password">Mot de passe</Label>
+              <div className="relative">
+                <Lock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  autoComplete="current-password"
+                  placeholder="••••••••"
+                  className="pl-10 pr-10"
+                  value={password}
                   disabled={loading}
-                  onCheckedChange={(v) => setRemember(v === true)}
+                  onChange={(ev) => setPassword(ev.target.value)}
                 />
-                <Label
-                  htmlFor="remember"
-                  className="cursor-pointer text-sm font-normal text-muted-foreground"
+                <button
+                  type="button"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+                  onClick={() => setShowPassword((v) => !v)}
                 >
-                  Rester connecté
-                </Label>
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
               </div>
+            </div>
 
-              {error ? (
-                <Alert variant="destructive">
-                  <AlertDescription>{error}</AlertDescription>
-                </Alert>
-              ) : null}
+            <div className="flex items-center gap-2">
+              <Checkbox
+                id="remember"
+                checked={remember}
+                disabled={loading}
+                onCheckedChange={(v) => setRemember(v === true)}
+              />
+              <Label
+                htmlFor="remember"
+                className="cursor-pointer text-sm font-normal text-muted-foreground"
+              >
+                Rester connecté
+              </Label>
+            </div>
 
-              <Button type="submit" className="h-11 w-full" disabled={loading}>
-                {loading ? (
-                  <>
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    Connexion…
-                  </>
-                ) : (
-                  "Se connecter"
-                )}
-              </Button>
-            </form>
-          </div>
+            {error ? (
+              <Alert variant="destructive">
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            ) : null}
+
+            <Button type="submit" className="h-11 w-full" disabled={loading}>
+              {loading ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Connexion…
+                </>
+              ) : (
+                "Se connecter"
+              )}
+            </Button>
+          </form>
         </div>
-
-        <p className="pb-6 text-center text-xs text-muted-foreground lg:hidden">
-          © GoLivra — build {APP_BUILD_ID.slice(0, 7)}
-        </p>
       </div>
+
+      {/* Pied de page */}
+      <p className="pb-8 text-center text-xs text-muted-foreground">
+        © GoLivra — Tous droits réservés
+      </p>
     </div>
   );
 }
