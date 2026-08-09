@@ -110,8 +110,11 @@ function AdminCategoriesPage() {
       {query.isError && (
         <Alert variant="destructive" className="mb-4">
           <AlertDescription>
-            Impossible de charger les catégories. Vérifiez que la migration des catégories globales
-            est appliquée en base.
+            Impossible de charger les catégories. Exécutez le script SQL{" "}
+            <code className="rounded bg-destructive/10 px-1.5 py-0.5 font-mono text-xs">
+              golivraback/sql/fix-categories-et-parametres.sql
+            </code>{" "}
+            dans Supabase (SQL Editor), puis « Reload schema » (Project Settings → API).
           </AlertDescription>
         </Alert>
       )}
