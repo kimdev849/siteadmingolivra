@@ -19,6 +19,7 @@ import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
 import { Route as AdminCampagnesRouteImport } from './routes/admin.campagnes'
 import { Route as AdminCategoriesRouteImport } from './routes/admin.categories'
 import { Route as AdminCommissionsRouteImport } from './routes/admin.commissions'
+import { Route as AdminControleRouteImport } from './routes/admin.controle'
 import { Route as AdminLivraisonsRouteImport } from './routes/admin.livraisons'
 import { Route as AdminObservabiliteRouteImport } from './routes/admin.observabilite'
 import { Route as AdminParametresRouteImport } from './routes/admin.parametres'
@@ -97,6 +98,11 @@ const AdminCategoriesRoute = AdminCategoriesRouteImport.update({
 const AdminCommissionsRoute = AdminCommissionsRouteImport.update({
   id: '/commissions',
   path: '/commissions',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminControleRoute = AdminControleRouteImport.update({
+  id: '/controle',
+  path: '/controle',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminLivraisonsRoute = AdminLivraisonsRouteImport.update({
@@ -258,6 +264,7 @@ export interface FileRoutesByFullPath {
   '/admin/campagnes': typeof AdminCampagnesRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/commissions': typeof AdminCommissionsRoute
+  '/admin/controle': typeof AdminControleRoute
   '/admin/livraisons': typeof AdminLivraisonsRouteWithChildren
   '/admin/observabilite': typeof AdminObservabiliteRouteWithChildren
   '/admin/parametres': typeof AdminParametresRoute
@@ -297,6 +304,7 @@ export interface FileRoutesByTo {
   '/admin/campagnes': typeof AdminCampagnesRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/commissions': typeof AdminCommissionsRoute
+  '/admin/controle': typeof AdminControleRoute
   '/admin/livraisons': typeof AdminLivraisonsRouteWithChildren
   '/admin/observabilite': typeof AdminObservabiliteRouteWithChildren
   '/admin/parametres': typeof AdminParametresRoute
@@ -339,6 +347,7 @@ export interface FileRoutesById {
   '/admin/campagnes': typeof AdminCampagnesRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/commissions': typeof AdminCommissionsRoute
+  '/admin/controle': typeof AdminControleRoute
   '/admin/livraisons': typeof AdminLivraisonsRouteWithChildren
   '/admin/observabilite': typeof AdminObservabiliteRouteWithChildren
   '/admin/parametres': typeof AdminParametresRoute
@@ -380,7 +389,9 @@ export interface FileRouteTypes {
     | '/admin/alertes'
     | '/admin/analytics'
     | '/admin/campagnes'
+    | '/admin/categories'
     | '/admin/commissions'
+    | '/admin/controle'
     | '/admin/livraisons'
     | '/admin/observabilite'
     | '/admin/parametres'
@@ -418,7 +429,9 @@ export interface FileRouteTypes {
     | '/admin/alertes'
     | '/admin/analytics'
     | '/admin/campagnes'
+    | '/admin/categories'
     | '/admin/commissions'
+    | '/admin/controle'
     | '/admin/livraisons'
     | '/admin/observabilite'
     | '/admin/parametres'
@@ -458,7 +471,9 @@ export interface FileRouteTypes {
     | '/admin/alertes'
     | '/admin/analytics'
     | '/admin/campagnes'
+    | '/admin/categories'
     | '/admin/commissions'
+    | '/admin/controle'
     | '/admin/livraisons'
     | '/admin/observabilite'
     | '/admin/parametres'
@@ -568,6 +583,13 @@ declare module '@tanstack/react-router' {
       path: '/commissions'
       fullPath: '/admin/commissions'
       preLoaderRoute: typeof AdminCommissionsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/controle': {
+      id: '/admin/controle'
+      path: '/controle'
+      fullPath: '/admin/controle'
+      preLoaderRoute: typeof AdminControleRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/livraisons': {
@@ -805,6 +827,7 @@ interface AdminRouteChildren {
   AdminCampagnesRoute: typeof AdminCampagnesRoute
   AdminCategoriesRoute: typeof AdminCategoriesRoute
   AdminCommissionsRoute: typeof AdminCommissionsRoute
+  AdminControleRoute: typeof AdminControleRoute
   AdminLivraisonsRoute: typeof AdminLivraisonsRouteWithChildren
   AdminObservabiliteRoute: typeof AdminObservabiliteRouteWithChildren
   AdminParametresRoute: typeof AdminParametresRoute
@@ -830,6 +853,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminCampagnesRoute: AdminCampagnesRoute,
   AdminCategoriesRoute: AdminCategoriesRoute,
   AdminCommissionsRoute: AdminCommissionsRoute,
+  AdminControleRoute: AdminControleRoute,
   AdminLivraisonsRoute: AdminLivraisonsRouteWithChildren,
   AdminObservabiliteRoute: AdminObservabiliteRouteWithChildren,
   AdminParametresRoute: AdminParametresRoute,

@@ -18,6 +18,7 @@ import {
   Bell,
   Megaphone,
   Tags,
+  Power,
 } from "lucide-react";
 
 /** Rafraîchissement auto des écrans admin (commandes, livraisons, dashboard). */
@@ -48,5 +49,6 @@ export const adminNavItems: AdminNavItem[] = [
   { to: "/admin/retraits", label: "Retraits", icon: Receipt },
   { to: "/admin/campagnes", label: "Campagnes", icon: Megaphone },
   { to: "/admin/analytics", label: "Analytics", icon: BarChart3 },
+  { to: "/admin/controle", label: "Contrôle de l'app", icon: Power },
   { to: "/admin/parametres", label: "Paramètres", icon: Settings },
 ];
