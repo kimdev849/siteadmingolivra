@@ -21,24 +21,41 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { fetchAdminSettings, updateAdminSettings } from "@/lib/admin-api";
+import { fetchAdminSettings, fetchAdminStats, updateAdminSettings } from "@/lib/admin-api";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/admin/controle")({
   component: AdminControlePage,
 });
 
+function AdminControlePage() {
+  return (
+    <div>
+      <PageHeader
+        title="Contrôle de l'application"
+        description="Interrupteurs à distance : coupez l'app, forcez une mise à jour, ou désactivez une fonctionnalité sans republier l'APK."
+      />
+      <ControleContent />
+    </div>
+  );
+}
+
 function bool(v: unknown): boolean {
   return v === true || v === "true" || v === "1";
 }
 
-function AdminControlePage() {
+function ControleContent() {
   const qc = useQueryClient();
   const settingsQuery = useQuery({
     queryKey: ["admin", "settings"],
     queryFn: fetchAdminSettings,
   });
   const s = settingsQuery.data;
+  const statsQuery = useQuery({
+    queryKey: ["admin", "stats"],
+    queryFn: fetchAdminStats,
+    refetchInterval: 30_000,
+  });
 
   // État local des interrupteurs (initialisé depuis les settings)
   const [appEnabled, setAppEnabled] = useState(true);
@@ -153,12 +170,7 @@ function AdminControlePage() {
   ];
 
   return (
-    <div>
-      <PageHeader
-        title="Contrôle de l'application"
-        description="Interrupteurs à distance : coupez l'app, forcez une mise à jour, ou désactivez une fonctionnalité sans republier l'APK."
-      />
-
+    <>
       {settingsQuery.isError && (
         <Alert variant="destructive" className="mb-4">
           <AlertDescription>
@@ -167,6 +179,37 @@ function AdminControlePage() {
           </AlertDescription>
         </Alert>
       )}
+
+      {/* Compteurs d'activité : comptes connectés + commandes */}
+      <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <Card>
+          <CardContent className="py-4">
+            <p className="text-xs font-medium text-muted-foreground">Comptes connectés</p>
+            <p className="mt-1 text-2xl font-bold">
+              {statsQuery.isLoading ? "—" : (statsQuery.data?.comptes_connectes ?? 0)}
+            </p>
+            <p className="text-xs text-muted-foreground">sessions actives (7 jours)</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="py-4">
+            <p className="text-xs font-medium text-muted-foreground">Commandes totales</p>
+            <p className="mt-1 text-2xl font-bold">
+              {statsQuery.isLoading ? "—" : (statsQuery.data?.commandes_total ?? 0)}
+            </p>
+            <p className="text-xs text-muted-foreground">depuis le lancement</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="py-4">
+            <p className="text-xs font-medium text-muted-foreground">Livraisons en cours</p>
+            <p className="mt-1 text-2xl font-bold">
+              {statsQuery.isLoading ? "—" : (statsQuery.data?.livraisons_en_cours ?? 0)}
+            </p>
+            <p className="text-xs text-muted-foreground">non encore livrées</p>
+          </CardContent>
+        </Card>
+      </div>
 
       {/* Bandeau d'état global */}
       <Card className="mb-4">
@@ -326,6 +369,6 @@ function AdminControlePage() {
           ✓ Contrôle enregistré — appliqué immédiatement à l'application.
         </p>
       )}
-    </div>
+    </>
   );
 }

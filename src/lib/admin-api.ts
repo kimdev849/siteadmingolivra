@@ -16,6 +16,7 @@ export type AdminStats = {
   livraisons_total?: number;
   livraisons_externes?: number;
   livraisons_en_cours?: number;
+  comptes_connectes?: number;
   incidents_ouverts?: number;
 };
 
