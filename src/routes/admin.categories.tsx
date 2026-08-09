@@ -1,7 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { Check, Loader2, Pencil, Plus, Tags, Trash2, UtensilsCrossed } from "lucide-react";
+import {
+  Check,
+  ChefHat,
+  Loader2,
+  Pencil,
+  Plus,
+  Store,
+  Tags,
+  Trash2,
+  UtensilsCrossed,
+} from "lucide-react";
 import { PageHeader } from "@/components/admin/PageHeader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -31,6 +41,34 @@ export const Route = createFileRoute("/admin/categories")({
   component: AdminCategoriesPage,
 });
 
+const CATEGORY_KINDS: {
+  key: AdminCategoryKind;
+  icon: React.ComponentType<{ className?: string }>;
+}[] = [
+  { key: "produits", icon: Tags },
+  { key: "menus", icon: UtensilsCrossed },
+  { key: "boutiques", icon: Store },
+  { key: "restaurants", icon: ChefHat },
+];
+
+const KIND_DESCRIPTIONS: Record<AdminCategoryKind, string> = {
+  produits:
+    "Catégories du catalogue des boutiques. Le vendeur choisit ici lors de la publication d'un produit.",
+  menus:
+    "Catégories du menu des restaurants. Le vendeur choisit ici lors de la publication d'un plat.",
+  boutiques:
+    "Types de boutique proposés à l'inscription du commerce. Modifiable à tout moment — le type sélectionné reste sur les boutiques existantes.",
+  restaurants:
+    "Types de restaurant proposés à l'inscription du commerce. Modifiable à tout moment — le type sélectionné reste sur les restaurants existants.",
+};
+
+const KIND_ICON: Record<AdminCategoryKind, React.ComponentType<{ className?: string }>> = {
+  produits: Tags,
+  menus: UtensilsCrossed,
+  boutiques: Store,
+  restaurants: ChefHat,
+};
+
 function AdminCategoriesPage() {
   const qc = useQueryClient();
   const [kind, setKind] = useState<AdminCategoryKind>("produits");
@@ -45,31 +83,35 @@ function AdminCategoriesPage() {
   return (
     <div>
       <PageHeader
-        title="Catégories du catalogue"
-        description="Le référentiel global des catégories. Les commerçants choisissent ici — ils ne créent plus de catégorie eux-mêmes."
+        title="Types & catégories"
+        description="Le référentiel global : types de commerce, catégories de produits et de plats. Tout se configure ici — les commerçants choisissent dans ces listes, ils ne créent plus rien eux-mêmes."
       />
 
-      {/* Sélecteur produits / menus */}
-      <div className="mb-4 inline-flex rounded-lg border bg-muted p-1">
-        {(["produits", "menus"] as AdminCategoryKind[]).map((k) => (
+      {/* Sélecteur des 4 référentiels */}
+      <div className="mb-2 flex flex-wrap gap-1 rounded-lg border bg-muted p-1">
+        {CATEGORY_KINDS.map(({ key, icon: Icon }) => (
           <button
-            key={k}
+            key={key}
             type="button"
-            onClick={() => setKind(k)}
+            onClick={() => setKind(key)}
             className={`inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
-              kind === k ? "bg-background shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground"
+              kind === key
+                ? "bg-background shadow-sm text-foreground"
+                : "text-muted-foreground hover:text-foreground"
             }`}
           >
-            {k === "produits" ? <Tags className="h-3.5 w-3.5" /> : <UtensilsCrossed className="h-3.5 w-3.5" />}
-            {CATEGORY_KIND_LABELS[k]}
+            <Icon className="h-3.5 w-3.5" />
+            {CATEGORY_KIND_LABELS[key]}
           </button>
         ))}
       </div>
+      <p className="mb-4 text-xs text-muted-foreground">{KIND_DESCRIPTIONS[kind]}</p>
 
       {query.isError && (
         <Alert variant="destructive" className="mb-4">
           <AlertDescription>
-            Impossible de charger les catégories. Vérifiez que la migration des catégories globales est appliquée en base.
+            Impossible de charger les catégories. Vérifiez que la migration des catégories globales
+            est appliquée en base.
           </AlertDescription>
         </Alert>
       )}
@@ -170,12 +212,14 @@ function CategoriesCard({
     onSuccess: onChanged,
   });
 
+  const KindIcon = KIND_ICON[kind];
+
   return (
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center justify-between text-sm font-semibold">
           <span className="flex items-center gap-2">
-            {kind === "produits" ? <Tags className="h-4 w-4" /> : <UtensilsCrossed className="h-4 w-4" />}
+            <KindIcon className="h-4 w-4" />
             {CATEGORY_KIND_LABELS[kind]}
           </span>
           <Button
@@ -260,7 +304,7 @@ function CategoriesCard({
       <CategoryFormDialog
         open={addOpen}
         onOpenChange={setAddOpen}
-        title={`Ajouter une catégorie ${kind === "produits" ? "de produit" : "de plat"}`}
+        title={`Ajouter : ${CATEGORY_KIND_LABELS[kind].toLowerCase()}`}
         formNom={formNom}
         setFormNom={setFormNom}
         formDescription={formDescription}
@@ -278,7 +322,7 @@ function CategoriesCard({
       <CategoryFormDialog
         open={editOpen}
         onOpenChange={setEditOpen}
-        title={`Modifier la catégorie ${kind === "produits" ? "de produit" : "de plat"}`}
+        title={`Modifier : ${CATEGORY_KIND_LABELS[kind].toLowerCase()}`}
         formNom={formNom}
         setFormNom={setFormNom}
         formDescription={formDescription}
@@ -298,8 +342,8 @@ function CategoriesCard({
           <DialogHeader>
             <DialogTitle>Supprimer la catégorie</DialogTitle>
             <DialogDescription>
-              Êtes-vous sûr de vouloir supprimer <strong>{deleting?.nom}</strong>&nbsp;?
-              Les produits existants conserveront leur catégorie (elle sera simplement détachée).
+              Êtes-vous sûr de vouloir supprimer <strong>{deleting?.nom}</strong>&nbsp;? Les
+              produits existants conserveront leur catégorie (elle sera simplement détachée).
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -354,11 +398,12 @@ function CategoryFormDialog({
 }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
+      {" "}
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>
-            Les commerçants verront cette catégorie dans leur formulaire de publication.
+            Les commerçants verront cette entrée dans leur formulaire (inscription ou publication).
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-3">

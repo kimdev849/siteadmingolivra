@@ -304,7 +304,12 @@ export type AdminLogistics = {
   resume_livraisons?: {
     en_cours: number;
     en_retard: number;
-    retards: { id: string; en_retard: boolean; type_retard?: string | null; minutes_retard?: number }[];
+    retards: {
+      id: string;
+      en_retard: boolean;
+      type_retard?: string | null;
+      minutes_retard?: number;
+    }[];
   };
   stats?: AdminLogisticsStats;
 };
@@ -524,13 +529,12 @@ export async function fetchAdminDeliveryDetail(deliveryId: string): Promise<Admi
 export async function fetchNotifications(): Promise<AppNotification[]> {
   // Le backend renvoie { items, unread_count } ; on tolère aussi l'ancien
   // format tableau brut pour rétro-compat.
-  const data = await apiFetch<{ items?: AppNotification[]; unread_count?: number } | AppNotification[]>(
-    "/api/notifications?limit=40",
-    {
-      method: "GET",
-      token: token(),
-    },
-  );
+  const data = await apiFetch<
+    { items?: AppNotification[]; unread_count?: number } | AppNotification[]
+  >("/api/notifications?limit=40", {
+    method: "GET",
+    token: token(),
+  });
   if (Array.isArray(data)) return data;
   return Array.isArray(data?.items) ? data.items : [];
 }
@@ -657,10 +661,13 @@ export type AdminSettingEntry = {
 };
 
 export async function fetchAdminSettings(): Promise<Record<string, AdminSettingEntry>> {
-  const res = await apiFetch<{ settings: Record<string, AdminSettingEntry> }>("/api/settings/admin", {
-    method: "GET",
-    token: token(),
-  });
+  const res = await apiFetch<{ settings: Record<string, AdminSettingEntry> }>(
+    "/api/settings/admin",
+    {
+      method: "GET",
+      token: token(),
+    },
+  );
   return res.settings;
 }
 
@@ -918,7 +925,9 @@ export async function deleteAdminVille(villeId: string): Promise<void> {
   });
 }
 
-export async function fetchAdminArrondissements(villeId?: string): Promise<AdminArrondissementFull[]> {
+export async function fetchAdminArrondissements(
+  villeId?: string,
+): Promise<AdminArrondissementFull[]> {
   const qs = villeId ? `?ville_id=${encodeURIComponent(villeId)}` : "";
   const data = await apiFetch<AdminArrondissementFull[]>(
     `/api/admin/locations/arrondissements${qs}`,
@@ -953,6 +962,7 @@ export async function deleteAdminArrondissement(arrId: string): Promise<void> {
 /* ──────────────────────────────────────────────────────────────
  * Catégories globales du catalogue (GoLivra organise)
  * type = "produits" (boutiques) | "menus" (restaurants)
+ *      | "boutiques" (types de boutique) | "restaurants" (types de restaurant)
  * ────────────────────────────────────────────────────────────── */
 
 export type AdminProductCategory = {
@@ -965,9 +975,11 @@ export type AdminProductCategory = {
   created_at?: string;
 };
 
-export type AdminCategoryKind = "produits" | "menus";
+export type AdminCategoryKind = "produits" | "menus" | "boutiques" | "restaurants";
 
-export async function fetchAdminCategories(kind: AdminCategoryKind): Promise<AdminProductCategory[]> {
+export async function fetchAdminCategories(
+  kind: AdminCategoryKind,
+): Promise<AdminProductCategory[]> {
   const data = await apiFetch<AdminProductCategory[]>(`/api/admin/categories?type=${kind}`, {
     method: "GET",
     token: token(),
@@ -977,7 +989,13 @@ export async function fetchAdminCategories(kind: AdminCategoryKind): Promise<Adm
 
 export async function createAdminCategory(
   kind: AdminCategoryKind,
-  body: { nom: string; description?: string; image_url?: string; ordre?: number; est_active?: boolean },
+  body: {
+    nom: string;
+    description?: string;
+    image_url?: string;
+    ordre?: number;
+    est_active?: boolean;
+  },
 ): Promise<AdminProductCategory> {
   return apiFetch<AdminProductCategory>("/api/admin/categories", {
     method: "POST",
@@ -989,7 +1007,13 @@ export async function createAdminCategory(
 export async function updateAdminCategory(
   kind: AdminCategoryKind,
   categoryId: string,
-  body: Partial<{ nom: string; description: string; image_url: string; ordre: number; est_active: boolean }>,
+  body: Partial<{
+    nom: string;
+    description: string;
+    image_url: string;
+    ordre: number;
+    est_active: boolean;
+  }>,
 ): Promise<AdminProductCategory> {
   return apiFetch<AdminProductCategory>(`/api/admin/categories/${categoryId}`, {
     method: "PATCH",
@@ -998,7 +1022,10 @@ export async function updateAdminCategory(
   });
 }
 
-export async function deleteAdminCategory(kind: AdminCategoryKind, categoryId: string): Promise<void> {
+export async function deleteAdminCategory(
+  kind: AdminCategoryKind,
+  categoryId: string,
+): Promise<void> {
   await apiFetch(`/api/admin/categories/${categoryId}?type=${kind}`, {
     method: "DELETE",
     token: token(),
@@ -1008,4 +1035,6 @@ export async function deleteAdminCategory(kind: AdminCategoryKind, categoryId: s
 export const CATEGORY_KIND_LABELS: Record<AdminCategoryKind, string> = {
   produits: "Produits (boutiques)",
   menus: "Plats (restaurants)",
+  boutiques: "Types de boutique",
+  restaurants: "Types de restaurant",
 };
