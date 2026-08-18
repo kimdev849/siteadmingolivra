@@ -39,12 +39,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   fetchAdminCampagnes,
   createAdminCampagne,
@@ -249,9 +244,7 @@ function CampagnesPage() {
 
   const toggleVilleSelection = (villeId: string) => {
     setFormSelectedVilles((prev) =>
-      prev.includes(villeId)
-        ? prev.filter((id) => id !== villeId)
-        : [...prev, villeId],
+      prev.includes(villeId) ? prev.filter((id) => id !== villeId) : [...prev, villeId],
     );
   };
 
@@ -354,7 +347,10 @@ function CampagnesPage() {
             const s = getCampagneStatus(c);
             return s.variant === "success";
           }).length > 0 && (
-            <Badge variant="outline" className="gap-1 border-green-200 bg-green-50 text-green-700 dark:border-green-800 dark:bg-green-950/30 dark:text-green-400">
+            <Badge
+              variant="outline"
+              className="gap-1 border-green-200 bg-green-50 text-green-700 dark:border-green-800 dark:bg-green-950/30 dark:text-green-400"
+            >
               <span className="relative flex h-2 w-2">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" />
@@ -481,9 +477,7 @@ function CampagnesPage() {
 
                   {/* Description */}
                   {c.description && (
-                    <p className="line-clamp-2 text-sm text-muted-foreground">
-                      {c.description}
-                    </p>
+                    <p className="line-clamp-2 text-sm text-muted-foreground">{c.description}</p>
                   )}
 
                   {/* Métadonnées */}
@@ -756,9 +750,7 @@ function CampagnesPage() {
                       Chargement…
                     </p>
                   ) : villes.length === 0 ? (
-                    <p className="py-2 text-sm text-muted-foreground">
-                      Aucune ville pour ce pays.
-                    </p>
+                    <p className="py-2 text-sm text-muted-foreground">Aucune ville pour ce pays.</p>
                   ) : (
                     villes.map((v) => {
                       const selected = formSelectedVilles.includes(v.id);

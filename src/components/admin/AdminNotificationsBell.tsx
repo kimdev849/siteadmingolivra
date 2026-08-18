@@ -84,7 +84,11 @@ export function AdminNotificationsBell() {
         <DropdownMenuLabel className="flex items-center justify-between gap-2">
           <span>Notifications</span>
           {unread > 0 ? (
-            <button type="button" className="text-xs font-medium text-primary" onClick={() => void markAll()}>
+            <button
+              type="button"
+              className="text-xs font-medium text-primary"
+              onClick={() => void markAll()}
+            >
               Tout marquer lu
             </button>
           ) : null}
@@ -97,11 +101,17 @@ export function AdminNotificationsBell() {
             const href = notificationLink(n);
             const inner = (
               <div className="flex flex-col gap-0.5 py-0.5">
-                <span className={`text-sm ${n.est_lue ? "text-muted-foreground" : "font-semibold text-foreground"}`}>
+                <span
+                  className={`text-sm ${n.est_lue ? "text-muted-foreground" : "font-semibold text-foreground"}`}
+                >
                   {n.titre}
                 </span>
-                {n.corps ? <span className="text-xs text-muted-foreground line-clamp-2">{n.corps}</span> : null}
-                <span className="text-[10px] text-muted-foreground">{formatDateTimeFr(n.created_at)}</span>
+                {n.corps ? (
+                  <span className="text-xs text-muted-foreground line-clamp-2">{n.corps}</span>
+                ) : null}
+                <span className="text-[10px] text-muted-foreground">
+                  {formatDateTimeFr(n.created_at)}
+                </span>
               </div>
             );
             return (
@@ -111,7 +121,8 @@ export function AdminNotificationsBell() {
                 onClick={() => {
                   if (!n.est_lue) void markRead(n.id);
                 }}
-                asChild={Boolean(href)}>
+                asChild={Boolean(href)}
+              >
                 {href ? <Link to={href}>{inner}</Link> : inner}
               </DropdownMenuItem>
             );

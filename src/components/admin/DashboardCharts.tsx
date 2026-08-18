@@ -44,10 +44,14 @@ export function DashboardCharts() {
     return (
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card>
-          <CardContent className="py-10 text-sm text-muted-foreground">Chargement des graphiques…</CardContent>
+          <CardContent className="py-10 text-sm text-muted-foreground">
+            Chargement des graphiques…
+          </CardContent>
         </Card>
         <Card>
-          <CardContent className="py-10 text-sm text-muted-foreground">Chargement des graphiques…</CardContent>
+          <CardContent className="py-10 text-sm text-muted-foreground">
+            Chargement des graphiques…
+          </CardContent>
         </Card>
       </div>
     );
@@ -91,7 +95,10 @@ export function DashboardCharts() {
               <XAxis dataKey="label" tick={{ fontSize: 10 }} interval="preserveStartEnd" />
               <YAxis tick={{ fontSize: 10 }} />
               <Tooltip
-                formatter={(v: number) => [`${Number(v).toLocaleString("fr-FR")} FCFA`, "Commission"]}
+                formatter={(v: number) => [
+                  `${Number(v).toLocaleString("fr-FR")} FCFA`,
+                  "Commission",
+                ]}
               />
               <Line
                 type="monotone"

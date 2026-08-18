@@ -68,12 +68,10 @@ export function UsageDashboardPanel() {
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div>
-          <h2 className="text-base font-semibold text-foreground">
-            Utilisation de l'app mobile
-          </h2>
+          <h2 className="text-base font-semibold text-foreground">Utilisation de l'app mobile</h2>
           <p className="text-xs text-muted-foreground">
-            Utilisateurs officiels, activité, fréquence et zones les plus livrées
-            sur les {WINDOWS.find((w) => w.value === windowDays)?.label ?? `${windowDays} jours`}.
+            Utilisateurs officiels, activité, fréquence et zones les plus livrées sur les{" "}
+            {WINDOWS.find((w) => w.value === windowDays)?.label ?? `${windowDays} jours`}.
             Rafraîchissement {Math.round(ADMIN_LIVE_REFETCH_MS / 1000)}s.
           </p>
         </div>
@@ -107,8 +105,7 @@ export function UsageDashboardPanel() {
           value={data ? data.mobile_users.nouveaux_30j.toLocaleString("fr-FR") : undefined}
           hint={
             data
-              ? pct(data.mobile_users.croissance_30j_pct / 100) +
-                " vs 30j précédents"
+              ? pct(data.mobile_users.croissance_30j_pct / 100) + " vs 30j précédents"
               : undefined
           }
         />
@@ -116,21 +113,13 @@ export function UsageDashboardPanel() {
           label="Actifs 7 jours"
           icon={UserCheck}
           value={data ? data.activite.utilisateurs_actifs_7j.toLocaleString("fr-FR") : undefined}
-          hint={
-            data
-              ? `${data.activite.livreurs_actifs_7j} livreur(s) en mission`
-              : undefined
-          }
+          hint={data ? `${data.activite.livreurs_actifs_7j} livreur(s) en mission` : undefined}
         />
         <KpiCard
           label="Actifs 30 jours"
           icon={Activity}
           value={data ? data.activite.utilisateurs_actifs_30j.toLocaleString("fr-FR") : undefined}
-          hint={
-            data
-              ? `${data.mobile_users.actifs} comptes actifs en base`
-              : undefined
-          }
+          hint={data ? `${data.mobile_users.actifs} comptes actifs en base` : undefined}
         />
       </div>
 
@@ -139,22 +128,26 @@ export function UsageDashboardPanel() {
           label="Commandes (30j)"
           icon={ShoppingBag}
           value={data ? data.activite.commandes_30j.toLocaleString("fr-FR") : undefined}
-          hint={
-            data
-              ? `${data.activite.commandes_livrees_30j} livrées`
-              : undefined
-          }
+          hint={data ? `${data.activite.commandes_livrees_30j} livrées` : undefined}
         />
         <KpiCard
           label="Fréquence commandes"
           icon={BarChart3}
-          value={data ? data.activite.moyenne_commandes_par_client_actif_30j.toLocaleString("fr-FR") : undefined}
+          value={
+            data
+              ? data.activite.moyenne_commandes_par_client_actif_30j.toLocaleString("fr-FR")
+              : undefined
+          }
           hint="Commandes par client actif"
         />
         <KpiCard
           label="Fréquence requêtes"
           icon={TrendingUp}
-          value={data ? data.activite.moyenne_requetes_par_utilisateur_actif_30j.toLocaleString("fr-FR") : undefined}
+          value={
+            data
+              ? data.activite.moyenne_requetes_par_utilisateur_actif_30j.toLocaleString("fr-FR")
+              : undefined
+          }
           hint="Requêtes API par utilisateur actif"
         />
         <KpiCard
@@ -170,13 +163,7 @@ export function UsageDashboardPanel() {
   );
 }
 
-function TopZonesCard({
-  data,
-  loading,
-}: {
-  data: UsageDashboard | undefined;
-  loading: boolean;
-}) {
+function TopZonesCard({ data, loading }: { data: UsageDashboard | undefined; loading: boolean }) {
   const zones = data?.top_zones_livraison ?? [];
   const totalCommandes = zones.reduce((s, z) => s + z.commandes, 0);
   const top = zones[0];
@@ -189,10 +176,9 @@ function TopZonesCard({
         </CardTitle>
         {top ? (
           <p className="text-xs text-muted-foreground">
-            🏆 <span className="font-medium text-foreground">{top.quartier}</span> en tête avec
-            {" "}
-            <span className="font-mono">{top.commandes}</span> commande(s)
-            {" "}· {totalCommandes.toLocaleString("fr-FR")} total
+            🏆 <span className="font-medium text-foreground">{top.quartier}</span> en tête avec{" "}
+            <span className="font-mono">{top.commandes}</span> commande(s) ·{" "}
+            {totalCommandes.toLocaleString("fr-FR")} total
           </p>
         ) : null}
       </CardHeader>
@@ -201,9 +187,9 @@ function TopZonesCard({
           <p className="text-sm text-muted-foreground">Chargement…</p>
         ) : zones.length === 0 ? (
           <p className="text-sm text-muted-foreground">
-            Aucune commande sur la fenêtre. Les zones sont calculées à partir du
-            champ <code className="rounded bg-muted px-1">quartier</code> du snapshot
-            d'adresse de livraison.
+            Aucune commande sur la fenêtre. Les zones sont calculées à partir du champ{" "}
+            <code className="rounded bg-muted px-1">quartier</code> du snapshot d'adresse de
+            livraison.
           </p>
         ) : (
           <div className="space-y-2">

@@ -1,6 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Activity, AlertTriangle, BarChart3, Bike, PackageCheck, Plus, Users, Wallet } from "lucide-react";
+import {
+  Activity,
+  AlertTriangle,
+  BarChart3,
+  Bike,
+  PackageCheck,
+  Plus,
+  Users,
+  Wallet,
+} from "lucide-react";
 import { PageHeader } from "@/components/admin/PageHeader";
 import { KpiCard } from "@/components/admin/KpiCard";
 import { Button } from "@/components/ui/button";

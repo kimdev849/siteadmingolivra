@@ -42,7 +42,11 @@ function ParametresPage() {
   useEffect(() => {
     const s = settingsQuery.data;
     if (!s) return;
-    setCommissionPct(String(numVal(s.platform_fee_percent?.valeur ?? s.commission_marketplace_defaut_pct?.valeur, 0)));
+    setCommissionPct(
+      String(
+        numVal(s.platform_fee_percent?.valeur ?? s.commission_marketplace_defaut_pct?.valeur, 0),
+      ),
+    );
     setFraisBase(String(numVal(s.frais_livraison_base_fcfa?.valeur, 500)));
     setRayonKm(String(numVal(s.rayon_livraison_defaut_km?.valeur, 10)));
     setPlatformName(String(s.golivra_platform_name?.valeur ?? "GoLivra"));
@@ -75,12 +79,16 @@ function ParametresPage() {
 
   return (
     <div>
-      <PageHeader title="Paramètres" description="Configuration de la plateforme (enregistrée en base)" />
+      <PageHeader
+        title="Paramètres"
+        description="Configuration de la plateforme (enregistrée en base)"
+      />
 
       {settingsQuery.isError ? (
         <Alert variant="destructive" className="mb-4">
           <AlertDescription>
-            Impossible de charger les paramètres. Déployez le backend à jour et exécutez sql/amendments-features-v5.sql.
+            Impossible de charger les paramètres. Déployez le backend à jour et exécutez
+            sql/amendments-features-v5.sql.
           </AlertDescription>
         </Alert>
       ) : null}
@@ -157,15 +165,30 @@ function ParametresPage() {
             <Separator />
             {[
               { id: "maint", label: "Mode maintenance", value: maintenance, set: setMaintenance },
-              { id: "signup", label: "Inscriptions ouvertes", value: signupsOpen, set: setSignupsOpen },
-              { id: "notif-email", label: "Notifications e-mail", value: emailNotif, set: setEmailNotif },
+              {
+                id: "signup",
+                label: "Inscriptions ouvertes",
+                value: signupsOpen,
+                set: setSignupsOpen,
+              },
+              {
+                id: "notif-email",
+                label: "Notifications e-mail",
+                value: emailNotif,
+                set: setEmailNotif,
+              },
               { id: "notif-sms", label: "Notifications SMS", value: smsNotif, set: setSmsNotif },
             ].map((s) => (
               <div key={s.id} className="flex items-center justify-between">
                 <Label htmlFor={s.id} className="text-sm font-normal">
                   {s.label}
                 </Label>
-                <Switch id={s.id} checked={s.value} onCheckedChange={s.set} disabled={settingsQuery.isLoading} />
+                <Switch
+                  id={s.id}
+                  checked={s.value}
+                  onCheckedChange={s.set}
+                  disabled={settingsQuery.isLoading}
+                />
               </div>
             ))}
           </CardContent>

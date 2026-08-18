@@ -49,7 +49,10 @@ export function Sidebar({ className }: { className?: string }) {
       </nav>
       <div className="border-t border-border p-4">
         <p className="text-xs text-muted-foreground">© GoLivra Admin</p>
-        <p className="mt-1 font-mono text-[10px] text-muted-foreground" title="Vérifiez que Render a déployé ce build">
+        <p
+          className="mt-1 font-mono text-[10px] text-muted-foreground"
+          title="Vérifiez que Render a déployé ce build"
+        >
           build {APP_BUILD_ID.slice(0, 7)}
         </p>
       </div>

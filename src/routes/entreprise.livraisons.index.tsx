@@ -131,7 +131,18 @@ function EntrepriseLivraisonsPage() {
         <p className="text-sm text-muted-foreground">Chargement…</p>
       ) : (
         <DataTable
-          columns={["Commande", "Adresse", "Livreur", "Statut", "Retard", "Cmd. créée", "Livraison créée", "Attribuée", "Terminée", "Actions"]}
+          columns={[
+            "Commande",
+            "Adresse",
+            "Livreur",
+            "Statut",
+            "Retard",
+            "Cmd. créée",
+            "Livraison créée",
+            "Attribuée",
+            "Terminée",
+            "Actions",
+          ]}
           rows={rows}
           emptyTitle="Aucune livraison"
           emptyDescription="Les missions apparaissent ici quand un commerce marque une commande comme prête."

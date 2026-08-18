@@ -131,8 +131,8 @@ function AlertesPage() {
                             h.status === "envoye"
                               ? "default"
                               : h.status === "echec"
-                              ? "destructive"
-                              : "secondary"
+                                ? "destructive"
+                                : "secondary"
                           }
                         >
                           {h.status}
@@ -175,8 +175,8 @@ function ChannelsCard({
         type === "telegram"
           ? { bot_token: telegramBotToken, chat_id: telegramChatId }
           : type === "webhook"
-          ? { url: webhookUrl }
-          : {};
+            ? { url: webhookUrl }
+            : {};
       return createAlertChannel({ nom, type, config });
     },
     onSuccess: () => {
@@ -246,7 +246,11 @@ function ChannelsCard({
         <div className="space-y-2 rounded-md border border-dashed border-border p-3">
           <p className="text-xs font-semibold text-foreground">Ajouter un canal</p>
           <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-            <Input placeholder="Nom (ex. Telegram DevOps)" value={nom} onChange={(e) => setNom(e.target.value)} />
+            <Input
+              placeholder="Nom (ex. Telegram DevOps)"
+              value={nom}
+              onChange={(e) => setNom(e.target.value)}
+            />
             <Select value={type} onValueChange={(v) => setType(v as typeof type)}>
               <SelectTrigger>
                 <SelectValue placeholder="Type" />
@@ -330,11 +334,11 @@ function RulesCard({
     mutationFn: () => {
       let condition: Record<string, unknown> = { kind, window_min: windowMin };
       if (kind === "error_rate") condition = { ...condition, threshold };
-      if (kind === "slow_endpoint") condition = { ...condition, threshold_ms: thresholdMs, threshold };
+      if (kind === "slow_endpoint")
+        condition = { ...condition, threshold_ms: thresholdMs, threshold };
       if (kind === "incident_severity")
         condition = { ...condition, severity, count: incidentCount };
-      if (kind === "spike")
-        condition = { ...condition, baseline_min: baselineMin, factor };
+      if (kind === "spike") condition = { ...condition, baseline_min: baselineMin, factor };
       return createAlertRule({
         nom,
         condition: condition as AlertRule["condition"],
@@ -385,8 +389,8 @@ function RulesCard({
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-medium text-foreground">{r.nom}</p>
                   <p className="truncate text-xs text-muted-foreground">
-                    {r.condition.kind} · cooldown {r.cooldown_min}min · {r.channel_ids.length} canal(aux) ·{" "}
-                    {r.est_actif ? "active" : "désactivée"}
+                    {r.condition.kind} · cooldown {r.cooldown_min}min · {r.channel_ids.length}{" "}
+                    canal(aux) · {r.est_actif ? "active" : "désactivée"}
                     {r.last_fired_at ? ` · dernier: ${formatDateTimeFr(r.last_fired_at)}` : ""}
                   </p>
                 </div>

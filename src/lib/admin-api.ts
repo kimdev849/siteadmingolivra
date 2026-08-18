@@ -389,6 +389,57 @@ export type AdminDelivery = {
   minutes_retard?: number;
 };
 
+/** Livreur dans la vue temps réel (positions partagées pendant les courses). */
+export type ActiveCourier = {
+  id: string;
+  nom: string;
+  telephone: string | null;
+  type_vehicule: string | null;
+  note_moyenne: number | null;
+  nb_livraisons_reussies: number;
+  entreprise_id: string | null;
+  entreprise_nom: string | null;
+  compte_actif: boolean;
+  statut: "en_course" | "disponible" | "hors_ligne";
+  position: { latitude: number; longitude: number; at: string } | null;
+  position_age_min: number | null;
+  course: {
+    id: string;
+    reference: string;
+    statut: string;
+    adresse_retrait: string;
+    adresse_livraison: string;
+    retrait: { latitude: number; longitude: number } | null;
+    destination: { latitude: number; longitude: number } | null;
+  } | null;
+  distance_km_restant: number | null;
+};
+
+export type ActiveCouriersTracking = {
+  generated_at: string;
+  couriers: ActiveCourier[];
+  resume: {
+    en_course: number;
+    disponibles: number;
+    hors_ligne: number;
+    avec_position: number;
+    total: number;
+  };
+  stats: {
+    livraisons_aujourdhui: number;
+    livraisons_terminees: number;
+    delai_moyen_minutes: number | null;
+  };
+};
+
+/** Vue temps réel de tous les livreurs (toutes entreprises) — admin. */
+export async function fetchActiveCouriersTracking(): Promise<ActiveCouriersTracking> {
+  return apiFetch<ActiveCouriersTracking>("/api/delivery/tracking/active", {
+    method: "GET",
+    token: token(),
+  });
+}
+
 export type AppNotification = {
   id: string;
   type: string;

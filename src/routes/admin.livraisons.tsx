@@ -20,6 +20,10 @@ export const Route = createFileRoute("/admin/livraisons")({
   component: LivraisonsPage,
 });
 
+/** Référence stable partagée : évite que `?? []` recrée un tableau à chaque
+ * rendu (et donc des dépendances de useMemo instables). */
+const NO_DATA: never[] = [];
+
 const PERIODS = [
   { value: "7", label: "7 derniers jours" },
   { value: "30", label: "30 derniers jours" },
@@ -60,7 +64,7 @@ function LivraisonsPage() {
     placeholderData: (prev) => prev,
   });
 
-  const allItems = deliveriesQuery.data?.items ?? [];
+  const allItems = deliveriesQuery.data?.items ?? NO_DATA;
   const total = deliveriesQuery.data?.total ?? 0;
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
 
@@ -150,7 +154,13 @@ function LivraisonsPage() {
             <SelectItem value="annulee">Annulée</SelectItem>
           </SelectContent>
         </Select>
-        <Select value={period} onValueChange={(v) => { setPeriod(v); setPage(0); }}>
+        <Select
+          value={period}
+          onValueChange={(v) => {
+            setPeriod(v);
+            setPage(0);
+          }}
+        >
           <SelectTrigger className="w-full sm:w-48">
             <SelectValue placeholder="Période" />
           </SelectTrigger>

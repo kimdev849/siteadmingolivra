@@ -2,6 +2,12 @@
 @source "../src";
 @import "tw-animate-css";
 
+/* Back-office : la sélection/copie de contenu est bloquée (anti-inspection). */
+body {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 /*

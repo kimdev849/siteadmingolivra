@@ -88,7 +88,9 @@ function ObservabilityPanel({ windowMin }: { windowMin: number }) {
   return (
     <div className="space-y-4">
       <div>
-        <h3 className="text-base font-semibold text-foreground">Activité technique en temps réel</h3>
+        <h3 className="text-base font-semibold text-foreground">
+          Activité technique en temps réel
+        </h3>
         <p className="text-xs text-muted-foreground">
           {WINDOWS.find((w) => w.value === windowMin)?.label ?? `${windowMin} min`} ·
           rafraîchissement {Math.round(ADMIN_LIVE_REFETCH_MS / 1000)}s
@@ -364,10 +366,18 @@ function SanteEndpointsPage() {
                       <td className="py-1.5 text-right font-mono text-xs text-amber-600">
                         {e.slow_count}
                       </td>
-                      <td className="py-1.5 text-right font-mono text-xs">{msLabel(e.latency_p50_ms)}</td>
-                      <td className="py-1.5 text-right font-mono text-xs">{msLabel(e.latency_p95_ms)}</td>
-                      <td className="py-1.5 text-right font-mono text-xs">{msLabel(e.latency_p99_ms)}</td>
-                      <td className="py-1.5 text-right font-mono text-xs">{msLabel(e.latency_max_ms)}</td>
+                      <td className="py-1.5 text-right font-mono text-xs">
+                        {msLabel(e.latency_p50_ms)}
+                      </td>
+                      <td className="py-1.5 text-right font-mono text-xs">
+                        {msLabel(e.latency_p95_ms)}
+                      </td>
+                      <td className="py-1.5 text-right font-mono text-xs">
+                        {msLabel(e.latency_p99_ms)}
+                      </td>
+                      <td className="py-1.5 text-right font-mono text-xs">
+                        {msLabel(e.latency_max_ms)}
+                      </td>
                     </tr>
                   ))}
                 </tbody>

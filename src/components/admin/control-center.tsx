@@ -147,10 +147,7 @@ export function ControlCenterHero({
               ))
             : isLoading
               ? [1, 2, 3, 4].map((i) => (
-                  <span
-                    key={i}
-                    className="h-7 w-28 animate-pulse rounded-full bg-muted"
-                  />
+                  <span key={i} className="h-7 w-28 animate-pulse rounded-full bg-muted" />
                 ))
               : null}
         </div>
@@ -245,11 +242,7 @@ export function BusinessSection({ data }: { data: ControlCenter | undefined }) {
           value={o ? o.en_cours : undefined}
           hint={o ? `${o.acceptees} acceptée(s)` : undefined}
         />
-        <KpiCard
-          label="Annulées"
-          icon={TrendingDown}
-          value={o ? o.annulees : undefined}
-        />
+        <KpiCard label="Annulées" icon={TrendingDown} value={o ? o.annulees : undefined} />
         <KpiCard
           label="Taux d’annulation"
           icon={ShieldCheck}
@@ -463,7 +456,9 @@ export function TopIncidents({ data }: { data: ControlCenter | undefined }) {
                 </span>
                 <span className="truncate text-foreground">{g.title}</span>
               </span>
-              <span className="shrink-0 text-muted-foreground">{formatErrorType(g.error_type)}</span>
+              <span className="shrink-0 text-muted-foreground">
+                {formatErrorType(g.error_type)}
+              </span>
             </Link>
           ))
         )}

@@ -51,7 +51,9 @@ function LivraisonDetailPage() {
                 <CardTitle className="flex flex-wrap items-center gap-2 text-sm font-semibold">
                   <span>Statut</span>
                   <Badge variant="secondary">{formatStatutLabel(d.statut)}</Badge>
-                  <Badge variant="outline">{d.type_livraison === "externe" ? "Externe" : "Commande"}</Badge>
+                  <Badge variant="outline">
+                    {d.type_livraison === "externe" ? "Externe" : "Commande"}
+                  </Badge>
                   {d.en_retard ? <Badge variant="destructive">En retard</Badge> : null}
                 </CardTitle>
               </CardHeader>
@@ -60,7 +62,11 @@ function LivraisonDetailPage() {
                   <p>
                     <span className="text-muted-foreground">Commerce : </span>
                     {d.commerce?.id ? (
-                      <Link to="/admin/marchands/$id" params={{ id: d.commerce.id }} className="text-primary hover:underline">
+                      <Link
+                        to="/admin/marchands/$id"
+                        params={{ id: d.commerce.id }}
+                        className="text-primary hover:underline"
+                      >
                         {d.commerce_nom}
                       </Link>
                     ) : (
@@ -74,7 +80,8 @@ function LivraisonDetailPage() {
                     <Link
                       to="/admin/commandes/$id"
                       params={{ id: d.commande.id }}
-                      className="text-primary hover:underline">
+                      className="text-primary hover:underline"
+                    >
                       {d.commande.numero}
                     </Link>
                   </p>
@@ -150,7 +157,9 @@ function LivraisonDetailPage() {
                   <>
                     <p className="font-medium">{d.livreur.nom || "—"}</p>
                     <p className="text-muted-foreground">{d.livreur.telephone || "—"}</p>
-                    <p className="text-muted-foreground capitalize">{d.livreur.type_vehicule || "—"}</p>
+                    <p className="text-muted-foreground capitalize">
+                      {d.livreur.type_vehicule || "—"}
+                    </p>
                   </>
                 ) : (
                   <p className="text-muted-foreground">Aucun livreur attribué</p>
@@ -161,7 +170,8 @@ function LivraisonDetailPage() {
                     <Link
                       to="/admin/transporteurs/$id"
                       params={{ id: d.entreprise_logistique.id }}
-                      className="text-primary hover:underline">
+                      className="text-primary hover:underline"
+                    >
                       {d.entreprise_logistique.nom}
                     </Link>
                   </p>

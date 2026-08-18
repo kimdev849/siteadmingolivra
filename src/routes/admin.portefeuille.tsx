@@ -52,7 +52,9 @@ function AdminPortefeuillePage() {
           label="Commissions (ce mois)"
           icon={TrendingUp}
           value={
-            w ? `${Number(w.commissions_livraison_mois_fcfa).toLocaleString("fr-FR")} FCFA` : undefined
+            w
+              ? `${Number(w.commissions_livraison_mois_fcfa).toLocaleString("fr-FR")} FCFA`
+              : undefined
           }
         />
         <KpiCard

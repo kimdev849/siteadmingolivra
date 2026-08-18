@@ -10,7 +10,12 @@ import { Badge } from "@/components/ui/badge";
 import { EventTimeline } from "@/components/admin/EventTimeline";
 import { OrderAmountBreakdown } from "@/components/admin/OrderAmountBreakdown";
 import { ADMIN_LIVE_REFETCH_MS } from "@/lib/admin-nav";
-import { fetchAdminOrder, formatDateTimeFr, formatStatutLabel, formatTypeLabel } from "@/lib/admin-api";
+import {
+  fetchAdminOrder,
+  formatDateTimeFr,
+  formatStatutLabel,
+  formatTypeLabel,
+} from "@/lib/admin-api";
 
 export const Route = createFileRoute("/admin/commandes/$id")({
   component: CommandeDetailPage,

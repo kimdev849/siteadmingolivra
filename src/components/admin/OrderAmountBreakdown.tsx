@@ -56,7 +56,8 @@ export function OrderAmountBreakdown({
       </div>
       {note ? (
         <p className="text-xs text-muted-foreground">
-          Aucune commission GoLivra sur les ventes — commission uniquement sur les frais de livraison.
+          Aucune commission GoLivra sur les ventes — commission uniquement sur les frais de
+          livraison.
         </p>
       ) : null}
     </dl>

@@ -1,15 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import {
-  ChevronDown,
-  ChevronRight,
-  Globe,
-  Loader2,
-  MapPin,
-  Plus,
-  Trash2,
-} from "lucide-react";
+import { ChevronDown, ChevronRight, Globe, Loader2, MapPin, Plus, Trash2 } from "lucide-react";
 import { PageHeader } from "@/components/admin/PageHeader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -47,6 +39,10 @@ export const Route = createFileRoute("/admin/zones")({
 
 const UNASSIGNED_ZONE = "__none__";
 
+/** Référence stable partagée : évite que `?? []` recrée un tableau à chaque
+ * rendu (et donc des dépendances de useMemo/useEffect instables). */
+const NO_DATA: never[] = [];
+
 type ZoneDraft = { price_base: string; is_active: boolean };
 type AssignmentDraft = Record<string, string>;
 
@@ -68,9 +64,9 @@ function ZonesTarifsPage() {
   const [addVilleNom, setAddVilleNom] = useState("");
   const [newArrondissementName, setNewArrondissementName] = useState("");
 
-  const zones = boardQuery.data?.zones ?? [];
-  const pays = boardQuery.data?.pays ?? [];
-  const unlinked = boardQuery.data?.arrondissements_unlinked ?? [];
+  const zones = boardQuery.data?.zones ?? NO_DATA;
+  const pays = boardQuery.data?.pays ?? NO_DATA;
+  const unlinked = boardQuery.data?.arrondissements_unlinked ?? NO_DATA;
 
   // Initialiser les assignations
   useEffect(() => {
@@ -103,10 +99,8 @@ function ZonesTarifsPage() {
     }
   }, [pays]);
 
-  const togglePays = (id: string) =>
-    setExpandedPays((prev) => ({ ...prev, [id]: !prev[id] }));
-  const toggleVille = (id: string) =>
-    setExpandedVilles((prev) => ({ ...prev, [id]: !prev[id] }));
+  const togglePays = (id: string) => setExpandedPays((prev) => ({ ...prev, [id]: !prev[id] }));
+  const toggleVille = (id: string) => setExpandedVilles((prev) => ({ ...prev, [id]: !prev[id] }));
 
   const totalArrondissements = useMemo(() => {
     let count = 0;
@@ -119,17 +113,18 @@ function ZonesTarifsPage() {
   }, [assignments]);
 
   const saveMutation = useMutation({
-    mutationFn: () => updateAdminZonesBoard({
-      zones: zones.map((z) => ({
-        id: z.id,
-        price_base: Number(zoneDrafts[z.id]?.price_base ?? z.price_base),
-        is_active: zoneDrafts[z.id]?.is_active ?? z.is_active,
-      })),
-      assignments: Object.entries(assignments).map(([arrondissement_id, zoneId]) => ({
-        arrondissement_id,
-        zone_id: zoneId === UNASSIGNED_ZONE || !zoneId ? null : zoneId,
-      })),
-    }),
+    mutationFn: () =>
+      updateAdminZonesBoard({
+        zones: zones.map((z) => ({
+          id: z.id,
+          price_base: Number(zoneDrafts[z.id]?.price_base ?? z.price_base),
+          is_active: zoneDrafts[z.id]?.is_active ?? z.is_active,
+        })),
+        assignments: Object.entries(assignments).map(([arrondissement_id, zoneId]) => ({
+          arrondissement_id,
+          zone_id: zoneId === UNASSIGNED_ZONE || !zoneId ? null : zoneId,
+        })),
+      }),
     onSuccess: async () => {
       setSaved(true);
       await qc.invalidateQueries({ queryKey: ["admin", "zones"] });
@@ -199,7 +194,8 @@ function ZonesTarifsPage() {
       {boardQuery.isError ? (
         <Alert variant="destructive" className="mb-4">
           <AlertDescription>
-            Impossible de charger les données. Exécutez les migrations SQL sur Supabase puis redéployez le backend.
+            Impossible de charger les données. Exécutez les migrations SQL sur Supabase puis
+            redéployez le backend.
           </AlertDescription>
         </Alert>
       ) : null}
@@ -367,10 +363,9 @@ function ZonesTarifsPage() {
       </div>
 
       <p className="mt-4 text-xs text-muted-foreground">
-        {zones.length} zone(s) · {totalArrondissements} arrondissement(s) · {unassignedCount} sans zone
-        {unassignedCount > 0
-          ? " — le tarif plateforme par défaut s'applique au panier."
-          : null}
+        {zones.length} zone(s) · {totalArrondissements} arrondissement(s) · {unassignedCount} sans
+        zone
+        {unassignedCount > 0 ? " — le tarif plateforme par défaut s'applique au panier." : null}
         {" · "}
         {pays.length} pays · {pays.reduce((s, p) => s + p.villes.length, 0)} villes
       </p>
@@ -414,9 +409,7 @@ function ZonesTarifsPage() {
               onClick={() => addMutation.mutate()}
               disabled={!newArrondissementName.trim() || addMutation.isPending}
             >
-              {addMutation.isPending ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : null}
+              {addMutation.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
               Ajouter
             </Button>
           </DialogFooter>
@@ -458,11 +451,17 @@ function ZonePriceRow({
           onChange={(e) => onChange({ price_base: e.target.value })}
         />
         {Number(price) <= 0 ? (
-          <p className="text-[11px] text-muted-foreground">Tarif non appliqué tant que le prix est à 0.</p>
+          <p className="text-[11px] text-muted-foreground">
+            Tarif non appliqué tant que le prix est à 0.
+          </p>
         ) : null}
       </div>
       <div className="flex items-center gap-2 pb-2">
-        <Switch id={`active-${zone.id}`} checked={active} onCheckedChange={(v) => onChange({ is_active: v })} />
+        <Switch
+          id={`active-${zone.id}`}
+          checked={active}
+          onCheckedChange={(v) => onChange({ is_active: v })}
+        />
         <Label htmlFor={`active-${zone.id}`} className="text-sm font-normal">
           Active
         </Label>
@@ -492,7 +491,9 @@ function ArrondissementRow({
 
   return (
     <div className="flex flex-wrap items-center justify-between gap-2 group">
-      <span className={`min-w-0 flex-1 truncate text-sm font-medium ${!assigned ? "text-muted-foreground" : ""}`}>
+      <span
+        className={`min-w-0 flex-1 truncate text-sm font-medium ${!assigned ? "text-muted-foreground" : ""}`}
+      >
         {name}
       </span>
       <div className="flex w-full min-w-0 items-center gap-1 sm:w-auto">

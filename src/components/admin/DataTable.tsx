@@ -17,7 +17,13 @@ interface DataTableProps {
   onRowClick?: (index: number) => void;
 }
 
-export function DataTable({ columns, rows, emptyTitle, emptyDescription, onRowClick }: DataTableProps) {
+export function DataTable({
+  columns,
+  rows,
+  emptyTitle,
+  emptyDescription,
+  onRowClick,
+}: DataTableProps) {
   const hasRows = rows && rows.length > 0;
 
   return (

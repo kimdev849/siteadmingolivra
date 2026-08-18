@@ -108,7 +108,15 @@ function CommandesPage() {
         <p className="text-sm text-muted-foreground">Chargement…</p>
       ) : (
         <DataTable
-          columns={["ID commande", "Client", "Montant (produits + livraison)", "Statut", "Créée", "Livrée", "Actions"]}
+          columns={[
+            "ID commande",
+            "Client",
+            "Montant (produits + livraison)",
+            "Statut",
+            "Créée",
+            "Livrée",
+            "Actions",
+          ]}
           rows={rows}
           emptyTitle="Aucune commande"
           emptyDescription="Les commandes clients apparaîtront ici."

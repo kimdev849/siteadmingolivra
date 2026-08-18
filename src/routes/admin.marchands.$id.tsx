@@ -192,8 +192,8 @@ function MarchandDetailPage() {
               <Card>
                 <CardContent className="pt-6 text-sm text-muted-foreground">
                   Statistiques indisponibles. Réessayez plus tard ou contactez le support.{" "}
-                  <strong>GolivraBack</strong> sur Render (branche <code>main</code>, dernier commit), puis
-                  rechargez cette page.
+                  <strong>GolivraBack</strong> sur Render (branche <code>main</code>, dernier
+                  commit), puis rechargez cette page.
                 </CardContent>
               </Card>
             )}

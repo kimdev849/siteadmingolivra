@@ -7,13 +7,7 @@ function fmt(n: number): string {
   return `${Number(n).toLocaleString("fr-FR")} FCFA`;
 }
 
-function PeriodBlock({
-  label,
-  data,
-}: {
-  label: string;
-  data: AdminCommercePeriodStats;
-}) {
+function PeriodBlock({ label, data }: { label: string; data: AdminCommercePeriodStats }) {
   return (
     <Card>
       <CardHeader className="pb-2">
@@ -23,8 +17,16 @@ function PeriodBlock({
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <KpiCard label="CA produits" icon={Wallet} value={fmt(data.ca_produits_fcfa)} />
           <KpiCard label="Frais livraison" icon={Truck} value={fmt(data.frais_livraison_fcfa)} />
-          <KpiCard label="Total payé clients" icon={ShoppingBag} value={fmt(data.total_paye_client_fcfa)} />
-          <KpiCard label="Panier moyen (produits)" icon={BarChart3} value={fmt(data.panier_moyen_fcfa)} />
+          <KpiCard
+            label="Total payé clients"
+            icon={ShoppingBag}
+            value={fmt(data.total_paye_client_fcfa)}
+          />
+          <KpiCard
+            label="Panier moyen (produits)"
+            icon={BarChart3}
+            value={fmt(data.panier_moyen_fcfa)}
+          />
         </div>
         <dl className="grid grid-cols-2 gap-3 text-sm sm:grid-cols-4">
           <div>

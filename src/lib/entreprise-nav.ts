@@ -7,6 +7,7 @@ import {
   Wallet,
   LayoutDashboard,
   PackageCheck,
+  Radar,
   Users,
 } from "lucide-react";
 
@@ -20,6 +21,7 @@ export type EntrepriseNavItem = {
 export const entrepriseNavItems: EntrepriseNavItem[] = [
   { to: "/entreprise", label: "Tableau de bord", icon: LayoutDashboard, exact: true },
   { to: "/entreprise/operations", label: "Opérations live", icon: Activity },
+  { to: "/entreprise/livreurs-actifs", label: "Livreurs actifs", icon: Radar },
   { to: "/entreprise/livraisons", label: "Livraisons", icon: PackageCheck },
   { to: "/entreprise/retards", label: "Retards", icon: AlertTriangle },
   { to: "/entreprise/portefeuille", label: "Portefeuille", icon: Wallet },

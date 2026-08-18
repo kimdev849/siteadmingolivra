@@ -1,6 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { ShoppingBag, Store, Users, PackageCheck, Truck, Plus, Package, AlertTriangle } from "lucide-react";
+import {
+  ShoppingBag,
+  Store,
+  Users,
+  PackageCheck,
+  Truck,
+  Plus,
+  Package,
+  AlertTriangle,
+} from "lucide-react";
 import { PageHeader } from "@/components/admin/PageHeader";
 import { KpiCard } from "@/components/admin/KpiCard";
 import { DashboardCharts } from "@/components/admin/DashboardCharts";
@@ -53,11 +62,13 @@ function DashboardPage() {
               <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-destructive" />
               <div>
                 <p className="font-semibold text-foreground">
-                  {stats?.incidents_ouverts} incident{(stats?.incidents_ouverts ?? 0) > 1 ? "s" : ""} ouvert
+                  {stats?.incidents_ouverts} incident
+                  {(stats?.incidents_ouverts ?? 0) > 1 ? "s" : ""} ouvert
                   {(stats?.incidents_ouverts ?? 0) > 1 ? "s" : ""} sur l&apos;application
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  Erreurs mobile, API ou admin — consultez la cause probable et le requestId pour diagnostiquer.
+                  Erreurs mobile, API ou admin — consultez la cause probable et le requestId pour
+                  diagnostiquer.
                 </p>
               </div>
             </div>
@@ -100,7 +111,9 @@ function DashboardPage() {
           label="Livraisons (total)"
           icon={Truck}
           value={stats?.livraisons_total}
-          hint={stats?.livraisons_en_cours != null ? `${stats.livraisons_en_cours} en cours` : undefined}
+          hint={
+            stats?.livraisons_en_cours != null ? `${stats.livraisons_en_cours} en cours` : undefined
+          }
         />
         <KpiCard
           label="Livraisons externes"
@@ -108,7 +121,11 @@ function DashboardPage() {
           value={stats?.livraisons_externes}
           hint="Créées par les commerces sur l'app"
         />
-        <Button variant="outline" className="h-auto min-h-[88px] flex-col items-start gap-1 p-4" asChild>
+        <Button
+          variant="outline"
+          className="h-auto min-h-[88px] flex-col items-start gap-1 p-4"
+          asChild
+        >
           <Link to="/admin/livraisons">
             <span className="text-sm font-semibold">Voir toutes les livraisons</span>
             <span className="text-xs text-muted-foreground">Commandes clients + externes</span>

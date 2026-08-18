@@ -150,7 +150,12 @@ export type IncidentGroupListResponse = {
   groups: IncidentGroup[];
 };
 
-export type BySource = { source: string; request_count: number; error_count: number; error_rate: number };
+export type BySource = {
+  source: string;
+  request_count: number;
+  error_count: number;
+  error_rate: number;
+};
 export type ByErrorType = { error_type: string; count: number };
 export type OpenBySeverity = { severity: string; count: number };
 export type Spike = {
@@ -224,7 +229,13 @@ export type ControlCenter = {
     latency: { p50_ms: number; p95_ms: number; p99_ms: number };
   } | null;
   business: {
-    orders: { total: number; acceptees: number; livrees: number; annulees: number; en_cours: number };
+    orders: {
+      total: number;
+      acceptees: number;
+      livrees: number;
+      annulees: number;
+      en_cours: number;
+    };
     payments: {
       methode: string;
       total: number;
@@ -340,10 +351,10 @@ export async function fetchIncidents(params?: {
 }
 
 export async function fetchIncidentDetail(incidentId: string): Promise<IncidentDetailResponse> {
-  return apiFetch<IncidentDetailResponse>(
-    `/api/admin/observability/incidents/${incidentId}`,
-    { method: "GET", token: token() },
-  );
+  return apiFetch<IncidentDetailResponse>(`/api/admin/observability/incidents/${incidentId}`, {
+    method: "GET",
+    token: token(),
+  });
 }
 
 export async function fetchIncidentGroups(params?: {
@@ -380,28 +391,27 @@ export async function resolveIncident(
   incidentId: string,
   adminNote?: string,
 ): Promise<AppIncident> {
-  return apiFetch<AppIncident>(
-    `/api/admin/observability/incidents/${incidentId}/resolve`,
-    {
-      method: "PATCH",
-      token: token(),
-      jsonBody: { admin_note: adminNote },
-    },
-  );
+  return apiFetch<AppIncident>(`/api/admin/observability/incidents/${incidentId}/resolve`, {
+    method: "PATCH",
+    token: token(),
+    jsonBody: { admin_note: adminNote },
+  });
 }
 
 export async function acknowledgeIncident(incidentId: string): Promise<AppIncident> {
-  return apiFetch<AppIncident>(
-    `/api/admin/observability/incidents/${incidentId}/acknowledge`,
-    { method: "PATCH", token: token(), jsonBody: {} },
-  );
+  return apiFetch<AppIncident>(`/api/admin/observability/incidents/${incidentId}/acknowledge`, {
+    method: "PATCH",
+    token: token(),
+    jsonBody: {},
+  });
 }
 
 export async function investigatingIncident(incidentId: string): Promise<AppIncident> {
-  return apiFetch<AppIncident>(
-    `/api/admin/observability/incidents/${incidentId}/investigating`,
-    { method: "PATCH", token: token(), jsonBody: {} },
-  );
+  return apiFetch<AppIncident>(`/api/admin/observability/incidents/${incidentId}/investigating`, {
+    method: "PATCH",
+    token: token(),
+    jsonBody: {},
+  });
 }
 
 export async function reopenIncident(incidentId: string): Promise<AppIncident> {
@@ -421,10 +431,11 @@ export async function addIncidentNote(incidentId: string, message: string): Prom
 }
 
 export async function reanalyzeIncidentStack(incidentId: string): Promise<AppIncident> {
-  return apiFetch<AppIncident>(
-    `/api/admin/observability/incidents/${incidentId}/reanalyze-stack`,
-    { method: "POST", token: token(), jsonBody: {} },
-  );
+  return apiFetch<AppIncident>(`/api/admin/observability/incidents/${incidentId}/reanalyze-stack`, {
+    method: "POST",
+    token: token(),
+    jsonBody: {},
+  });
 }
 
 export async function fetchObservabilityDashboard(windowMin = 60): Promise<ObservabilityDashboard> {
@@ -543,9 +554,10 @@ export async function evaluateAlertRulesNow(): Promise<{ evaluated: number; fire
   );
 }
 
-export async function fetchAlertHistory(
-  params?: { limit?: number; rule_id?: string },
-): Promise<{ items: AlertHistoryEntry[] }> {
+export async function fetchAlertHistory(params?: {
+  limit?: number;
+  rule_id?: string;
+}): Promise<{ items: AlertHistoryEntry[] }> {
   const qs = new URLSearchParams();
   if (params?.limit != null) qs.set("limit", String(params.limit));
   if (params?.rule_id) qs.set("rule_id", params.rule_id);
@@ -614,13 +626,20 @@ export function formatAlertStatus(status: AlertHistoryEntry["status"]): string {
   return map[status] || status;
 }
 
-export function stateVariant(state: IncidentState): "destructive" | "secondary" | "outline" | "default" {
+export function stateVariant(
+  state: IncidentState,
+): "destructive" | "secondary" | "outline" | "default" {
   switch (state) {
-    case "ouvert": return "destructive";
-    case "acquitte": return "secondary";
-    case "en_cours": return "default";
-    case "resolu": return "outline";
-    default: return "outline";
+    case "ouvert":
+      return "destructive";
+    case "acquitte":
+      return "secondary";
+    case "en_cours":
+      return "default";
+    case "resolu":
+      return "outline";
+    default:
+      return "outline";
   }
 }
 

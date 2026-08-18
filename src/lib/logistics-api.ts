@@ -1,6 +1,11 @@
 import { apiFetch } from "@/lib/api";
 import { getAdminToken } from "@/lib/auth-session";
-import type { AdminCourier, AdminLogistics, TimelineStep } from "@/lib/admin-api";
+import type {
+  ActiveCouriersTracking,
+  AdminCourier,
+  AdminLogistics,
+  TimelineStep,
+} from "@/lib/admin-api";
 
 function token() {
   const t = getAdminToken();
@@ -22,6 +27,14 @@ export async function fetchMyLogisticsCompany(): Promise<AdminLogistics> {
 
 export async function fetchMyCouriers(): Promise<AdminCourier[]> {
   return apiFetch<AdminCourier[]>("/api/logistics/livreurs", { method: "GET", token: token() });
+}
+
+/** Vue temps réel des livreurs de MA propre entreprise. */
+export async function fetchMyActiveCouriersTracking(): Promise<ActiveCouriersTracking> {
+  return apiFetch<ActiveCouriersTracking>("/api/logistics/tracking/active", {
+    method: "GET",
+    token: token(),
+  });
 }
 
 export async function createMyCourier(payload: CreateCourierPayload): Promise<AdminCourier> {

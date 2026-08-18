@@ -56,7 +56,15 @@ function ObservabilitePage() {
 
   const queryClient = useQueryClient();
   const incidentsQuery = useQuery({
-    queryKey: ["admin", "incidents", statusFilter, stateFilter, sourceFilter, errorTypeFilter, search],
+    queryKey: [
+      "admin",
+      "incidents",
+      statusFilter,
+      stateFilter,
+      sourceFilter,
+      errorTypeFilter,
+      search,
+    ],
     queryFn: () =>
       fetchIncidents({
         limit: 80,
@@ -75,7 +83,8 @@ function ObservabilitePage() {
       fetchIncidentGroups({
         window_min: 60,
         source: sourceFilter === ALL ? undefined : (sourceFilter as IncidentSource),
-        state: statusFilter === "ouvert" ? "ouvert" : statusFilter === "resolu" ? "resolu" : undefined,
+        state:
+          statusFilter === "ouvert" ? "ouvert" : statusFilter === "resolu" ? "resolu" : undefined,
       }),
     refetchInterval: ADMIN_LIVE_REFETCH_MS,
     enabled: view === "groups",
@@ -171,7 +180,10 @@ function ObservabilitePage() {
                 onChange={(e) => setSearch(e.target.value)}
                 className="w-full sm:max-w-md"
               />
-              <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v as typeof statusFilter)}>
+              <Select
+                value={statusFilter}
+                onValueChange={(v) => setStatusFilter(v as typeof statusFilter)}
+              >
                 <SelectTrigger className="w-full sm:w-[160px]">
                   <SelectValue placeholder="Statut" />
                 </SelectTrigger>
@@ -181,7 +193,10 @@ function ObservabilitePage() {
                   <SelectItem value="all">Tous</SelectItem>
                 </SelectContent>
               </Select>
-              <Select value={stateFilter} onValueChange={(v) => setStateFilter(v as IncidentState | typeof ALL)}>
+              <Select
+                value={stateFilter}
+                onValueChange={(v) => setStateFilter(v as IncidentState | typeof ALL)}
+              >
                 <SelectTrigger className="w-full sm:w-[160px]">
                   <SelectValue placeholder="État" />
                 </SelectTrigger>
@@ -193,7 +208,10 @@ function ObservabilitePage() {
                   <SelectItem value="resolu">Résolu</SelectItem>
                 </SelectContent>
               </Select>
-              <Select value={sourceFilter} onValueChange={(v) => setSourceFilter(v as IncidentSource | typeof ALL)}>
+              <Select
+                value={sourceFilter}
+                onValueChange={(v) => setSourceFilter(v as IncidentSource | typeof ALL)}
+              >
                 <SelectTrigger className="w-full sm:w-[180px]">
                   <SelectValue placeholder="Source" />
                 </SelectTrigger>
@@ -227,7 +245,10 @@ function ObservabilitePage() {
             </>
           ) : (
             <>
-              <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v as typeof statusFilter)}>
+              <Select
+                value={statusFilter}
+                onValueChange={(v) => setStatusFilter(v as typeof statusFilter)}
+              >
                 <SelectTrigger className="w-full sm:w-[160px]">
                   <SelectValue placeholder="Statut" />
                 </SelectTrigger>
@@ -237,7 +258,10 @@ function ObservabilitePage() {
                   <SelectItem value="all">Tous</SelectItem>
                 </SelectContent>
               </Select>
-              <Select value={sourceFilter} onValueChange={(v) => setSourceFilter(v as IncidentSource | typeof ALL)}>
+              <Select
+                value={sourceFilter}
+                onValueChange={(v) => setSourceFilter(v as IncidentSource | typeof ALL)}
+              >
                 <SelectTrigger className="w-full sm:w-[180px]">
                   <SelectValue placeholder="Source" />
                 </SelectTrigger>
@@ -257,7 +281,8 @@ function ObservabilitePage() {
       {incidentsQuery.isError ? (
         <p className="mb-4 text-sm text-destructive">
           Impossible de charger les incidents. Vérifiez que la migration SQL{" "}
-          <code className="rounded bg-muted px-1">amendments-observability-v2.sql</code> est appliquée sur Supabase.
+          <code className="rounded bg-muted px-1">amendments-observability-v2.sql</code> est
+          appliquée sur Supabase.
         </p>
       ) : null}
 
@@ -279,14 +304,13 @@ function ObservabilitePage() {
           rows={rows}
           onRowClick={handleRowClick}
           emptyTitle={
-            incidentsQuery.isLoading ? "Chargement des incidents…" : "Aucun incident pour ces filtres."
+            incidentsQuery.isLoading
+              ? "Chargement des incidents…"
+              : "Aucun incident pour ces filtres."
           }
         />
       ) : (
-        <GroupsTable
-          groups={groupsQuery.data?.groups ?? []}
-          isLoading={groupsQuery.isLoading}
-        />
+        <GroupsTable groups={groupsQuery.data?.groups ?? []} isLoading={groupsQuery.isLoading} />
       )}
     </div>
   );
@@ -318,8 +342,8 @@ function GroupsTable({
     return (
       <Card>
         <CardContent className="py-10 text-sm text-muted-foreground">
-          Aucun groupe d’incidents sur la fenêtre. Soit tout va bien, soit les fingerprints ne sont pas encore
-          calculés (vérifiez la migration <code>amendments-observability-v2.sql</code>).
+          Aucun groupe d’incidents sur la fenêtre. Soit tout va bien, soit les fingerprints ne sont
+          pas encore calculés (vérifiez la migration <code>amendments-observability-v2.sql</code>).
         </CardContent>
       </Card>
     );
@@ -332,7 +356,9 @@ function GroupsTable({
             <CardTitle className="flex flex-wrap items-center gap-2 text-sm font-semibold">
               <Activity className="h-4 w-4 text-primary" />
               <span className="max-w-[420px] truncate">{g.title}</span>
-              <Badge variant={severityVariant(g.severity)}>{formatIncidentSeverity(g.severity)}</Badge>
+              <Badge variant={severityVariant(g.severity)}>
+                {formatIncidentSeverity(g.severity)}
+              </Badge>
               <Badge variant="outline">{formatErrorType(g.error_type)}</Badge>
               <Badge variant={stateVariant(g.state)}>{formatIncidentState(g.state)}</Badge>
               <span className="text-xs font-normal text-muted-foreground">
@@ -351,7 +377,8 @@ function GroupsTable({
                 </span>
               ) : null}
               <span>
-                Fingerprint : <code className="rounded bg-muted px-1 text-foreground">{g.fingerprint}</code>
+                Fingerprint :{" "}
+                <code className="rounded bg-muted px-1 text-foreground">{g.fingerprint}</code>
               </span>
               <span>
                 <strong className="text-foreground">×{g.occurrence_count}</strong> occurrence(s)

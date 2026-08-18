@@ -83,13 +83,28 @@ function AdminRetraitsPage() {
             variant={filter === s ? "default" : "outline"}
             onClick={() => setFilter(s)}
           >
-            {s === "" ? "Tous" : s === "en_attente" ? "En attente" : s === "paye" ? "Payés" : "Rejetés"}
+            {s === ""
+              ? "Tous"
+              : s === "en_attente"
+                ? "En attente"
+                : s === "paye"
+                  ? "Payés"
+                  : "Rejetés"}
           </Button>
         ))}
       </div>
 
       <DataTable
-        columns={["Date", "Utilisateur", "Tél.", "Montant", "Méthode", "N° compte", "Statut", "Actions"]}
+        columns={[
+          "Date",
+          "Utilisateur",
+          "Tél.",
+          "Montant",
+          "Méthode",
+          "N° compte",
+          "Statut",
+          "Actions",
+        ]}
         rows={rows}
         emptyTitle="Aucune demande"
         emptyDescription="Les retraits des portefeuilles apparaîtront ici."

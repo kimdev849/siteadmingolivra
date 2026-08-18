@@ -8,8 +8,10 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
+# Jamais de fichier .env* commité (secrets) — sauf .env.example sans valeur réelle
 .env
-.env.local
+.env.*
+!.env.example
 dist
 dist-ssr
 .output

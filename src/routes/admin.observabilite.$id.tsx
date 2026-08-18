@@ -1,7 +1,18 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { ArrowLeft, CheckCircle2, Eye, FileCode2, GitBranch, Github, MessageCircle, RefreshCcw, RotateCcw, Search } from "lucide-react";
+import {
+  ArrowLeft,
+  CheckCircle2,
+  Eye,
+  FileCode2,
+  GitBranch,
+  Github,
+  MessageCircle,
+  RefreshCcw,
+  RotateCcw,
+  Search,
+} from "lucide-react";
 import { PageHeader } from "@/components/admin/PageHeader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -67,12 +78,22 @@ function CodeContextBlock({ ctx, topLine }: { ctx: IncidentCodeContext; topLine?
 function FrameRow({ frame, idx }: { frame: IncidentFrame; idx: number }) {
   return (
     <div className="flex items-start gap-2 text-xs">
-      <span className="mt-0.5 inline-block w-5 shrink-0 text-right text-muted-foreground">#{idx + 1}</span>
-      <code className={"flex-1 break-all " + (frame.in_app ? "text-foreground" : "text-muted-foreground")}>
+      <span className="mt-0.5 inline-block w-5 shrink-0 text-right text-muted-foreground">
+        #{idx + 1}
+      </span>
+      <code
+        className={
+          "flex-1 break-all " + (frame.in_app ? "text-foreground" : "text-muted-foreground")
+        }
+      >
         {frame.function || "<anonyme>"} @ {frame.file || frame.abs_path || "?"}
         {frame.line ? `:${frame.line}` : ""}
         {frame.column ? `:${frame.column}` : ""}
-        {frame.in_app ? <Badge variant="outline" className="ml-2">app</Badge> : null}
+        {frame.in_app ? (
+          <Badge variant="outline" className="ml-2">
+            app
+          </Badge>
+        ) : null}
       </code>
       {frame.github_url ? (
         <a
@@ -92,8 +113,7 @@ function FrameRow({ frame, idx }: { frame: IncidentFrame; idx: number }) {
 function AnalyserPanel({ inc }: { inc: AppIncident }) {
   const top =
     inc.source_location && typeof inc.source_location === "object" ? inc.source_location : null;
-  const ctx =
-    inc.code_context && typeof inc.code_context === "object" ? inc.code_context : null;
+  const ctx = inc.code_context && typeof inc.code_context === "object" ? inc.code_context : null;
   const frames = Array.isArray(inc.frames) ? inc.frames : [];
   const inAppFrames = frames.filter((f) => f.in_app);
   const hasAnything = top || frames.length > 0 || inc.github_url;
@@ -103,8 +123,8 @@ function AnalyserPanel({ inc }: { inc: AppIncident }) {
       <div>
         <p className="mb-1 font-semibold">Analyser (où est le bug ?)</p>
         <p className="text-sm text-muted-foreground">
-          Pas de stack exploitable pour cet incident. Soit il a été créé sans stack, soit
-          l’erreur est survenue côté client (mobile / admin) avant la capture.
+          Pas de stack exploitable pour cet incident. Soit il a été créé sans stack, soit l’erreur
+          est survenue côté client (mobile / admin) avant la capture.
         </p>
       </div>
     );
@@ -149,8 +169,8 @@ function AnalyserPanel({ inc }: { inc: AppIncident }) {
         </div>
       ) : top?.file && top.in_app ? (
         <p className="text-xs text-muted-foreground">
-          Contexte de code non disponible (fichier non accessible sur le serveur). Seule
-          l’URL GitHub est générée si <code>BACKEND_GITHUB_REPO_URL</code> est défini côté backend.
+          Contexte de code non disponible (fichier non accessible sur le serveur). Seule l’URL
+          GitHub est générée si <code>BACKEND_GITHUB_REPO_URL</code> est défini côté backend.
         </p>
       ) : null}
 
@@ -256,7 +276,9 @@ function IncidentDetailPage() {
                 </div>
                 <div className="rounded-md border border-amber-500/30 bg-amber-500/5 p-3">
                   <p className="font-semibold text-foreground">Pourquoi (cause probable)</p>
-                  <p className="mt-1 text-muted-foreground">{inc.cause || "Non déterminée automatiquement."}</p>
+                  <p className="mt-1 text-muted-foreground">
+                    {inc.cause || "Non déterminée automatiquement."}
+                  </p>
                 </div>
                 {inc.http_path ? (
                   <p>
@@ -365,7 +387,9 @@ function IncidentDetailPage() {
             {related.length > 0 ? (
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-sm font-semibold">Même requestId (fil de traçage)</CardTitle>
+                  <CardTitle className="text-sm font-semibold">
+                    Même requestId (fil de traçage)
+                  </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2 text-sm">
                   {related.map((r) => (
@@ -477,7 +501,10 @@ function IncidentDetailPage() {
                         variant="secondary"
                         disabled={transitionMutation.isPending}
                         onClick={() =>
-                          transitionMutation.mutate({ state: "acquitte", note: adminNote.trim() || undefined })
+                          transitionMutation.mutate({
+                            state: "acquitte",
+                            note: adminNote.trim() || undefined,
+                          })
                         }
                       >
                         <Eye className="h-4 w-4" /> Acquitter (je l’ai vu)
@@ -488,7 +515,10 @@ function IncidentDetailPage() {
                         variant="default"
                         disabled={transitionMutation.isPending}
                         onClick={() =>
-                          transitionMutation.mutate({ state: "en_cours", note: adminNote.trim() || undefined })
+                          transitionMutation.mutate({
+                            state: "en_cours",
+                            note: adminNote.trim() || undefined,
+                          })
                         }
                       >
                         <Search className="h-4 w-4" /> Passer en investigation
@@ -498,7 +528,10 @@ function IncidentDetailPage() {
                       variant="destructive"
                       disabled={transitionMutation.isPending}
                       onClick={() =>
-                        transitionMutation.mutate({ state: "resolu", note: adminNote.trim() || undefined })
+                        transitionMutation.mutate({
+                          state: "resolu",
+                          note: adminNote.trim() || undefined,
+                        })
                       }
                     >
                       <CheckCircle2 className="h-4 w-4" /> Marquer résolu

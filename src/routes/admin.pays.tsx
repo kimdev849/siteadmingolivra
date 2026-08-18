@@ -1,14 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import {
-  Globe,
-  Loader2,
-  MapPin,
-  Plus,
-  Pencil,
-  Trash2,
-} from "lucide-react";
+import { Globe, Loader2, MapPin, Plus, Pencil, Trash2 } from "lucide-react";
 import { PageHeader } from "@/components/admin/PageHeader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -81,9 +74,7 @@ function PaysVillesPage() {
         />
 
         {/* CARTE : VILLES DU PAYS SÉLECTIONNÉ */}
-        <VillesCard
-          pays={selectedPays}
-        />
+        <VillesCard pays={selectedPays} />
       </div>
 
       <p className="mt-4 text-xs text-muted-foreground">
@@ -183,7 +174,8 @@ function PaysCard({
     setEditOpen(true);
   };
 
-  const canSubmit = formNom.trim().length >= 2 && formIso2.trim().length === 2 && formIso3.trim().length === 3;
+  const canSubmit =
+    formNom.trim().length >= 2 && formIso2.trim().length === 2 && formIso3.trim().length === 3;
 
   return (
     <Card>
@@ -301,8 +293,8 @@ function PaysCard({
           <DialogHeader>
             <DialogTitle>Supprimer le pays</DialogTitle>
             <DialogDescription>
-              Êtes-vous sûr de vouloir supprimer <strong>{deletingPays?.nom}</strong>&nbsp;?
-              Les villes et arrondissements de ce pays seront également supprimés.
+              Êtes-vous sûr de vouloir supprimer <strong>{deletingPays?.nom}</strong>&nbsp;? Les
+              villes et arrondissements de ce pays seront également supprimés.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -314,9 +306,7 @@ function PaysCard({
               onClick={() => deleteMutation.mutate()}
               disabled={deleteMutation.isPending}
             >
-              {deleteMutation.isPending ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : null}
+              {deleteMutation.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
               Supprimer
             </Button>
           </DialogFooter>
@@ -366,9 +356,7 @@ function PaysFormDialog({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>
-            Renseignez les informations du pays.
-          </DialogDescription>
+          <DialogDescription>Renseignez les informations du pays.</DialogDescription>
         </DialogHeader>
         <div className="grid grid-cols-2 gap-4 py-2">
           <div className="col-span-2 space-y-2">
@@ -431,11 +419,7 @@ function PaysFormDialog({
 /*  Carte Villes                                                             */
 /* ────────────────────────────────────────────────────────────────────────── */
 
-function VillesCard({
-  pays,
-}: {
-  pays: AdminPays | null;
-}) {
+function VillesCard({ pays }: { pays: AdminPays | null }) {
   const qc = useQueryClient();
   const villesQuery = useQuery({
     queryKey: ["admin", "pays", "villes", pays?.id],
@@ -555,9 +539,7 @@ function VillesCard({
             >
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-medium truncate">{v.nom}</p>
-                <p className="text-xs text-muted-foreground">
-                  Ordre : {v.sort_order ?? 0}
-                </p>
+                <p className="text-xs text-muted-foreground">Ordre : {v.sort_order ?? 0}</p>
               </div>
               <div className="flex items-center gap-0.5 opacity-100 transition-opacity md:opacity-0 md:group-hover:opacity-100">
                 <button
@@ -621,8 +603,8 @@ function VillesCard({
           <DialogHeader>
             <DialogTitle>Supprimer la ville</DialogTitle>
             <DialogDescription>
-              Êtes-vous sûr de vouloir supprimer <strong>{deletingVille?.nom}</strong>&nbsp;?
-              Les arrondissements de cette ville seront également supprimés.
+              Êtes-vous sûr de vouloir supprimer <strong>{deletingVille?.nom}</strong>&nbsp;? Les
+              arrondissements de cette ville seront également supprimés.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -634,9 +616,7 @@ function VillesCard({
               onClick={() => deleteMutation.mutate()}
               disabled={deleteMutation.isPending}
             >
-              {deleteMutation.isPending ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : null}
+              {deleteMutation.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
               Supprimer
             </Button>
           </DialogFooter>

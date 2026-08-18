@@ -13,11 +13,7 @@ type Props = {
   emptyMessage?: string;
 };
 
-export function EventTimeline({
-  steps,
-  title,
-  emptyMessage = "Aucun horaire enregistré.",
-}: Props) {
+export function EventTimeline({ steps, title, emptyMessage = "Aucun horaire enregistré." }: Props) {
   const items = steps.filter((s) => s?.at);
   if (items.length === 0) {
     return (

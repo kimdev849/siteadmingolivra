@@ -9,55 +9,52 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as AdminRouteImport } from './routes/admin'
-import { Route as EntrepriseRouteImport } from './routes/entreprise'
 import { Route as LoginRouteImport } from './routes/login'
-import { Route as AdminIndexRouteImport } from './routes/admin.index'
-import { Route as AdminAlertesRouteImport } from './routes/admin.alertes'
-import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
-import { Route as AdminCampagnesRouteImport } from './routes/admin.campagnes'
-import { Route as AdminCategoriesRouteImport } from './routes/admin.categories'
-import { Route as AdminCommissionsRouteImport } from './routes/admin.commissions'
-import { Route as AdminControleRouteImport } from './routes/admin.controle'
-import { Route as AdminLivraisonsRouteImport } from './routes/admin.livraisons'
-import { Route as AdminObservabiliteRouteImport } from './routes/admin.observabilite'
-import { Route as AdminParametresRouteImport } from './routes/admin.parametres'
-import { Route as AdminPaysRouteImport } from './routes/admin.pays'
-import { Route as AdminPortefeuilleRouteImport } from './routes/admin.portefeuille'
-import { Route as AdminRetraitsRouteImport } from './routes/admin.retraits'
-import { Route as AdminSanteEndpointsRouteImport } from './routes/admin.sante-endpoints'
-import { Route as AdminZonesRouteImport } from './routes/admin.zones'
+import { Route as EntrepriseRouteImport } from './routes/entreprise'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as IndexRouteImport } from './routes/index'
 import { Route as EntrepriseIndexRouteImport } from './routes/entreprise.index'
-import { Route as EntrepriseMotDePasseRouteImport } from './routes/entreprise.mot-de-passe'
-import { Route as EntrepriseOperationsRouteImport } from './routes/entreprise.operations'
-import { Route as EntreprisePortefeuilleRouteImport } from './routes/entreprise.portefeuille'
-import { Route as EntrepriseProfilRouteImport } from './routes/entreprise.profil'
-import { Route as EntrepriseRetardsRouteImport } from './routes/entreprise.retards'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as EntrepriseStatistiquesRouteImport } from './routes/entreprise.statistiques'
-import { Route as AdminCommandesIndexRouteImport } from './routes/admin.commandes.index'
-import { Route as AdminCommandesIdRouteImport } from './routes/admin.commandes.$id'
-import { Route as AdminComptesIndexRouteImport } from './routes/admin.comptes.index'
-import { Route as AdminLivraisonsIdRouteImport } from './routes/admin.livraisons.$id'
-import { Route as AdminMarchandsIndexRouteImport } from './routes/admin.marchands.index'
-import { Route as AdminMarchandsIdRouteImport } from './routes/admin.marchands.$id'
-import { Route as AdminObservabiliteIdRouteImport } from './routes/admin.observabilite.$id'
-import { Route as AdminTransporteursIndexRouteImport } from './routes/admin.transporteurs.index'
-import { Route as AdminTransporteursIdRouteImport } from './routes/admin.transporteurs.$id'
-import { Route as AdminTransporteursNouveauRouteImport } from './routes/admin.transporteurs.nouveau'
-import { Route as EntrepriseLivraisonsIndexRouteImport } from './routes/entreprise.livraisons.index'
+import { Route as EntrepriseRetardsRouteImport } from './routes/entreprise.retards'
+import { Route as EntrepriseProfilRouteImport } from './routes/entreprise.profil'
+import { Route as EntreprisePortefeuilleRouteImport } from './routes/entreprise.portefeuille'
+import { Route as EntrepriseOperationsRouteImport } from './routes/entreprise.operations'
+import { Route as EntrepriseMotDePasseRouteImport } from './routes/entreprise.mot-de-passe'
+import { Route as EntrepriseLivreursActifsRouteImport } from './routes/entreprise.livreurs-actifs'
+import { Route as AdminZonesRouteImport } from './routes/admin.zones'
+import { Route as AdminSanteEndpointsRouteImport } from './routes/admin.sante-endpoints'
+import { Route as AdminRetraitsRouteImport } from './routes/admin.retraits'
+import { Route as AdminPortefeuilleRouteImport } from './routes/admin.portefeuille'
+import { Route as AdminPaysRouteImport } from './routes/admin.pays'
+import { Route as AdminParametresRouteImport } from './routes/admin.parametres'
+import { Route as AdminObservabiliteRouteImport } from './routes/admin.observabilite'
+import { Route as AdminLivreursActifsRouteImport } from './routes/admin.livreurs-actifs'
+import { Route as AdminLivraisonsRouteImport } from './routes/admin.livraisons'
+import { Route as AdminControleRouteImport } from './routes/admin.controle'
+import { Route as AdminCommissionsRouteImport } from './routes/admin.commissions'
+import { Route as AdminCategoriesRouteImport } from './routes/admin.categories'
+import { Route as AdminCampagnesRouteImport } from './routes/admin.campagnes'
+import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
+import { Route as AdminAlertesRouteImport } from './routes/admin.alertes'
 import { Route as EntrepriseLivreursIndexRouteImport } from './routes/entreprise.livreurs.index'
-import { Route as EntrepriseLivreursIdRouteImport } from './routes/entreprise.livreurs.$id'
+import { Route as EntrepriseLivraisonsIndexRouteImport } from './routes/entreprise.livraisons.index'
+import { Route as AdminTransporteursIndexRouteImport } from './routes/admin.transporteurs.index'
+import { Route as AdminMarchandsIndexRouteImport } from './routes/admin.marchands.index'
+import { Route as AdminComptesIndexRouteImport } from './routes/admin.comptes.index'
+import { Route as AdminCommandesIndexRouteImport } from './routes/admin.commandes.index'
 import { Route as EntrepriseLivreursNouveauRouteImport } from './routes/entreprise.livreurs.nouveau'
+import { Route as EntrepriseLivreursIdRouteImport } from './routes/entreprise.livreurs.$id'
+import { Route as AdminTransporteursNouveauRouteImport } from './routes/admin.transporteurs.nouveau'
+import { Route as AdminTransporteursIdRouteImport } from './routes/admin.transporteurs.$id'
+import { Route as AdminObservabiliteIdRouteImport } from './routes/admin.observabilite.$id'
+import { Route as AdminMarchandsIdRouteImport } from './routes/admin.marchands.$id'
+import { Route as AdminLivraisonsIdRouteImport } from './routes/admin.livraisons.$id'
+import { Route as AdminCommandesIdRouteImport } from './routes/admin.commandes.$id'
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminRoute = AdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EntrepriseRoute = EntrepriseRouteImport.update({
@@ -65,109 +62,29 @@ const EntrepriseRoute = EntrepriseRouteImport.update({
   path: '/entreprise',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminIndexRoute = AdminIndexRouteImport.update({
+const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminAlertesRoute = AdminAlertesRouteImport.update({
-  id: '/alertes',
-  path: '/alertes',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminAnalyticsRoute = AdminAnalyticsRouteImport.update({
-  id: '/analytics',
-  path: '/analytics',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminCampagnesRoute = AdminCampagnesRouteImport.update({
-  id: '/campagnes',
-  path: '/campagnes',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminCategoriesRoute = AdminCategoriesRouteImport.update({
-  id: '/categories',
-  path: '/categories',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminCommissionsRoute = AdminCommissionsRouteImport.update({
-  id: '/commissions',
-  path: '/commissions',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminControleRoute = AdminControleRouteImport.update({
-  id: '/controle',
-  path: '/controle',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminLivraisonsRoute = AdminLivraisonsRouteImport.update({
-  id: '/livraisons',
-  path: '/livraisons',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminObservabiliteRoute = AdminObservabiliteRouteImport.update({
-  id: '/observabilite',
-  path: '/observabilite',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminParametresRoute = AdminParametresRouteImport.update({
-  id: '/parametres',
-  path: '/parametres',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminPaysRoute = AdminPaysRouteImport.update({
-  id: '/pays',
-  path: '/pays',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminPortefeuilleRoute = AdminPortefeuilleRouteImport.update({
-  id: '/portefeuille',
-  path: '/portefeuille',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminRetraitsRoute = AdminRetraitsRouteImport.update({
-  id: '/retraits',
-  path: '/retraits',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminSanteEndpointsRoute = AdminSanteEndpointsRouteImport.update({
-  id: '/sante-endpoints',
-  path: '/sante-endpoints',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminZonesRoute = AdminZonesRouteImport.update({
-  id: '/zones',
-  path: '/zones',
-  getParentRoute: () => AdminRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
 const EntrepriseIndexRoute = EntrepriseIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => EntrepriseRoute,
 } as any)
-const EntrepriseMotDePasseRoute = EntrepriseMotDePasseRouteImport.update({
-  id: '/mot-de-passe',
-  path: '/mot-de-passe',
-  getParentRoute: () => EntrepriseRoute,
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
 } as any)
-const EntrepriseOperationsRoute = EntrepriseOperationsRouteImport.update({
-  id: '/operations',
-  path: '/operations',
-  getParentRoute: () => EntrepriseRoute,
-} as any)
-const EntreprisePortefeuilleRoute = EntreprisePortefeuilleRouteImport.update({
-  id: '/portefeuille',
-  path: '/portefeuille',
-  getParentRoute: () => EntrepriseRoute,
-} as any)
-const EntrepriseProfilRoute = EntrepriseProfilRouteImport.update({
-  id: '/profil',
-  path: '/profil',
+const EntrepriseStatistiquesRoute = EntrepriseStatistiquesRouteImport.update({
+  id: '/statistiques',
+  path: '/statistiques',
   getParentRoute: () => EntrepriseRoute,
 } as any)
 const EntrepriseRetardsRoute = EntrepriseRetardsRouteImport.update({
@@ -175,19 +92,126 @@ const EntrepriseRetardsRoute = EntrepriseRetardsRouteImport.update({
   path: '/retards',
   getParentRoute: () => EntrepriseRoute,
 } as any)
-const EntrepriseStatistiquesRoute = EntrepriseStatistiquesRouteImport.update({
-  id: '/statistiques',
-  path: '/statistiques',
+const EntrepriseProfilRoute = EntrepriseProfilRouteImport.update({
+  id: '/profil',
+  path: '/profil',
   getParentRoute: () => EntrepriseRoute,
 } as any)
-const AdminCommandesIndexRoute = AdminCommandesIndexRouteImport.update({
-  id: '/commandes/',
-  path: '/commandes/',
+const EntreprisePortefeuilleRoute = EntreprisePortefeuilleRouteImport.update({
+  id: '/portefeuille',
+  path: '/portefeuille',
+  getParentRoute: () => EntrepriseRoute,
+} as any)
+const EntrepriseOperationsRoute = EntrepriseOperationsRouteImport.update({
+  id: '/operations',
+  path: '/operations',
+  getParentRoute: () => EntrepriseRoute,
+} as any)
+const EntrepriseMotDePasseRoute = EntrepriseMotDePasseRouteImport.update({
+  id: '/mot-de-passe',
+  path: '/mot-de-passe',
+  getParentRoute: () => EntrepriseRoute,
+} as any)
+const EntrepriseLivreursActifsRoute =
+  EntrepriseLivreursActifsRouteImport.update({
+    id: '/livreurs-actifs',
+    path: '/livreurs-actifs',
+    getParentRoute: () => EntrepriseRoute,
+  } as any)
+const AdminZonesRoute = AdminZonesRouteImport.update({
+  id: '/zones',
+  path: '/zones',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminCommandesIdRoute = AdminCommandesIdRouteImport.update({
-  id: '/commandes/$id',
-  path: '/commandes/$id',
+const AdminSanteEndpointsRoute = AdminSanteEndpointsRouteImport.update({
+  id: '/sante-endpoints',
+  path: '/sante-endpoints',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminRetraitsRoute = AdminRetraitsRouteImport.update({
+  id: '/retraits',
+  path: '/retraits',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPortefeuilleRoute = AdminPortefeuilleRouteImport.update({
+  id: '/portefeuille',
+  path: '/portefeuille',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPaysRoute = AdminPaysRouteImport.update({
+  id: '/pays',
+  path: '/pays',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminParametresRoute = AdminParametresRouteImport.update({
+  id: '/parametres',
+  path: '/parametres',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminObservabiliteRoute = AdminObservabiliteRouteImport.update({
+  id: '/observabilite',
+  path: '/observabilite',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminLivreursActifsRoute = AdminLivreursActifsRouteImport.update({
+  id: '/livreurs-actifs',
+  path: '/livreurs-actifs',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminLivraisonsRoute = AdminLivraisonsRouteImport.update({
+  id: '/livraisons',
+  path: '/livraisons',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminControleRoute = AdminControleRouteImport.update({
+  id: '/controle',
+  path: '/controle',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCommissionsRoute = AdminCommissionsRouteImport.update({
+  id: '/commissions',
+  path: '/commissions',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCategoriesRoute = AdminCategoriesRouteImport.update({
+  id: '/categories',
+  path: '/categories',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCampagnesRoute = AdminCampagnesRouteImport.update({
+  id: '/campagnes',
+  path: '/campagnes',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAnalyticsRoute = AdminAnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAlertesRoute = AdminAlertesRouteImport.update({
+  id: '/alertes',
+  path: '/alertes',
+  getParentRoute: () => AdminRoute,
+} as any)
+const EntrepriseLivreursIndexRoute = EntrepriseLivreursIndexRouteImport.update({
+  id: '/livreurs/',
+  path: '/livreurs/',
+  getParentRoute: () => EntrepriseRoute,
+} as any)
+const EntrepriseLivraisonsIndexRoute =
+  EntrepriseLivraisonsIndexRouteImport.update({
+    id: '/livraisons/',
+    path: '/livraisons/',
+    getParentRoute: () => EntrepriseRoute,
+  } as any)
+const AdminTransporteursIndexRoute = AdminTransporteursIndexRouteImport.update({
+  id: '/transporteurs/',
+  path: '/transporteurs/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminMarchandsIndexRoute = AdminMarchandsIndexRouteImport.update({
+  id: '/marchands/',
+  path: '/marchands/',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminComptesIndexRoute = AdminComptesIndexRouteImport.update({
@@ -195,57 +219,10 @@ const AdminComptesIndexRoute = AdminComptesIndexRouteImport.update({
   path: '/comptes/',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminLivraisonsIdRoute = AdminLivraisonsIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => AdminLivraisonsRoute,
-} as any)
-const AdminMarchandsIndexRoute = AdminMarchandsIndexRouteImport.update({
-  id: '/marchands/',
-  path: '/marchands/',
+const AdminCommandesIndexRoute = AdminCommandesIndexRouteImport.update({
+  id: '/commandes/',
+  path: '/commandes/',
   getParentRoute: () => AdminRoute,
-} as any)
-const AdminMarchandsIdRoute = AdminMarchandsIdRouteImport.update({
-  id: '/marchands/$id',
-  path: '/marchands/$id',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminObservabiliteIdRoute = AdminObservabiliteIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => AdminObservabiliteRoute,
-} as any)
-const AdminTransporteursIndexRoute = AdminTransporteursIndexRouteImport.update({
-  id: '/transporteurs/',
-  path: '/transporteurs/',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminTransporteursIdRoute = AdminTransporteursIdRouteImport.update({
-  id: '/transporteurs/$id',
-  path: '/transporteurs/$id',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminTransporteursNouveauRoute =
-  AdminTransporteursNouveauRouteImport.update({
-    id: '/transporteurs/nouveau',
-    path: '/transporteurs/nouveau',
-    getParentRoute: () => AdminRoute,
-  } as any)
-const EntrepriseLivraisonsIndexRoute =
-  EntrepriseLivraisonsIndexRouteImport.update({
-    id: '/livraisons/',
-    path: '/livraisons/',
-    getParentRoute: () => EntrepriseRoute,
-  } as any)
-const EntrepriseLivreursIndexRoute = EntrepriseLivreursIndexRouteImport.update({
-  id: '/livreurs/',
-  path: '/livreurs/',
-  getParentRoute: () => EntrepriseRoute,
-} as any)
-const EntrepriseLivreursIdRoute = EntrepriseLivreursIdRouteImport.update({
-  id: '/livreurs/$id',
-  path: '/livreurs/$id',
-  getParentRoute: () => EntrepriseRoute,
 } as any)
 const EntrepriseLivreursNouveauRoute =
   EntrepriseLivreursNouveauRouteImport.update({
@@ -253,6 +230,42 @@ const EntrepriseLivreursNouveauRoute =
     path: '/livreurs/nouveau',
     getParentRoute: () => EntrepriseRoute,
   } as any)
+const EntrepriseLivreursIdRoute = EntrepriseLivreursIdRouteImport.update({
+  id: '/livreurs/$id',
+  path: '/livreurs/$id',
+  getParentRoute: () => EntrepriseRoute,
+} as any)
+const AdminTransporteursNouveauRoute =
+  AdminTransporteursNouveauRouteImport.update({
+    id: '/transporteurs/nouveau',
+    path: '/transporteurs/nouveau',
+    getParentRoute: () => AdminRoute,
+  } as any)
+const AdminTransporteursIdRoute = AdminTransporteursIdRouteImport.update({
+  id: '/transporteurs/$id',
+  path: '/transporteurs/$id',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminObservabiliteIdRoute = AdminObservabiliteIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AdminObservabiliteRoute,
+} as any)
+const AdminMarchandsIdRoute = AdminMarchandsIdRouteImport.update({
+  id: '/marchands/$id',
+  path: '/marchands/$id',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminLivraisonsIdRoute = AdminLivraisonsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AdminLivraisonsRoute,
+} as any)
+const AdminCommandesIdRoute = AdminCommandesIdRouteImport.update({
+  id: '/commandes/$id',
+  path: '/commandes/$id',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -266,6 +279,7 @@ export interface FileRoutesByFullPath {
   '/admin/commissions': typeof AdminCommissionsRoute
   '/admin/controle': typeof AdminControleRoute
   '/admin/livraisons': typeof AdminLivraisonsRouteWithChildren
+  '/admin/livreurs-actifs': typeof AdminLivreursActifsRoute
   '/admin/observabilite': typeof AdminObservabiliteRouteWithChildren
   '/admin/parametres': typeof AdminParametresRoute
   '/admin/pays': typeof AdminPaysRoute
@@ -273,6 +287,7 @@ export interface FileRoutesByFullPath {
   '/admin/retraits': typeof AdminRetraitsRoute
   '/admin/sante-endpoints': typeof AdminSanteEndpointsRoute
   '/admin/zones': typeof AdminZonesRoute
+  '/entreprise/livreurs-actifs': typeof EntrepriseLivreursActifsRoute
   '/entreprise/mot-de-passe': typeof EntrepriseMotDePasseRoute
   '/entreprise/operations': typeof EntrepriseOperationsRoute
   '/entreprise/portefeuille': typeof EntreprisePortefeuilleRoute
@@ -306,6 +321,7 @@ export interface FileRoutesByTo {
   '/admin/commissions': typeof AdminCommissionsRoute
   '/admin/controle': typeof AdminControleRoute
   '/admin/livraisons': typeof AdminLivraisonsRouteWithChildren
+  '/admin/livreurs-actifs': typeof AdminLivreursActifsRoute
   '/admin/observabilite': typeof AdminObservabiliteRouteWithChildren
   '/admin/parametres': typeof AdminParametresRoute
   '/admin/pays': typeof AdminPaysRoute
@@ -313,6 +329,7 @@ export interface FileRoutesByTo {
   '/admin/retraits': typeof AdminRetraitsRoute
   '/admin/sante-endpoints': typeof AdminSanteEndpointsRoute
   '/admin/zones': typeof AdminZonesRoute
+  '/entreprise/livreurs-actifs': typeof EntrepriseLivreursActifsRoute
   '/entreprise/mot-de-passe': typeof EntrepriseMotDePasseRoute
   '/entreprise/operations': typeof EntrepriseOperationsRoute
   '/entreprise/portefeuille': typeof EntreprisePortefeuilleRoute
@@ -349,6 +366,7 @@ export interface FileRoutesById {
   '/admin/commissions': typeof AdminCommissionsRoute
   '/admin/controle': typeof AdminControleRoute
   '/admin/livraisons': typeof AdminLivraisonsRouteWithChildren
+  '/admin/livreurs-actifs': typeof AdminLivreursActifsRoute
   '/admin/observabilite': typeof AdminObservabiliteRouteWithChildren
   '/admin/parametres': typeof AdminParametresRoute
   '/admin/pays': typeof AdminPaysRoute
@@ -356,6 +374,7 @@ export interface FileRoutesById {
   '/admin/retraits': typeof AdminRetraitsRoute
   '/admin/sante-endpoints': typeof AdminSanteEndpointsRoute
   '/admin/zones': typeof AdminZonesRoute
+  '/entreprise/livreurs-actifs': typeof EntrepriseLivreursActifsRoute
   '/entreprise/mot-de-passe': typeof EntrepriseMotDePasseRoute
   '/entreprise/operations': typeof EntrepriseOperationsRoute
   '/entreprise/portefeuille': typeof EntreprisePortefeuilleRoute
@@ -393,6 +412,7 @@ export interface FileRouteTypes {
     | '/admin/commissions'
     | '/admin/controle'
     | '/admin/livraisons'
+    | '/admin/livreurs-actifs'
     | '/admin/observabilite'
     | '/admin/parametres'
     | '/admin/pays'
@@ -400,6 +420,7 @@ export interface FileRouteTypes {
     | '/admin/retraits'
     | '/admin/sante-endpoints'
     | '/admin/zones'
+    | '/entreprise/livreurs-actifs'
     | '/entreprise/mot-de-passe'
     | '/entreprise/operations'
     | '/entreprise/portefeuille'
@@ -433,6 +454,7 @@ export interface FileRouteTypes {
     | '/admin/commissions'
     | '/admin/controle'
     | '/admin/livraisons'
+    | '/admin/livreurs-actifs'
     | '/admin/observabilite'
     | '/admin/parametres'
     | '/admin/pays'
@@ -440,6 +462,7 @@ export interface FileRouteTypes {
     | '/admin/retraits'
     | '/admin/sante-endpoints'
     | '/admin/zones'
+    | '/entreprise/livreurs-actifs'
     | '/entreprise/mot-de-passe'
     | '/entreprise/operations'
     | '/entreprise/portefeuille'
@@ -475,6 +498,7 @@ export interface FileRouteTypes {
     | '/admin/commissions'
     | '/admin/controle'
     | '/admin/livraisons'
+    | '/admin/livreurs-actifs'
     | '/admin/observabilite'
     | '/admin/parametres'
     | '/admin/pays'
@@ -482,6 +506,7 @@ export interface FileRouteTypes {
     | '/admin/retraits'
     | '/admin/sante-endpoints'
     | '/admin/zones'
+    | '/entreprise/livreurs-actifs'
     | '/entreprise/mot-de-passe'
     | '/entreprise/operations'
     | '/entreprise/portefeuille'
@@ -515,18 +540,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin': {
-      id: '/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminRouteImport
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/entreprise': {
@@ -536,117 +554,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EntrepriseRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/': {
-      id: '/admin/'
+    '/': {
+      id: '/'
       path: '/'
-      fullPath: '/admin/'
-      preLoaderRoute: typeof AdminIndexRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/alertes': {
-      id: '/admin/alertes'
-      path: '/alertes'
-      fullPath: '/admin/alertes'
-      preLoaderRoute: typeof AdminAlertesRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/analytics': {
-      id: '/admin/analytics'
-      path: '/analytics'
-      fullPath: '/admin/analytics'
-      preLoaderRoute: typeof AdminAnalyticsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/campagnes': {
-      id: '/admin/campagnes'
-      path: '/campagnes'
-      fullPath: '/admin/campagnes'
-      preLoaderRoute: typeof AdminCampagnesRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/categories': {
-      id: '/admin/categories'
-      path: '/categories'
-      fullPath: '/admin/categories'
-      preLoaderRoute: typeof AdminCategoriesRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/commissions': {
-      id: '/admin/commissions'
-      path: '/commissions'
-      fullPath: '/admin/commissions'
-      preLoaderRoute: typeof AdminCommissionsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/controle': {
-      id: '/admin/controle'
-      path: '/controle'
-      fullPath: '/admin/controle'
-      preLoaderRoute: typeof AdminControleRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/livraisons': {
-      id: '/admin/livraisons'
-      path: '/livraisons'
-      fullPath: '/admin/livraisons'
-      preLoaderRoute: typeof AdminLivraisonsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/observabilite': {
-      id: '/admin/observabilite'
-      path: '/observabilite'
-      fullPath: '/admin/observabilite'
-      preLoaderRoute: typeof AdminObservabiliteRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/parametres': {
-      id: '/admin/parametres'
-      path: '/parametres'
-      fullPath: '/admin/parametres'
-      preLoaderRoute: typeof AdminParametresRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/pays': {
-      id: '/admin/pays'
-      path: '/pays'
-      fullPath: '/admin/pays'
-      preLoaderRoute: typeof AdminPaysRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/portefeuille': {
-      id: '/admin/portefeuille'
-      path: '/portefeuille'
-      fullPath: '/admin/portefeuille'
-      preLoaderRoute: typeof AdminPortefeuilleRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/retraits': {
-      id: '/admin/retraits'
-      path: '/retraits'
-      fullPath: '/admin/retraits'
-      preLoaderRoute: typeof AdminRetraitsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/sante-endpoints': {
-      id: '/admin/sante-endpoints'
-      path: '/sante-endpoints'
-      fullPath: '/admin/sante-endpoints'
-      preLoaderRoute: typeof AdminSanteEndpointsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/zones': {
-      id: '/admin/zones'
-      path: '/zones'
-      fullPath: '/admin/zones'
-      preLoaderRoute: typeof AdminZonesRouteImport
-      parentRoute: typeof AdminRoute
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/entreprise/': {
       id: '/entreprise/'
@@ -655,32 +575,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EntrepriseIndexRouteImport
       parentRoute: typeof EntrepriseRoute
     }
-    '/entreprise/mot-de-passe': {
-      id: '/entreprise/mot-de-passe'
-      path: '/mot-de-passe'
-      fullPath: '/entreprise/mot-de-passe'
-      preLoaderRoute: typeof EntrepriseMotDePasseRouteImport
-      parentRoute: typeof EntrepriseRoute
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
     }
-    '/entreprise/operations': {
-      id: '/entreprise/operations'
-      path: '/operations'
-      fullPath: '/entreprise/operations'
-      preLoaderRoute: typeof EntrepriseOperationsRouteImport
-      parentRoute: typeof EntrepriseRoute
-    }
-    '/entreprise/portefeuille': {
-      id: '/entreprise/portefeuille'
-      path: '/portefeuille'
-      fullPath: '/entreprise/portefeuille'
-      preLoaderRoute: typeof EntreprisePortefeuilleRouteImport
-      parentRoute: typeof EntrepriseRoute
-    }
-    '/entreprise/profil': {
-      id: '/entreprise/profil'
-      path: '/profil'
-      fullPath: '/entreprise/profil'
-      preLoaderRoute: typeof EntrepriseProfilRouteImport
+    '/entreprise/statistiques': {
+      id: '/entreprise/statistiques'
+      path: '/statistiques'
+      fullPath: '/entreprise/statistiques'
+      preLoaderRoute: typeof EntrepriseStatistiquesRouteImport
       parentRoute: typeof EntrepriseRoute
     }
     '/entreprise/retards': {
@@ -690,25 +596,172 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EntrepriseRetardsRouteImport
       parentRoute: typeof EntrepriseRoute
     }
-    '/entreprise/statistiques': {
-      id: '/entreprise/statistiques'
-      path: '/statistiques'
-      fullPath: '/entreprise/statistiques'
-      preLoaderRoute: typeof EntrepriseStatistiquesRouteImport
+    '/entreprise/profil': {
+      id: '/entreprise/profil'
+      path: '/profil'
+      fullPath: '/entreprise/profil'
+      preLoaderRoute: typeof EntrepriseProfilRouteImport
       parentRoute: typeof EntrepriseRoute
     }
-    '/admin/commandes/': {
-      id: '/admin/commandes/'
-      path: '/commandes'
-      fullPath: '/admin/commandes/'
-      preLoaderRoute: typeof AdminCommandesIndexRouteImport
+    '/entreprise/portefeuille': {
+      id: '/entreprise/portefeuille'
+      path: '/portefeuille'
+      fullPath: '/entreprise/portefeuille'
+      preLoaderRoute: typeof EntreprisePortefeuilleRouteImport
+      parentRoute: typeof EntrepriseRoute
+    }
+    '/entreprise/operations': {
+      id: '/entreprise/operations'
+      path: '/operations'
+      fullPath: '/entreprise/operations'
+      preLoaderRoute: typeof EntrepriseOperationsRouteImport
+      parentRoute: typeof EntrepriseRoute
+    }
+    '/entreprise/mot-de-passe': {
+      id: '/entreprise/mot-de-passe'
+      path: '/mot-de-passe'
+      fullPath: '/entreprise/mot-de-passe'
+      preLoaderRoute: typeof EntrepriseMotDePasseRouteImport
+      parentRoute: typeof EntrepriseRoute
+    }
+    '/entreprise/livreurs-actifs': {
+      id: '/entreprise/livreurs-actifs'
+      path: '/livreurs-actifs'
+      fullPath: '/entreprise/livreurs-actifs'
+      preLoaderRoute: typeof EntrepriseLivreursActifsRouteImport
+      parentRoute: typeof EntrepriseRoute
+    }
+    '/admin/zones': {
+      id: '/admin/zones'
+      path: '/zones'
+      fullPath: '/admin/zones'
+      preLoaderRoute: typeof AdminZonesRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/commandes/$id': {
-      id: '/admin/commandes/$id'
-      path: '/commandes/$id'
-      fullPath: '/admin/commandes/$id'
-      preLoaderRoute: typeof AdminCommandesIdRouteImport
+    '/admin/sante-endpoints': {
+      id: '/admin/sante-endpoints'
+      path: '/sante-endpoints'
+      fullPath: '/admin/sante-endpoints'
+      preLoaderRoute: typeof AdminSanteEndpointsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/retraits': {
+      id: '/admin/retraits'
+      path: '/retraits'
+      fullPath: '/admin/retraits'
+      preLoaderRoute: typeof AdminRetraitsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/portefeuille': {
+      id: '/admin/portefeuille'
+      path: '/portefeuille'
+      fullPath: '/admin/portefeuille'
+      preLoaderRoute: typeof AdminPortefeuilleRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/pays': {
+      id: '/admin/pays'
+      path: '/pays'
+      fullPath: '/admin/pays'
+      preLoaderRoute: typeof AdminPaysRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/parametres': {
+      id: '/admin/parametres'
+      path: '/parametres'
+      fullPath: '/admin/parametres'
+      preLoaderRoute: typeof AdminParametresRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/observabilite': {
+      id: '/admin/observabilite'
+      path: '/observabilite'
+      fullPath: '/admin/observabilite'
+      preLoaderRoute: typeof AdminObservabiliteRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/livreurs-actifs': {
+      id: '/admin/livreurs-actifs'
+      path: '/livreurs-actifs'
+      fullPath: '/admin/livreurs-actifs'
+      preLoaderRoute: typeof AdminLivreursActifsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/livraisons': {
+      id: '/admin/livraisons'
+      path: '/livraisons'
+      fullPath: '/admin/livraisons'
+      preLoaderRoute: typeof AdminLivraisonsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/controle': {
+      id: '/admin/controle'
+      path: '/controle'
+      fullPath: '/admin/controle'
+      preLoaderRoute: typeof AdminControleRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/commissions': {
+      id: '/admin/commissions'
+      path: '/commissions'
+      fullPath: '/admin/commissions'
+      preLoaderRoute: typeof AdminCommissionsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/categories': {
+      id: '/admin/categories'
+      path: '/categories'
+      fullPath: '/admin/categories'
+      preLoaderRoute: typeof AdminCategoriesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/campagnes': {
+      id: '/admin/campagnes'
+      path: '/campagnes'
+      fullPath: '/admin/campagnes'
+      preLoaderRoute: typeof AdminCampagnesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/analytics': {
+      id: '/admin/analytics'
+      path: '/analytics'
+      fullPath: '/admin/analytics'
+      preLoaderRoute: typeof AdminAnalyticsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/alertes': {
+      id: '/admin/alertes'
+      path: '/alertes'
+      fullPath: '/admin/alertes'
+      preLoaderRoute: typeof AdminAlertesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/entreprise/livreurs/': {
+      id: '/entreprise/livreurs/'
+      path: '/livreurs'
+      fullPath: '/entreprise/livreurs/'
+      preLoaderRoute: typeof EntrepriseLivreursIndexRouteImport
+      parentRoute: typeof EntrepriseRoute
+    }
+    '/entreprise/livraisons/': {
+      id: '/entreprise/livraisons/'
+      path: '/livraisons'
+      fullPath: '/entreprise/livraisons/'
+      preLoaderRoute: typeof EntrepriseLivraisonsIndexRouteImport
+      parentRoute: typeof EntrepriseRoute
+    }
+    '/admin/transporteurs/': {
+      id: '/admin/transporteurs/'
+      path: '/transporteurs'
+      fullPath: '/admin/transporteurs/'
+      preLoaderRoute: typeof AdminTransporteursIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/marchands/': {
+      id: '/admin/marchands/'
+      path: '/marchands'
+      fullPath: '/admin/marchands/'
+      preLoaderRoute: typeof AdminMarchandsIndexRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/comptes/': {
@@ -718,67 +771,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminComptesIndexRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/livraisons/$id': {
-      id: '/admin/livraisons/$id'
-      path: '/$id'
-      fullPath: '/admin/livraisons/$id'
-      preLoaderRoute: typeof AdminLivraisonsIdRouteImport
-      parentRoute: typeof AdminLivraisonsRoute
-    }
-    '/admin/marchands/': {
-      id: '/admin/marchands/'
-      path: '/marchands'
-      fullPath: '/admin/marchands/'
-      preLoaderRoute: typeof AdminMarchandsIndexRouteImport
+    '/admin/commandes/': {
+      id: '/admin/commandes/'
+      path: '/commandes'
+      fullPath: '/admin/commandes/'
+      preLoaderRoute: typeof AdminCommandesIndexRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/marchands/$id': {
-      id: '/admin/marchands/$id'
-      path: '/marchands/$id'
-      fullPath: '/admin/marchands/$id'
-      preLoaderRoute: typeof AdminMarchandsIdRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/observabilite/$id': {
-      id: '/admin/observabilite/$id'
-      path: '/$id'
-      fullPath: '/admin/observabilite/$id'
-      preLoaderRoute: typeof AdminObservabiliteIdRouteImport
-      parentRoute: typeof AdminObservabiliteRoute
-    }
-    '/admin/transporteurs/': {
-      id: '/admin/transporteurs/'
-      path: '/transporteurs'
-      fullPath: '/admin/transporteurs/'
-      preLoaderRoute: typeof AdminTransporteursIndexRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/transporteurs/$id': {
-      id: '/admin/transporteurs/$id'
-      path: '/transporteurs/$id'
-      fullPath: '/admin/transporteurs/$id'
-      preLoaderRoute: typeof AdminTransporteursIdRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/transporteurs/nouveau': {
-      id: '/admin/transporteurs/nouveau'
-      path: '/transporteurs/nouveau'
-      fullPath: '/admin/transporteurs/nouveau'
-      preLoaderRoute: typeof AdminTransporteursNouveauRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/entreprise/livraisons/': {
-      id: '/entreprise/livraisons/'
-      path: '/livraisons'
-      fullPath: '/entreprise/livraisons/'
-      preLoaderRoute: typeof EntrepriseLivraisonsIndexRouteImport
-      parentRoute: typeof EntrepriseRoute
-    }
-    '/entreprise/livreurs/': {
-      id: '/entreprise/livreurs/'
-      path: '/livreurs'
-      fullPath: '/entreprise/livreurs/'
-      preLoaderRoute: typeof EntrepriseLivreursIndexRouteImport
+    '/entreprise/livreurs/nouveau': {
+      id: '/entreprise/livreurs/nouveau'
+      path: '/livreurs/nouveau'
+      fullPath: '/entreprise/livreurs/nouveau'
+      preLoaderRoute: typeof EntrepriseLivreursNouveauRouteImport
       parentRoute: typeof EntrepriseRoute
     }
     '/entreprise/livreurs/$id': {
@@ -788,12 +792,47 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EntrepriseLivreursIdRouteImport
       parentRoute: typeof EntrepriseRoute
     }
-    '/entreprise/livreurs/nouveau': {
-      id: '/entreprise/livreurs/nouveau'
-      path: '/livreurs/nouveau'
-      fullPath: '/entreprise/livreurs/nouveau'
-      preLoaderRoute: typeof EntrepriseLivreursNouveauRouteImport
-      parentRoute: typeof EntrepriseRoute
+    '/admin/transporteurs/nouveau': {
+      id: '/admin/transporteurs/nouveau'
+      path: '/transporteurs/nouveau'
+      fullPath: '/admin/transporteurs/nouveau'
+      preLoaderRoute: typeof AdminTransporteursNouveauRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/transporteurs/$id': {
+      id: '/admin/transporteurs/$id'
+      path: '/transporteurs/$id'
+      fullPath: '/admin/transporteurs/$id'
+      preLoaderRoute: typeof AdminTransporteursIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/observabilite/$id': {
+      id: '/admin/observabilite/$id'
+      path: '/$id'
+      fullPath: '/admin/observabilite/$id'
+      preLoaderRoute: typeof AdminObservabiliteIdRouteImport
+      parentRoute: typeof AdminObservabiliteRoute
+    }
+    '/admin/marchands/$id': {
+      id: '/admin/marchands/$id'
+      path: '/marchands/$id'
+      fullPath: '/admin/marchands/$id'
+      preLoaderRoute: typeof AdminMarchandsIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/livraisons/$id': {
+      id: '/admin/livraisons/$id'
+      path: '/$id'
+      fullPath: '/admin/livraisons/$id'
+      preLoaderRoute: typeof AdminLivraisonsIdRouteImport
+      parentRoute: typeof AdminLivraisonsRoute
+    }
+    '/admin/commandes/$id': {
+      id: '/admin/commandes/$id'
+      path: '/commandes/$id'
+      fullPath: '/admin/commandes/$id'
+      preLoaderRoute: typeof AdminCommandesIdRouteImport
+      parentRoute: typeof AdminRoute
     }
   }
 }
@@ -829,6 +868,7 @@ interface AdminRouteChildren {
   AdminCommissionsRoute: typeof AdminCommissionsRoute
   AdminControleRoute: typeof AdminControleRoute
   AdminLivraisonsRoute: typeof AdminLivraisonsRouteWithChildren
+  AdminLivreursActifsRoute: typeof AdminLivreursActifsRoute
   AdminObservabiliteRoute: typeof AdminObservabiliteRouteWithChildren
   AdminParametresRoute: typeof AdminParametresRoute
   AdminPaysRoute: typeof AdminPaysRoute
@@ -855,6 +895,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminCommissionsRoute: AdminCommissionsRoute,
   AdminControleRoute: AdminControleRoute,
   AdminLivraisonsRoute: AdminLivraisonsRouteWithChildren,
+  AdminLivreursActifsRoute: AdminLivreursActifsRoute,
   AdminObservabiliteRoute: AdminObservabiliteRouteWithChildren,
   AdminParametresRoute: AdminParametresRoute,
   AdminPaysRoute: AdminPaysRoute,
@@ -876,6 +917,7 @@ const AdminRouteChildren: AdminRouteChildren = {
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface EntrepriseRouteChildren {
+  EntrepriseLivreursActifsRoute: typeof EntrepriseLivreursActifsRoute
   EntrepriseMotDePasseRoute: typeof EntrepriseMotDePasseRoute
   EntrepriseOperationsRoute: typeof EntrepriseOperationsRoute
   EntreprisePortefeuilleRoute: typeof EntreprisePortefeuilleRoute
@@ -890,6 +932,7 @@ interface EntrepriseRouteChildren {
 }
 
 const EntrepriseRouteChildren: EntrepriseRouteChildren = {
+  EntrepriseLivreursActifsRoute: EntrepriseLivreursActifsRoute,
   EntrepriseMotDePasseRoute: EntrepriseMotDePasseRoute,
   EntrepriseOperationsRoute: EntrepriseOperationsRoute,
   EntreprisePortefeuilleRoute: EntreprisePortefeuilleRoute,
