@@ -40,7 +40,7 @@ function warnIfOpen(): void {
   const widthDiff = window.outerWidth - window.innerWidth;
   if (widthDiff > threshold) {
     console.warn(
-      "%c🚫 Inspection détectée — l'analyse du back-office est interdite.",
+      "%c[ALERT] Inspection détectée — l'analyse du back-office est interdite.",
       "font-size:16px;color:#dc2626;font-weight:bold;",
     );
   }

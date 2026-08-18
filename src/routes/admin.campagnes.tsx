@@ -592,11 +592,11 @@ function CampagnesPage() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="offre_jour">🔥 Offre du jour</SelectItem>
-                    <SelectItem value="promo">🏷️ Promotion</SelectItem>
-                    <SelectItem value="lancement">🚀 Lancement</SelectItem>
-                    <SelectItem value="saisonniere">📅 Saisonnière</SelectItem>
-                    <SelectItem value="standard">📢 Standard</SelectItem>
+                    <SelectItem value="offre_jour">Offre du jour</SelectItem>
+                    <SelectItem value="promo">Promotion</SelectItem>
+                    <SelectItem value="lancement">Lancement</SelectItem>
+                    <SelectItem value="saisonniere">Saisonnière</SelectItem>
+                    <SelectItem value="standard">Standard</SelectItem>
                   </SelectContent>
                 </Select>
                 <p className="text-xs text-muted-foreground">

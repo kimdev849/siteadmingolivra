@@ -337,7 +337,7 @@ function ControleContent() {
                   id="announce"
                   value={announcement}
                   onChange={(e) => setAnnouncement(e.target.value)}
-                  placeholder="Ex. 🎉 Lancement de GoLivra à Brazzaville !"
+                  placeholder="Ex. Lancement de GoLivra à Brazzaville !"
                   className="mt-1"
                   disabled={isLoading}
                 />

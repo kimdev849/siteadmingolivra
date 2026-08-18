@@ -7,6 +7,7 @@ import {
   UserCheck,
   Users,
   Activity,
+  Trophy,
   Truck,
   ShoppingBag,
   BarChart3,
@@ -176,7 +177,8 @@ function TopZonesCard({ data, loading }: { data: UsageDashboard | undefined; loa
         </CardTitle>
         {top ? (
           <p className="text-xs text-muted-foreground">
-            🏆 <span className="font-medium text-foreground">{top.quartier}</span> en tête avec{" "}
+            <Trophy className="inline h-3.5 w-3.5 text-amber-500" />{" "}
+            <span className="font-medium text-foreground">{top.quartier}</span> en tête avec{" "}
             <span className="font-mono">{top.commandes}</span> commande(s) ·{" "}
             {totalCommandes.toLocaleString("fr-FR")} total
           </p>
