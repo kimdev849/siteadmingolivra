@@ -33,6 +33,21 @@ function notificationLink(n: AppNotification): string | null {
     return `/admin/livraisons/${String(n.data.livraison_id)}`;
   }
   if (n.type === "retard_livraison") return "/admin/livraisons";
+  if (n.type === "livraison_retard_admin" && n.data?.livraison_id) {
+    return `/admin/livraisons/${String(n.data.livraison_id)}`;
+  }
+  if (n.type === "livraison_incident_admin" && n.data?.livraison_id) {
+    return `/admin/livraisons/${String(n.data.livraison_id)}`;
+  }
+  if (n.type === "livraison_anomalie_admin" && n.data?.livraison_id) {
+    return `/admin/livraisons/${String(n.data.livraison_id)}`;
+  }
+  if (n.type === "livraison_bloquee" && n.data?.livraison_id) {
+    return `/admin/livraisons/${String(n.data.livraison_id)}`;
+  }
+  if (n.type === "livraison_sans_livreur" && n.data?.livraison_id) {
+    return `/admin/livraisons/${String(n.data.livraison_id)}`;
+  }
   return null;
 }
 
