@@ -1,8 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import * as React from "react";
 import {
+  Clock,
   MapPin,
+  Percent,
   Smartphone,
+  Timer,
   TrendingUp,
   UserCheck,
   Users,
@@ -11,6 +14,8 @@ import {
   Truck,
   ShoppingBag,
   BarChart3,
+  Store,
+  XCircle,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { KpiCard } from "@/components/admin/KpiCard";
@@ -159,8 +164,117 @@ export function UsageDashboardPanel() {
         />
       </div>
 
+      {/* ── Sessions & livraison ── */}
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+        <KpiCard
+          label="Durée session moyenne"
+          icon={Clock}
+          value={
+            data?.sessions?.duree_moyenne_min != null
+              ? `${data.sessions.duree_moyenne_min} min`
+              : undefined
+          }
+          hint={
+            data?.sessions?.duree_mediane_min != null
+              ? `Médiane : ${data.sessions.duree_mediane_min} min`
+              : undefined
+          }
+        />
+        <KpiCard
+          label="Délai livraison moyen"
+          icon={Timer}
+          value={
+            data?.livraison?.delai_moyen_min != null
+              ? `${data.livraison.delai_moyen_min} min`
+              : undefined
+          }
+          hint="Création commande → livrée"
+        />
+        <KpiCard
+          label="Taux de livraison"
+          icon={Percent}
+          value={
+            data?.activite?.taux_livraison_30j != null
+              ? `${data.activite.taux_livraison_30j}%`
+              : undefined
+          }
+          hint={
+            data?.activite?.commandes_livrees_30j != null
+              ? `${data.activite.commandes_livrees_30j} livrées / ${data.activite.commandes_30j} total`
+              : undefined
+          }
+        />
+        <KpiCard
+          label="Taux d'annulation"
+          icon={XCircle}
+          value={
+            data?.activite?.taux_annulation_30j != null
+              ? `${data.activite.taux_annulation_30j}%`
+              : undefined
+          }
+          hint={
+            data?.activite?.commandes_annulees_30j != null
+              ? `${data.activite.commandes_annulees_30j} annulées`
+              : undefined
+          }
+        />
+      </div>
+
+      <TopCommercesCard data={data} loading={usageQuery.isLoading} />
       <TopZonesCard data={data} loading={usageQuery.isLoading} />
     </div>
+  );
+}
+
+function TopCommercesCard({ data, loading }: { data: UsageDashboard | undefined; loading: boolean }) {
+  const commerces = data?.top_commerces ?? [];
+  const max = commerces[0]?.commandes || 1;
+
+  return (
+    <Card>
+      <CardHeader className="flex flex-row items-center justify-between pb-2">
+        <CardTitle className="text-sm font-semibold flex items-center gap-2">
+          <Store className="h-4 w-4 text-primary" /> Top commerces (commandes)
+        </CardTitle>
+        {commerces.length > 0 ? (
+          <p className="text-xs text-muted-foreground">
+            {commerces.length} commerce(s) classés sur la fenêtre
+          </p>
+        ) : null}
+      </CardHeader>
+      <CardContent>
+        {loading ? (
+          <p className="text-sm text-muted-foreground">Chargement…</p>
+        ) : commerces.length === 0 ? (
+          <p className="text-sm text-muted-foreground">Aucune commande sur la fenêtre.</p>
+        ) : (
+          <div className="space-y-2">
+            {commerces.map((c, idx) => {
+              const widthPct = Math.round((c.commandes / max) * 100);
+              return (
+                <div key={c.id} className="space-y-1">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="font-medium text-foreground">
+                      <span className="mr-2 text-muted-foreground">#{idx + 1}</span>
+                      {c.nom}
+                    </span>
+                    <span className="font-mono text-xs text-muted-foreground">
+                      {c.commandes.toLocaleString("fr-FR")} cmd
+                    </span>
+                  </div>
+                  <div className="h-2 overflow-hidden rounded-full bg-muted">
+                    <div
+                      className="h-full rounded-full bg-primary"
+                      style={{ width: `${widthPct}%` }}
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </CardContent>
+    </Card>
   );
 }
 

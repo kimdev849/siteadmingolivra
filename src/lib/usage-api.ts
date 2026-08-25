@@ -27,8 +27,27 @@ export type UsageActivite = {
   requetes_30j: number;
   commandes_30j: number;
   commandes_livrees_30j: number;
+  commandes_annulees_30j: number;
+  commandes_en_cours_30j: number;
+  taux_livraison_30j: number;
+  taux_annulation_30j: number;
   moyenne_requetes_par_utilisateur_actif_30j: number;
   moyenne_commandes_par_client_actif_30j: number;
+};
+
+export type UsageSessions = {
+  duree_moyenne_min: number;
+  duree_mediane_min: number;
+};
+
+export type UsageLivraison = {
+  delai_moyen_min: number;
+};
+
+export type TopCommerce = {
+  id: string;
+  nom: string;
+  commandes: number;
 };
 
 export type UsageTopZone = {
@@ -42,6 +61,9 @@ export type UsageDashboard = {
   generated_at: string;
   mobile_users: MobileUsers;
   activite: UsageActivite;
+  sessions: UsageSessions;
+  livraison: UsageLivraison;
+  top_commerces: TopCommerce[];
   top_zones_livraison: UsageTopZone[];
 };
 
