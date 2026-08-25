@@ -117,12 +117,108 @@ function LivraisonsPage() {
     </Button>,
   ]);
 
+  const incidentsQuery = useQuery({
+    queryKey: ["admin", "delivery-incidents"],
+    queryFn: () =>
+      fetch("/api/admin/delivery-incidents", {
+        headers: { Authorization: `Bearer ${localStorage.getItem('admin_token') || ''}` },
+      }).then((r) => r.json()),
+    refetchInterval: 30_000,
+  });
+
+  const incidents = (incidentsQuery.data as any[]) || [];
+  const hasIncidents = incidents.length > 0;
+
   return (
     <div>
       <PageHeader
         title="Livraisons"
         description="Commandes clients et livraisons externes créées par les commerces — avec horaires et retards"
       />
+
+      {/* ── 🚨 Livraisons nécessitant une intervention ──────────────── */}
+      {hasIncidents && (
+        <div className="mb-6 rounded-xl border border-red-200 bg-red-50 p-4">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="text-lg">🚨</span>
+            <h2 className="text-sm font-bold text-red-800">
+              {incidents.length} livraison(s) nécessitant une intervention
+            </h2>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead>
+                <tr className="border-b border-red-200">
+                  <th className="py-1.5 pr-3 text-left font-semibold text-red-700">ID</th>
+                  <th className="py-1.5 pr-3 text-left font-semibold text-red-700">Commerce</th>
+                  <th className="py-1.5 pr-3 text-left font-semibold text-red-700">Livreur</th>
+                  <th className="py-1.5 pr-3 text-left font-semibold text-red-700">Client</th>
+                  <th className="py-1.5 pr-3 text-left font-semibold text-red-700">Statut</th>
+                  <th className="py-1.5 pr-3 text-left font-semibold text-red-700">Durée</th>
+                  <th className="py-1.5 pr-3 text-left font-semibold text-red-700">Niveau</th>
+                  <th className="py-1.5 text-left font-semibold text-red-700">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {incidents.map((inc: any) => (
+                  <tr key={inc.id} className="border-b border-red-100 last:border-0">
+                    <td className="py-1.5 pr-3 font-mono">{inc.id.slice(0, 8)}</td>
+                    <td className="py-1.5 pr-3">{inc.commerce_nom || '—'}</td>
+                    <td className="py-1.5 pr-3">{inc.livreur_nom || '—'}</td>
+                    <td className="py-1.5 pr-3">{inc.client_nom || '—'}</td>
+                    <td className="py-1.5 pr-3">{inc.statut}</td>
+                    <td className="py-1.5 pr-3 font-semibold">{inc.elapsed_label}</td>
+                    <td className="py-1.5 pr-3">
+                      <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold ${
+                        inc.incident_niveau === 'bloquee' ? 'bg-red-200 text-red-900' :
+                        inc.incident_niveau === 'anomalie' ? 'bg-orange-200 text-orange-900' :
+                        inc.incident_niveau === 'incident' ? 'bg-red-100 text-red-800' :
+                        'bg-yellow-100 text-yellow-800'
+                      }`}>{inc.statut_label}</span>
+                    </td>
+                    <td className="py-1.5">
+                      <div className="flex gap-1">
+                        <button
+                          className="rounded bg-green-100 px-2 py-0.5 text-xs font-semibold text-green-800 hover:bg-green-200"
+                          onClick={async () => {
+                            const raison = prompt('Raison de la résolution ?');
+                            if (!raison) return;
+                            await fetch(`/api/admin/delivery-incidents/${inc.id}/resolve`, {
+                              method: 'PATCH',
+                              headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('admin_token') || ''}` },
+                              body: JSON.stringify({ raison }),
+                            });
+                            incidentsQuery.refetch();
+                          }}
+                        >Résoudre</button>
+                        <button
+                          className="rounded bg-red-100 px-2 py-0.5 text-xs font-semibold text-red-800 hover:bg-red-200"
+                          onClick={async () => {
+                            const raison = prompt('Raison de l\'annulation ?');
+                            if (!raison) return;
+                            await fetch(`/api/admin/delivery-incidents/${inc.id}/cancel`, {
+                              method: 'PATCH',
+                              headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('admin_token') || ''}` },
+                              body: JSON.stringify({ raison }),
+                            });
+                            incidentsQuery.refetch();
+                          }}
+                        >Annuler</button>
+                        {inc.livreur_telephone && (
+                          <a
+                            href={`tel:${inc.livreur_telephone}`}
+                            className="rounded bg-blue-100 px-2 py-0.5 text-xs font-semibold text-blue-800 hover:bg-blue-200"
+                          >📞 Appeler</a>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
 
       <div className="mb-4 flex flex-wrap items-center gap-2">
         <Input
