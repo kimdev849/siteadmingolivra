@@ -2,10 +2,19 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { ArrowLeft, CheckCircle2, Ban, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import { PageHeader } from "@/components/admin/PageHeader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/admin/DataTable";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { CommerceStatsPanel } from "@/components/admin/CommerceStatsPanel";
@@ -29,6 +38,7 @@ function MarchandDetailPage() {
   const queryClient = useQueryClient();
   const [loading, setLoading] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [rejectOpen, setRejectOpen] = useState(false);
 
   const detailQuery = useQuery({
     queryKey: ["admin", "enterprise", id],
@@ -47,10 +57,17 @@ function MarchandDetailPage() {
       else await suspendEnterpriseAdmin(id);
       await queryClient.invalidateQueries({ queryKey: ["admin"] });
       await detailQuery.refetch();
+      const labels: Record<string, string> = {
+        activate: `« ${enterprise?.nom ?? ""} » a été activé.`,
+        reject: `« ${enterprise?.nom ?? ""} » a été refusé.`,
+        suspend: `« ${enterprise?.nom ?? ""} » a été suspendu.`,
+      };
+      toast.success(labels[action]);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Action impossible.");
     } finally {
       setLoading(null);
+      setRejectOpen(false);
     }
   };
 
@@ -93,7 +110,7 @@ function MarchandDetailPage() {
                 <Button
                   variant="outline"
                   disabled={!!loading}
-                  onClick={() => void runAction("reject")}
+                  onClick={() => setRejectOpen(true)}
                 >
                   {loading === "reject" ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
@@ -204,6 +221,30 @@ function MarchandDetailPage() {
           Retour à la liste
         </Button>
       )}
+
+      {/* Dialogue de confirmation pour le refus */}
+      <Dialog open={rejectOpen} onOpenChange={setRejectOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Refuser le commerce</DialogTitle>
+            <DialogDescription>
+              Voulez-vous vraiment refuser « {enterprise?.nom} » ? Ce commerce
+              n'apparaîtra plus sur le marketplace.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setRejectOpen(false)} disabled={!!loading}>
+              Annuler
+            </Button>
+            <Button variant="destructive" disabled={!!loading} onClick={() => void runAction("reject")}>
+              {loading === "reject" ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : null}
+              Confirmer le refus
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

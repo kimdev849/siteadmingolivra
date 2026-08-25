@@ -2,11 +2,20 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { Filter, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import { PageHeader } from "@/components/admin/PageHeader";
 import { DataTable } from "@/components/admin/DataTable";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   Select,
   SelectContent,
@@ -41,6 +50,7 @@ function MarchandsPage() {
   const [typeFilter, setTypeFilter] = useState<string>("all");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [actingId, setActingId] = useState<string | null>(null);
+  const [rejectTarget, setRejectTarget] = useState<{ id: string; nom: string } | null>(null);
 
   const enterprisesQuery = useQuery({
     queryKey: ["admin", "enterprises", typeFilter, statusFilter, search],
@@ -82,17 +92,13 @@ function MarchandsPage() {
                 size="sm"
                 variant="outline"
                 disabled={actingId === e.id}
-                onClick={async () => {
-                  setActingId(e.id);
-                  try {
-                    await rejectEnterpriseAdmin(e.id);
-                    await queryClient.invalidateQueries({ queryKey: ["admin"] });
-                  } finally {
-                    setActingId(null);
-                  }
-                }}
+                onClick={() => setRejectTarget({ id: e.id, nom: e.nom })}
               >
-                Rejeter
+                {actingId === e.id && rejectTarget?.id === e.id ? (
+                  <Loader2 className="h-3 w-3 animate-spin" />
+                ) : (
+                  "Rejeter"
+                )}
               </Button>
               <Button
                 size="sm"
@@ -102,6 +108,11 @@ function MarchandsPage() {
                   try {
                     await activateEnterpriseAdmin(e.id);
                     await queryClient.invalidateQueries({ queryKey: ["admin"] });
+                    toast.success(`« ${e.nom} » a été activé.`);
+                  } catch (err) {
+                    toast.error(
+                      err instanceof Error ? err.message : "Impossible d'activer ce commerce."
+                    );
                   } finally {
                     setActingId(null);
                   }
@@ -180,6 +191,58 @@ function MarchandsPage() {
           emptyDescription="Les restaurants et boutiques inscrits apparaîtront ici."
         />
       )}
+
+      {/* Dialogue de confirmation pour le refus */}
+      <Dialog
+        open={!!rejectTarget}
+        onOpenChange={(open) => {
+          if (!open) setRejectTarget(null);
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Refuser le commerce</DialogTitle>
+            <DialogDescription>
+              Voulez-vous vraiment refuser « {rejectTarget?.nom} » ? Ce commerce
+              n'apparaîtra plus sur le marketplace.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setRejectTarget(null)}
+              disabled={actingId === rejectTarget?.id}
+            >
+              Annuler
+            </Button>
+            <Button
+              variant="destructive"
+              disabled={actingId === rejectTarget?.id}
+              onClick={async () => {
+                if (!rejectTarget) return;
+                setActingId(rejectTarget.id);
+                try {
+                  await rejectEnterpriseAdmin(rejectTarget.id);
+                  await queryClient.invalidateQueries({ queryKey: ["admin"] });
+                  toast.success(`« ${rejectTarget.nom} » a été refusé.`);
+                } catch (e) {
+                  toast.error(
+                    e instanceof Error ? e.message : "Impossible de refuser ce commerce."
+                  );
+                } finally {
+                  setActingId(null);
+                  setRejectTarget(null);
+                }
+              }}
+            >
+              {actingId === rejectTarget?.id ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : null}
+              Confirmer le refus
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
