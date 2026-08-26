@@ -304,6 +304,11 @@ export type IncidentDelivery = {
   incident_since?: string | null;
   incident_reason?: string | null;
   last_activity_ago?: number | null;
+  colis_recupere?: boolean;
+  colis_recupere_at?: string | null;
+  colis_detenteur?: string | null;
+  colis_peut_etre_reattribue?: boolean;
+  colis_necessite_transfert?: boolean;
   timeline: Array<{
     titre: string;
     date: string;

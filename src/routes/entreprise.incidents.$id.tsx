@@ -14,6 +14,9 @@ import {
   ArrowUpRight,
   Store,
   Info,
+  Package,
+  Navigation,
+  RotateCcw,
 } from "lucide-react";
 import { PageHeader } from "@/components/admin/PageHeader";
 import { Badge } from "@/components/ui/badge";
@@ -28,69 +31,49 @@ import {
   cancelMyIncident,
   addMyIncidentNote,
   escalateMyIncident,
-  type IncidentDelivery,
 } from "@/lib/logistics-api";
 
 export const Route = createFileRoute("/entreprise/incidents/$id")({
   component: IncidentDetailPage,
 });
 
-function riskBadge(level: string) {
+/* ── Helpers ──────────────────────────────────────────────────────────────── */
+
+function severityBadge(level: string | null) {
   switch (level) {
-    case "CRITIQUE":
+    case "niveau_3":
       return (
         <Badge variant="destructive" className="gap-1">
-          <AlertTriangle className="h-3 w-3" /> Critique
+          <AlertTriangle className="h-3 w-3" /> Incident critique
         </Badge>
       );
-    case "INCIDENT":
+    case "niveau_2":
       return (
-        <Badge variant="destructive" className="gap-1">
-          <AlertTriangle className="h-3 w-3" /> Incident
+        <Badge variant="destructive" className="gap-1 bg-orange-500">
+          <Clock className="h-3 w-3" /> Retard important
         </Badge>
       );
-    case "RETARD":
-      return (
-        <Badge variant="destructive" className="gap-1">
-          <Clock className="h-3 w-3" /> Retard
-        </Badge>
-      );
-    case "A_SURVEILLER":
+    case "niveau_1":
       return (
         <Badge variant="secondary" className="gap-1">
           <Clock className="h-3 w-3" /> A surveiller
         </Badge>
       );
     default:
-      return <Badge variant="secondary">Normal</Badge>;
+      return null;
   }
 }
 
-function incidentLevelBadge(level: string | null) {
-  if (!level) return null;
-  switch (level) {
-    case "niveau_3":
-      return (
-        <Badge variant="destructive">
-          <AlertTriangle className="mr-1 h-3 w-3" /> Intervention requise
-        </Badge>
-      );
-    case "niveau_2":
-      return (
-        <Badge variant="destructive" className="bg-orange-500">
-          <Clock className="mr-1 h-3 w-3" /> Situation grave
-        </Badge>
-      );
-    case "niveau_1":
-      return (
-        <Badge variant="secondary">
-          <Clock className="mr-1 h-3 w-3" /> Retard leger
-        </Badge>
-      );
-    default:
-      return <Badge variant="secondary">{level}</Badge>;
+function formatDelay(minutes: number): string {
+  if (minutes >= 60) {
+    const h = Math.floor(minutes / 60);
+    const m = minutes % 60;
+    return m ? `${h}h${String(m).padStart(2, "0")}min` : `${h}h`;
   }
+  return `${minutes} min`;
 }
+
+/* ── Page ─────────────────────────────────────────────────────────────────── */
 
 function IncidentDetailPage() {
   const { id } = Route.useParams();
@@ -112,6 +95,8 @@ function IncidentDetailPage() {
       await queryClient.invalidateQueries({ queryKey: ["logistics", "incident", id] });
       await queryClient.invalidateQueries({ queryKey: ["logistics", "incidents"] });
       await queryClient.invalidateQueries({ queryKey: ["logistics", "incident-stats"] });
+    } catch {
+      toast.error("Une erreur s'est produite.");
     } finally {
       setLoading(null);
     }
@@ -120,47 +105,29 @@ function IncidentDetailPage() {
   const handleResolve = () =>
     withLoading("resolve", async () => {
       const raison = prompt(
-        "Pourquoi cet incident est-il resolu ?\n\n" +
-          "Decrivez ce qui s'est passe : le livreur a fini par livrer, le probleme est regle, etc."
+        "La livraison a ete effectuee ?\n\nDecrivez ce qui s'est passe."
       );
       if (raison === null) return;
       await resolveMyIncident(id, raison || undefined);
-      toast.success("Incident resolu", {
-        description: "La situation est maintenant sous controle.",
-      });
+      toast.success("Incident resolu");
     });
 
   const handleCancel = () =>
     withLoading("cancel", async () => {
       const raison = prompt(
         "Pourquoi annulez-vous cette livraison ?\n\n" +
-          "Exemples :\n" +
-          "- Le livreur est injoignable depuis longtemps\n" +
-          "- Le colis est probablement perdu\n" +
-          "- Le client ne veut plus attendre\n" +
-          "- Autre raison"
+          "Exemples :\n- Livreur injoignable\n- Colis perdu\n- Client ne veut plus attendre"
       );
       if (raison === null) return;
       await cancelMyIncident(id, raison || undefined);
-      toast.success("Livraison annulee", {
-        description: "Le livreur est libere et le client sera notifie.",
-      });
+      toast.success("Livraison annulee");
     });
 
   const handleEscalate = () =>
     withLoading("escalate", async () => {
-      if (
-        !confirm(
-          "Remonter cette situation a GoLivra ?\n\n" +
-            "L'equipe GoLivra prendra en charge le probleme. " +
-            "Utilisez cette option quand vous ne pouvez pas resoudre seul."
-        )
-      )
-        return;
+      if (!confirm("Remonter cette situation a GoLivra ?")) return;
       await escalateMyIncident(id);
-      toast.success("Situation remontee a GoLivra", {
-        description: "L'equipe sera notifiee et interviendra.",
-      });
+      toast.success("Situation remontee a GoLivra");
     });
 
   const handleAddNote = () =>
@@ -175,7 +142,7 @@ function IncidentDetailPage() {
     <div>
       <Button variant="ghost" size="sm" asChild className="mb-4 -ml-2">
         <Link to="/entreprise/incidents">
-          <ArrowLeft className="h-4 w-4" /> Retour aux incidents
+          <ArrowLeft className="h-4 w-4" /> Retour
         </Link>
       </Button>
 
@@ -187,7 +154,7 @@ function IncidentDetailPage() {
         }
         description={
           inc
-            ? `${inc.commerce?.nom || "Commerce inconnu"} — ${inc.delay_label} de retard`
+            ? `${inc.commerce?.nom || "Commerce inconnu"} — +${formatDelay(inc.delay_minutes)} de retard`
             : "Chargement..."
         }
       />
@@ -201,17 +168,16 @@ function IncidentDetailPage() {
       ) : (
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
           <div className="space-y-4 lg:col-span-2">
-            {/* ── Situation actuelle ──────────────────────────────── */}
+            {/* ── Situation ──────────────────────────────────────── */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex flex-wrap items-center gap-2 text-sm font-semibold">
-                  <span>Situation actuelle</span>
+                  Situation actuelle
                   <Badge variant="secondary">{inc.statut}</Badge>
-                  {riskBadge(inc.risk_level)}
-                  {incidentLevelBadge(inc.incident_level)}
+                  {severityBadge(inc.incident_level)}
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-3 text-sm">
+              <CardContent className="space-y-4 text-sm">
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <p className="text-xs text-muted-foreground">Type</p>
@@ -242,7 +208,7 @@ function IncidentDetailPage() {
                 {inc.adresse_retrait ? (
                   <div>
                     <p className="text-xs text-muted-foreground">
-                      Adresse de retrait (commerce)
+                      Adresse de retrait
                     </p>
                     <p className="flex items-start gap-1">
                       <Store className="mt-0.5 h-3 w-3 shrink-0" />
@@ -259,13 +225,55 @@ function IncidentDetailPage() {
                   </div>
                 ) : null}
                 {inc.incident_reason ? (
-                  <div>
-                    <p className="text-xs text-muted-foreground">
-                      Motif declare
-                    </p>
+                  <div className="rounded-md bg-muted/50 px-2.5 py-2">
+                    <p className="text-xs text-muted-foreground">Motif declare</p>
                     <p className="font-medium">{inc.incident_reason}</p>
                   </div>
                 ) : null}
+              </CardContent>
+            </Card>
+
+            {/* ── Colis — statut physique ────────────────────────── */}
+            <Card
+              className={
+                inc.colis_recupere
+                  ? "border-destructive/40 bg-destructive/5"
+                  : "border-green-300 bg-green-50/50 dark:border-green-800 dark:bg-green-950/20"
+              }
+            >
+              <CardHeader className="pb-2">
+                <CardTitle className="flex items-center gap-2 text-sm font-semibold">
+                  <Package className="h-4 w-4" /> Colis
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2 text-sm">
+                {inc.colis_recupere ? (
+                  <>
+                    <div className="flex items-center gap-2">
+                      <Badge variant="destructive">
+                        En possession du livreur
+                      </Badge>
+                    </div>
+                    <p className="text-muted-foreground">
+                      Recupere a : {inc.colis_recupere_at ? new Date(inc.colis_recupere_at).toLocaleTimeString("fr-FR") : "\u2014"}
+                    </p>
+                    {inc.colis_necessite_transfert && (
+                      <div className="rounded-md border border-orange-200 bg-orange-50 p-2.5 text-xs text-orange-800 dark:border-orange-800 dark:bg-orange-950 dark:text-orange-200">
+                        Le colis est physiquement chez le livreur. Un transfert
+                        physique est necessaire pour changer de livreur.
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <Badge variant="secondary">
+                      Encore au commerce
+                    </Badge>
+                    <span className="text-xs text-muted-foreground">
+                      Un nouveau livreur peut etre assigne.
+                    </span>
+                  </div>
+                )}
               </CardContent>
             </Card>
 
@@ -278,21 +286,41 @@ function IncidentDetailPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2 text-sm text-muted-foreground">
-                  <p>
-                    <strong>1.</strong> Appelez d'abord le livreur pour comprendre
-                    la situation.
-                  </p>
-                  <p>
-                    <strong>2.</strong> Si le livreur a livre, marquez comme resolu.
-                  </p>
-                  <p>
-                    <strong>3.</strong> Si le livreur est bloque et ne peut pas
-                    livrer, annulez la course pour liberer le livreur.
-                  </p>
-                  <p>
-                    <strong>4.</strong> Si vous ne pouvez pas resoudre seul,
-                    remontez la situation a GoLivra.
-                  </p>
+                  {!inc.colis_recupere ? (
+                    <>
+                      <p>
+                        <strong>1.</strong> Le colis n'a pas encore ete recupere.
+                        Vous pouvez assigner un nouveau livreur.
+                      </p>
+                      <p>
+                        <strong>2.</strong> Contactez le commerce pour confirmer
+                        que la commande est prete.
+                      </p>
+                      <p>
+                        <strong>3.</strong> Si le delai est depasse, relancez
+                        l'attribution automatique.
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <p>
+                        <strong>1.</strong> Appelez le livreur pour comprendre
+                        la situation.
+                      </p>
+                      <p>
+                        <strong>2.</strong> Si le livreur a livre, marquez comme
+                        resolu.
+                      </p>
+                      <p>
+                        <strong>3.</strong> Si le livreur est bloque, annulez la
+                        course pour le liberer.
+                      </p>
+                      <p>
+                        <strong>4.</strong> Si le livreur est injoignable,
+                        remontez a GoLivra.
+                      </p>
+                    </>
+                  )}
                 </div>
 
                 <div className="flex flex-wrap gap-2">
@@ -339,7 +367,7 @@ function IncidentDetailPage() {
 
                 <div>
                   <Textarea
-                    placeholder="Note interne (optionnel) : que s'est-il passe ?"
+                    placeholder="Note interne (optionnel)"
                     value={note}
                     onChange={(e) => setNote(e.target.value)}
                     rows={2}
@@ -396,8 +424,15 @@ function IncidentDetailPage() {
                       <Badge variant="secondary">Compte actif</Badge>
                     )}
                     {inc.last_activity_ago != null ? (
-                      <p className="text-xs text-muted-foreground">
+                      <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                        <Navigation className="h-3 w-3" />
                         Derniere activite : il y a {inc.last_activity_ago} min
+                      </div>
+                    ) : null}
+                    {inc.livreur.position ? (
+                      <p className="text-xs text-muted-foreground">
+                        Position : {inc.livreur.position.latitude.toFixed(4)},{" "}
+                        {inc.livreur.position.longitude.toFixed(4)}
                       </p>
                     ) : null}
                   </>
