@@ -1,9 +1,9 @@
-import { Clock, MapPin, User } from "lucide-react";
+import { Clock, MapPin, User, RefreshCw } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { formatDateTimeFr, formatStatutLabel } from "@/lib/admin-api";
 import type { LogisticsDelivery } from "@/lib/logistics-api";
-import { DeliveryDelayBadge } from "@/components/entreprise/DeliveryDelayBadge";
+import { DeliveryDelayBadge } from "@/components/entreprise/DeliveryDelayBadge"
 
 type Props = {
   delivery: LogisticsDelivery;
@@ -57,14 +57,25 @@ export function OperationDeliveryCard({
         <DeliveryDelayBadge delivery={delivery} />
 
         {showRetryDispatch && onRetryDispatch && !delivery.livreur?.id ? (
-          <button
-            type="button"
-            className="text-xs font-medium text-primary hover:underline disabled:opacity-50"
-            disabled={retrying}
-            onClick={onRetryDispatch}
-          >
-            {retrying ? "Relance en cours…" : "Relancer attribution GoLivra →"}
-          </button>
+          <div className="space-y-1">
+            <button
+              type="button"
+              className="inline-flex items-center gap-1.5 text-xs font-medium text-primary hover:underline disabled:opacity-50"
+              disabled={retrying}
+              onClick={onRetryDispatch}
+            >
+              {retrying ? (
+                <RefreshCw className="h-3 w-3 animate-spin" />
+              ) : (
+                <RefreshCw className="h-3 w-3" />
+              )}
+              {retrying ? "Recherche en cours..." : "Demander un livreur"}
+            </button>
+            <p className="text-[11px] text-muted-foreground">
+              Aucun livreur n'a pris cette course. Cliquez pour relancer la
+              recherche automatique.
+            </p>
+          </div>
         ) : null}
       </CardContent>
     </Card>
