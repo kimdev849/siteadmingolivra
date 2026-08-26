@@ -16,13 +16,22 @@ import {
   Info,
   Package,
   Navigation,
-  RotateCcw,
+  MessageSquare,
+  ChevronRight,
 } from "lucide-react";
 import { PageHeader } from "@/components/admin/PageHeader";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
 import { EventTimeline } from "@/components/admin/EventTimeline";
 import { toast } from "sonner";
 import {
@@ -73,13 +82,31 @@ function formatDelay(minutes: number): string {
   return `${minutes} min`;
 }
 
+const MOTIFS_INCIDENT = [
+  { key: "trafic", label: "Embouteillage / trafic" },
+  { key: "panne", label: "Panne vehicule" },
+  { key: "accident", label: "Accident" },
+  { key: "client_injoignable", label: "Client injoignable" },
+  { key: "adresse_incorrecte", label: "Adresse incorrecte" },
+  { key: "probleme_colis", label: "Probleme avec le colis" },
+  { key: "probleme_commerce", label: "Probleme au commerce" },
+  { key: "livreur_injoignable", label: "Livreur injoignable" },
+  { key: "autre", label: "Autre" },
+];
+
 /* ── Page ─────────────────────────────────────────────────────────────────── */
 
 function IncidentDetailPage() {
   const { id } = Route.useParams();
   const queryClient = useQueryClient();
-  const [note, setNote] = useState("");
   const [loading, setLoading] = useState<string | null>(null);
+
+  // Etat du workflow
+  const [step, setStep] = useState<"main" | "contact" | "decision" | "transfer" | "cancel">("main");
+  const [motif, setMotif] = useState("");
+  const [contactNote, setContactNote] = useState("");
+  const [escalateReason, setEscalateReason] = useState("");
+  const [cancelReason, setCancelReason] = useState("");
 
   const detailQuery = useQuery({
     queryKey: ["logistics", "incident", id],
@@ -102,40 +129,58 @@ function IncidentDetailPage() {
     }
   };
 
+  /* ── Actions ────────────────────────────────────────────────── */
+
+  const handleContactDone = () => {
+    // Enregistrer le contact comme note
+    if (motif || contactNote) {
+      withLoading("contact", async () => {
+        const fullNote = `[Contact livreur] Motif : ${motif || "non precise"}${contactNote ? ` — ${contactNote}` : ""}`;
+        await addMyIncidentNote(id, fullNote);
+        toast.success("Contact enregistre");
+        setStep("decision");
+      });
+    } else {
+      setStep("decision");
+    }
+  };
+
   const handleResolve = () =>
     withLoading("resolve", async () => {
-      const raison = prompt(
-        "La livraison a ete effectuee ?\n\nDecrivez ce qui s'est passe."
-      );
-      if (raison === null) return;
-      await resolveMyIncident(id, raison || undefined);
-      toast.success("Incident resolu");
-    });
-
-  const handleCancel = () =>
-    withLoading("cancel", async () => {
-      const raison = prompt(
-        "Pourquoi annulez-vous cette livraison ?\n\n" +
-          "Exemples :\n- Livreur injoignable\n- Colis perdu\n- Client ne veut plus attendre"
-      );
-      if (raison === null) return;
-      await cancelMyIncident(id, raison || undefined);
-      toast.success("Livraison annulee");
+      await resolveMyIncident(id, contactNote || "Probleme resolu apres contact du livreur");
+      toast.success("Incident resolu — La livraison peut continuer");
+      setStep("main");
     });
 
   const handleEscalate = () =>
     withLoading("escalate", async () => {
-      if (!confirm("Remonter cette situation a GoLivra ?")) return;
+      if (!escalateReason.trim()) {
+        toast.error("Expliquez la situation.");
+        return;
+      }
+      await addMyIncidentNote(id, `[Escalade a GoLivra] ${escalateReason}`);
       await escalateMyIncident(id);
       toast.success("Situation remontee a GoLivra");
+      setStep("main");
+    });
+
+  const handleCancel = () =>
+    withLoading("cancel", async () => {
+      if (!cancelReason.trim()) {
+        toast.error("Indiquez la raison de l'annulation.");
+        return;
+      }
+      await cancelMyIncident(id, cancelReason);
+      toast.success("Livraison annulee");
+      setStep("main");
     });
 
   const handleAddNote = () =>
     withLoading("note", async () => {
-      if (!note.trim()) return;
-      await addMyIncidentNote(id, note.trim());
+      if (!contactNote.trim()) return;
+      await addMyIncidentNote(id, contactNote.trim());
       toast.success("Note enregistree");
-      setNote("");
+      setContactNote("");
     });
 
   return (
@@ -177,7 +222,7 @@ function IncidentDetailPage() {
                   {severityBadge(inc.incident_level)}
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4 text-sm">
+              <CardContent className="space-y-3 text-sm">
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <p className="text-xs text-muted-foreground">Type</p>
@@ -197,9 +242,7 @@ function IncidentDetailPage() {
                   </div>
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground">
-                    Adresse de livraison
-                  </p>
+                  <p className="text-xs text-muted-foreground">Adresse de livraison</p>
                   <p className="flex items-start gap-1">
                     <MapPin className="mt-0.5 h-3 w-3 shrink-0" />
                     {inc.adresse_livraison || "Non renseignee"}
@@ -207,200 +250,486 @@ function IncidentDetailPage() {
                 </div>
                 {inc.adresse_retrait ? (
                   <div>
-                    <p className="text-xs text-muted-foreground">
-                      Adresse de retrait
-                    </p>
+                    <p className="text-xs text-muted-foreground">Adresse de retrait</p>
                     <p className="flex items-start gap-1">
                       <Store className="mt-0.5 h-3 w-3 shrink-0" />
                       {inc.adresse_retrait}
                     </p>
                   </div>
                 ) : null}
-                {inc.note ? (
-                  <div>
-                    <p className="text-xs text-muted-foreground">
-                      Note du client
-                    </p>
-                    <p>{inc.note}</p>
-                  </div>
-                ) : null}
-                {inc.incident_reason ? (
-                  <div className="rounded-md bg-muted/50 px-2.5 py-2">
-                    <p className="text-xs text-muted-foreground">Motif declare</p>
-                    <p className="font-medium">{inc.incident_reason}</p>
-                  </div>
-                ) : null}
               </CardContent>
             </Card>
 
-            {/* ── Colis — statut physique ────────────────────────── */}
+            {/* ── Colis ─────────────────────────────────────────── */}
             <Card
               className={
                 inc.colis_recupere
-                  ? "border-destructive/40 bg-destructive/5"
+                  ? "border-orange-300 bg-orange-50/50 dark:border-orange-800 dark:bg-orange-950/20"
                   : "border-green-300 bg-green-50/50 dark:border-green-800 dark:bg-green-950/20"
               }
             >
-              <CardHeader className="pb-2">
-                <CardTitle className="flex items-center gap-2 text-sm font-semibold">
-                  <Package className="h-4 w-4" /> Colis
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2 text-sm">
-                {inc.colis_recupere ? (
-                  <>
-                    <div className="flex items-center gap-2">
-                      <Badge variant="destructive">
-                        En possession du livreur
-                      </Badge>
-                    </div>
-                    <p className="text-muted-foreground">
-                      Recupere a : {inc.colis_recupere_at ? new Date(inc.colis_recupere_at).toLocaleTimeString("fr-FR") : "\u2014"}
-                    </p>
-                    {inc.colis_necessite_transfert && (
-                      <div className="rounded-md border border-orange-200 bg-orange-50 p-2.5 text-xs text-orange-800 dark:border-orange-800 dark:bg-orange-950 dark:text-orange-200">
-                        Le colis est physiquement chez le livreur. Un transfert
-                        physique est necessaire pour changer de livreur.
-                      </div>
-                    )}
-                  </>
-                ) : (
-                  <div className="flex items-center gap-2">
-                    <Badge variant="secondary">
-                      Encore au commerce
-                    </Badge>
-                    <span className="text-xs text-muted-foreground">
-                      Un nouveau livreur peut etre assigne.
-                    </span>
-                  </div>
+              <CardContent className="py-3">
+                <div className="flex items-center gap-2 text-sm">
+                  <Package className="h-4 w-4 shrink-0" />
+                  {inc.colis_recupere ? (
+                    <>
+                      <span className="font-medium">Colis recupere</span>
+                      <span className="text-muted-foreground">—</span>
+                      <span className="text-muted-foreground">
+                        En possession de {inc.livreur?.nom || "le livreur"}
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      <span className="font-medium">Colis au commerce</span>
+                      <span className="text-muted-foreground">—</span>
+                      <span className="text-muted-foreground">
+                        Un nouveau livreur peut etre assigne
+                      </span>
+                    </>
+                  )}
+                </div>
+                {inc.colis_recupere && inc.colis_necessite_transfert && (
+                  <p className="mt-1.5 text-xs text-orange-700 dark:text-orange-300">
+                    Un transfert physique est necessaire pour changer de livreur.
+                  </p>
                 )}
               </CardContent>
             </Card>
 
-            {/* ── Que faire ? ─────────────────────────────────────── */}
-            <Card className="border-primary/30 bg-primary/5">
-              <CardHeader className="pb-2">
-                <CardTitle className="flex items-center gap-2 text-sm font-semibold">
-                  <Info className="h-4 w-4" /> Que faire maintenant ?
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2 text-sm text-muted-foreground">
-                  {!inc.colis_recupere ? (
-                    <>
-                      <p>
-                        <strong>1.</strong> Le colis n'a pas encore ete recupere.
-                        Vous pouvez assigner un nouveau livreur.
-                      </p>
-                      <p>
-                        <strong>2.</strong> Contactez le commerce pour confirmer
-                        que la commande est prete.
-                      </p>
-                      <p>
-                        <strong>3.</strong> Si le delai est depasse, relancez
-                        l'attribution automatique.
-                      </p>
-                    </>
-                  ) : (
-                    <>
-                      <p>
-                        <strong>1.</strong> Appelez le livreur pour comprendre
-                        la situation.
-                      </p>
-                      <p>
-                        <strong>2.</strong> Si le livreur a livre, marquez comme
-                        resolu.
-                      </p>
-                      <p>
-                        <strong>3.</strong> Si le livreur est bloque, annulez la
-                        course pour le liberer.
-                      </p>
-                      <p>
-                        <strong>4.</strong> Si le livreur est injoignable,
-                        remontez a GoLivra.
-                      </p>
-                    </>
-                  )}
-                </div>
+            {/* ── WORKFLOW ──────────────────────────────────────── */}
+            {step === "main" && (
+              <Card className="border-primary/30 bg-primary/5">
+                <CardHeader className="pb-2">
+                  <CardTitle className="flex items-center gap-2 text-sm font-semibold">
+                    <Info className="h-4 w-4" /> Que faire maintenant ?
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <p className="text-sm text-muted-foreground">
+                    {inc.colis_recupere
+                      ? "Le colis est physiquement chez le livreur. Vous devez d'abord le contacter pour comprendre la situation."
+                      : "Le colis n'a pas encore ete recupere. Vous pouvez contacter le commerce ou relancer l'attribution."}
+                  </p>
 
-                <div className="flex flex-wrap gap-2">
+                  {/* Etape 1 : Contacter */}
                   <Button
-                    size="sm"
+                    className="w-full justify-start gap-2"
                     variant="outline"
+                    onClick={() => setStep("contact")}
+                  >
+                    <Phone className="h-4 w-4" />
+                    1. Contacter le livreur
+                    <ChevronRight className="ml-auto h-4 w-4" />
+                  </Button>
+
+                  <Separator />
+
+                  {/* Actions rapides */}
+                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                    Actions directes
+                  </p>
+
+                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+                    <Button
+                      variant="outline"
+                      className="justify-start gap-2"
+                      disabled={!!loading}
+                      onClick={() => void handleResolve()}
+                    >
+                      {loading === "resolve" ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <CheckCircle2 className="h-4 w-4 text-green-600" />
+                      )}
+                      Probleme resolu
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="justify-start gap-2"
+                      disabled={!!loading}
+                      onClick={() => setStep("transfer")}
+                    >
+                      <ArrowUpRight className="h-4 w-4 text-orange-600" />
+                      Transferer le colis
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="justify-start gap-2"
+                      disabled={!!loading}
+                      onClick={() => setStep("cancel")}
+                    >
+                      <XCircle className="h-4 w-4 text-destructive" />
+                      Annuler la course
+                    </Button>
+                  </div>
+
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start gap-2 text-muted-foreground"
+                    onClick={() => setStep("main")}
+                  >
+                    <ArrowUpRight className="h-4 w-4" />
+                    Remonter a GoLivra
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* ── Etape 1 : Contact livreur ────────────────────── */}
+            {step === "contact" && (
+              <Card className="border-primary/30 bg-primary/5">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-semibold">
+                    Etape 1 — Contacter le livreur
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <p className="text-sm text-muted-foreground">
+                    Appelez le livreur pour comprendre la situation, puis renseignez le motif ci-dessous.
+                  </p>
+
+                  {inc.livreur?.telephone ? (
+                    <a
+                      href={`tel:${inc.livreur.telephone}`}
+                      className="inline-flex items-center gap-2 rounded-md border border-primary bg-primary/10 px-4 py-2.5 text-sm font-medium text-primary hover:bg-primary/20"
+                    >
+                      <Phone className="h-4 w-4" />
+                      Appeler {inc.livreur.nom}
+                    </a>
+                  ) : (
+                    <p className="text-sm text-muted-foreground">
+                      Aucun numero de telephone disponible pour ce livreur.
+                    </p>
+                  )}
+
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">
+                      Motif du retard
+                    </label>
+                    <Select value={motif} onValueChange={setMotif}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selectionnez le motif" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {MOTIFS_INCIDENT.map((m) => (
+                          <SelectItem key={m.key} value={m.key}>
+                            {m.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">
+                      Details (optionnel)
+                    </label>
+                    <Textarea
+                      placeholder='Ex : "Le livreur a indique etre en panne a 5 km du commerce, attend un mecanicien"'
+                      value={contactNote}
+                      onChange={(e) => setContactNote(e.target.value)}
+                      rows={3}
+                    />
+                  </div>
+
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      onClick={() => setStep("main")}
+                    >
+                      Retour
+                    </Button>
+                    <Button
+                      disabled={!!loading}
+                      onClick={() => void handleContactDone()}
+                    >
+                      {loading === "contact" ? (
+                        <Loader2 className="mr-1 h-4 w-4 animate-spin" />
+                      ) : null}
+                      Enregistrer et continuer
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* ── Etape 2 : Decision ───────────────────────────── */}
+            {step === "decision" && (
+              <Card className="border-primary/30 bg-primary/5">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-semibold">
+                    Etape 2 — Que se passe-t-il ?
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <p className="text-sm text-muted-foreground">
+                    Apres avoir contacte le livreur, quelle est la situation ?
+                  </p>
+
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start gap-2"
                     disabled={!!loading}
                     onClick={() => void handleResolve()}
                   >
                     {loading === "resolve" ? (
-                      <Loader2 className="mr-1 h-3 w-3 animate-spin" />
+                      <Loader2 className="h-4 w-4 animate-spin" />
                     ) : (
-                      <CheckCircle2 className="mr-1 h-3 w-3" />
+                      <CheckCircle2 className="h-4 w-4 text-green-600" />
                     )}
-                    Livraison effectuee
+                    <div className="text-left">
+                      <p className="font-medium">Le probleme est resolu</p>
+                      <p className="text-xs text-muted-foreground">
+                        Le livreur peut continuer. L'incident est ferme.
+                      </p>
+                    </div>
                   </Button>
-                  <Button
-                    size="sm"
-                    variant="destructive"
-                    disabled={!!loading}
-                    onClick={() => void handleCancel()}
-                  >
-                    {loading === "cancel" ? (
-                      <Loader2 className="mr-1 h-3 w-3 animate-spin" />
-                    ) : (
-                      <XCircle className="mr-1 h-3 w-3" />
-                    )}
-                    Annuler la course
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    disabled={!!loading}
-                    onClick={() => void handleEscalate()}
-                  >
-                    {loading === "escalate" ? (
-                      <Loader2 className="mr-1 h-3 w-3 animate-spin" />
-                    ) : (
-                      <ArrowUpRight className="mr-1 h-3 w-3" />
-                    )}
-                    Signaler a GoLivra
-                  </Button>
-                </div>
 
-                <div>
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start gap-2"
+                    disabled={!!loading}
+                    onClick={() => setStep("transfer")}
+                  >
+                    <ArrowUpRight className="h-4 w-4 text-orange-600" />
+                    <div className="text-left">
+                      <p className="font-medium">Le livreur ne peut pas continuer</p>
+                      <p className="text-xs text-muted-foreground">
+                        {inc.colis_recupere
+                          ? "Organiser un transfert physique du colis"
+                          : "Relancer l'attribution a un autre livreur"}
+                      </p>
+                    </div>
+                  </Button>
+
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start gap-2"
+                    disabled={!!loading}
+                    onClick={() => setStep("main")}
+                  >
+                    <ArrowUpRight className="h-4 w-4 text-destructive" />
+                    <div className="text-left">
+                      <p className="font-medium">Remonter a GoLivra</p>
+                      <p className="text-xs text-muted-foreground">
+                        La situation necessite l'intervention de GoLivra
+                      </p>
+                    </div>
+                  </Button>
+
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start gap-2 text-muted-foreground"
+                    onClick={() => setStep("main")}
+                  >
+                    Retour
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* ── Transfert ────────────────────────────────────── */}
+            {step === "transfer" && (
+              <Card className="border-orange-300 bg-orange-50/50 dark:border-orange-800 dark:bg-orange-950/20">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-semibold">
+                    Transfert du colis
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {inc.colis_recupere ? (
+                    <>
+                      <div className="rounded-md border border-orange-200 bg-orange-100 p-3 text-sm dark:border-orange-800 dark:bg-orange-950">
+                        <p className="font-medium text-orange-800 dark:text-orange-200">
+                          Le colis est actuellement chez {inc.livreur?.nom || "le livreur"}
+                        </p>
+                        <p className="mt-1 text-xs text-orange-700 dark:text-orange-300">
+                          Le nouveau livreur devra recuperer physiquement le colis
+                          aupres du livreur actuel.
+                        </p>
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium">
+                          Motif du transfert
+                        </label>
+                        <Select value={motif} onValueChange={setMotif}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selectionnez le motif" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {MOTIFS_INCIDENT.map((m) => (
+                              <SelectItem key={m.key} value={m.key}>
+                                {m.label}
+                              </SelectItem>
+                        ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium">
+                          Details du transfert
+                        </label>
+                        <Textarea
+                          placeholder="Decrivez la situation pour le nouveau livreur"
+                          value={contactNote}
+                          onChange={(e) => setContactNote(e.target.value)}
+                          rows={2}
+                        />
+                      </div>
+
+                      <div className="rounded-md bg-muted/50 p-3 text-xs text-muted-foreground">
+                        <p className="font-medium text-foreground">
+                          Prochaine etape :
+                        </p>
+                        <p>
+                          1. Selectionnez un nouveau livreur disponible
+                        </p>
+                        <p>
+                          2. Le nouveau livreur se rend aupres du livreur actuel
+                        </p>
+                        <p>
+                          3. Le colis est remis physiquement
+                        </p>
+                        <p>
+                          4. Le nouveau livreur confirme la recuperation
+                        </p>
+                        <p>
+                          5. La livraison reprend normalement
+                        </p>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="space-y-3">
+                      <p className="text-sm text-muted-foreground">
+                        Le colis n'a pas encore ete recupere. Vous pouvez simplement
+                        relancer l'attribution pour trouver un nouveau livreur.
+                      </p>
+                    </div>
+                  )}
+
+                  <div className="flex gap-2">
+                    <Button variant="outline" onClick={() => setStep("decision")}>
+                      Retour
+                    </Button>
+                    <Button
+                      variant="outline"
+                      disabled={!!loading}
+                      onClick={() => {
+                        withLoading("transfer", async () => {
+                          const note = `[Transfert demande] Motif : ${motif || "non precise"}${contactNote ? ` — ${contactNote}` : ""}`;
+                          await addMyIncidentNote(id, note);
+                          toast.success("Demande de transfert enregistree");
+                          setStep("main");
+                        });
+                      }}
+                    >
+                      {loading === "transfer" ? (
+                        <Loader2 className="mr-1 h-4 w-4 animate-spin" />
+                      ) : null}
+                      Enregistrer la demande
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* ── Annulation ───────────────────────────────────── */}
+            {step === "cancel" && (
+              <Card className="border-destructive/30 bg-destructive/5">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-semibold">
+                    Annuler la livraison
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {inc.colis_recupere && (
+                    <div className="rounded-md border border-destructive/30 bg-destructive/5 p-3 text-sm">
+                      <p className="font-medium text-destructive">
+                        Attention : le colis est chez le livreur
+                      </p>
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        En annulant, le livreur devra retourner le colis au commerce.
+                      </p>
+                    </div>
+                  )}
+
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">
+                      Raison de l'annulation
+                    </label>
+                    <Textarea
+                      placeholder="Expliquez pourquoi vous annulez cette livraison"
+                      value={cancelReason}
+                      onChange={(e) => setCancelReason(e.target.value)}
+                      rows={3}
+                    />
+                  </div>
+
+                  <div className="flex gap-2">
+                    <Button variant="outline" onClick={() => setStep("main")}>
+                      Retour
+                    </Button>
+                    <Button
+                      variant="destructive"
+                      disabled={!!loading || !cancelReason.trim()}
+                      onClick={() => void handleCancel()}
+                    >
+                      {loading === "cancel" ? (
+                        <Loader2 className="mr-1 h-4 w-4 animate-spin" />
+                      ) : null}
+                      Confirmer l'annulation
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* ── Note libre ────────────────────────────────────── */}
+            {step === "main" && (
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="flex items-center gap-2 text-sm font-semibold">
+                    <MessageSquare className="h-4 w-4" /> Ajouter une note
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
                   <Textarea
-                    placeholder="Note interne (optionnel)"
-                    value={note}
-                    onChange={(e) => setNote(e.target.value)}
+                    placeholder="Note interne sur cette situation..."
+                    value={contactNote}
+                    onChange={(e) => setContactNote(e.target.value)}
                     rows={2}
                   />
                   <Button
                     size="sm"
                     variant="outline"
                     className="mt-2"
-                    disabled={!!loading || !note.trim()}
+                    disabled={!!loading || !contactNote.trim()}
                     onClick={() => void handleAddNote()}
                   >
                     {loading === "note" ? (
                       <Loader2 className="mr-1 h-3 w-3 animate-spin" />
                     ) : null}
-                    Enregistrer la note
+                    Enregistrer
                   </Button>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            )}
 
-            {/* ── Chronologie ─────────────────────────────────────── */}
+            {/* ── Chronologie ──────────────────────────────────── */}
             {inc.timeline?.length ? (
               <EventTimeline steps={inc.timeline} title="Chronologie" />
             ) : null}
           </div>
 
+          {/* ── Colonne droite ────────────────────────────────── */}
           <div className="space-y-4">
-            {/* ── Le livreur ──────────────────────────────────────── */}
+            {/* Livreur */}
             <Card>
               <CardHeader>
-                <CardTitle className="text-sm font-semibold">
-                  Le livreur
-                </CardTitle>
+                <CardTitle className="text-sm font-semibold">Le livreur</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2 text-sm">
                 {inc.livreur ? (
@@ -418,38 +747,23 @@ function IncidentDetailPage() {
                     <p className="text-muted-foreground capitalize">
                       {inc.livreur.type_vehicule || "\u2014"}
                     </p>
-                    {inc.livreur.est_actif === false ? (
-                      <Badge variant="destructive">Compte desactive</Badge>
-                    ) : (
-                      <Badge variant="secondary">Compte actif</Badge>
-                    )}
-                    {inc.last_activity_ago != null ? (
+                    {inc.last_activity_ago != null && (
                       <div className="flex items-center gap-1 text-xs text-muted-foreground">
                         <Navigation className="h-3 w-3" />
                         Derniere activite : il y a {inc.last_activity_ago} min
                       </div>
-                    ) : null}
-                    {inc.livreur.position ? (
-                      <p className="text-xs text-muted-foreground">
-                        Position : {inc.livreur.position.latitude.toFixed(4)},{" "}
-                        {inc.livreur.position.longitude.toFixed(4)}
-                      </p>
-                    ) : null}
+                    )}
                   </>
                 ) : (
-                  <p className="text-muted-foreground">
-                    Aucun livreur n'est assigne a cette course.
-                  </p>
+                  <p className="text-muted-foreground">Aucun livreur assigne.</p>
                 )}
               </CardContent>
             </Card>
 
-            {/* ── Le client ───────────────────────────────────────── */}
+            {/* Client */}
             <Card>
               <CardHeader>
-                <CardTitle className="text-sm font-semibold">
-                  Le client
-                </CardTitle>
+                <CardTitle className="text-sm font-semibold">Le client</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2 text-sm">
                 {inc.client ? (
@@ -466,19 +780,15 @@ function IncidentDetailPage() {
                     ) : null}
                   </>
                 ) : (
-                  <p className="text-muted-foreground">
-                    Aucune information client.
-                  </p>
+                  <p className="text-muted-foreground">Aucune info client.</p>
                 )}
               </CardContent>
             </Card>
 
-            {/* ── Le commerce ─────────────────────────────────────── */}
+            {/* Commerce */}
             <Card>
               <CardHeader>
-                <CardTitle className="text-sm font-semibold">
-                  Le commerce
-                </CardTitle>
+                <CardTitle className="text-sm font-semibold">Le commerce</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2 text-sm">
                 {inc.commerce ? (
@@ -495,19 +805,17 @@ function IncidentDetailPage() {
                     ) : null}
                   </>
                 ) : (
-                  <p className="text-muted-foreground">
-                    Aucune information commerce.
-                  </p>
+                  <p className="text-muted-foreground">Aucune info commerce.</p>
                 )}
               </CardContent>
             </Card>
 
-            {/* ── Actions deja effectuees ─────────────────────────── */}
+            {/* Actions effectuees */}
             {inc.operator_actions?.length ? (
               <Card>
                 <CardHeader>
                   <CardTitle className="text-sm font-semibold">
-                    Actions deja effectuees ({inc.operator_actions.length})
+                    Actions effectuees ({inc.operator_actions.length})
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2">
@@ -518,9 +826,7 @@ function IncidentDetailPage() {
                     >
                       <p className="text-xs font-medium">{a.action_label}</p>
                       {a.details ? (
-                        <p className="text-xs text-muted-foreground">
-                          {a.details}
-                        </p>
+                        <p className="text-xs text-muted-foreground">{a.details}</p>
                       ) : null}
                       <p className="text-[10px] text-muted-foreground">
                         {a.operateur_nom} — {a.created_at_label}
