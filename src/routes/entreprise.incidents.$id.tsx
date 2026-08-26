@@ -360,7 +360,7 @@ function IncidentDetailPage() {
                       onClick={() => setStep("cancel")}
                     >
                       <XCircle className="h-4 w-4 text-destructive" />
-                      Annuler la course
+                      Interrompre / Annuler
                     </Button>
                   </div>
 
@@ -636,36 +636,64 @@ function IncidentDetailPage() {
               </Card>
             )}
 
-            {/* ── Annulation ───────────────────────────────────── */}
+            {/* ── Interruption / Annulation ─────────────────────── */}
             {step === "cancel" && (
               <Card className="border-destructive/30 bg-destructive/5">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-sm font-semibold">
-                    Annuler la livraison
+                    Interrompre ou annuler la livraison
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  {inc.colis_recupere && (
-                    <div className="rounded-md border border-destructive/30 bg-destructive/5 p-3 text-sm">
-                      <p className="font-medium text-destructive">
-                        Attention : le colis est chez le livreur
+                  {inc.colis_recupere ? (
+                    <div className="rounded-md border border-orange-200 bg-orange-50 p-3 text-sm dark:border-orange-800 dark:bg-orange-950">
+                      <p className="font-medium text-orange-800 dark:text-orange-200">
+                        Le colis est actuellement chez {inc.livreur?.nom || "le livreur"}
                       </p>
-                      <p className="mt-1 text-xs text-muted-foreground">
-                        En annulant, le livreur devra retourner le colis au commerce.
+                      <p className="mt-1 text-xs text-orange-700 dark:text-orange-300">
+                        Cette action retire le livreur de la course. Le colis devra
+                        etre recupere physiquement par un autre livreur ou retourne
+                        au commerce.
                       </p>
                     </div>
-                  )}
+                  ) : null}
 
                   <div className="space-y-2">
-                    <label className="text-sm font-medium">
-                      Raison de l'annulation
-                    </label>
-                    <Textarea
-                      placeholder="Expliquez pourquoi vous annulez cette livraison"
-                      value={cancelReason}
-                      onChange={(e) => setCancelReason(e.target.value)}
-                      rows={3}
-                    />
+                    <p className="text-sm font-medium">
+                      Que souhaitez-vous faire ?
+                    </p>
+                    <div className="space-y-2">
+                      <Button
+                        variant="outline"
+                        className="w-full justify-start gap-2"
+                        disabled={!!loading}
+                        onClick={() => setStep("transfer")}
+                      >
+                        <ArrowUpRight className="h-4 w-4 text-orange-600" />
+                        <div className="text-left">
+                          <p className="font-medium">Interrompre et transferer</p>
+                          <p className="text-xs text-muted-foreground">
+                            Retirer le livreur actuel et trouver un remplacant
+                          </p>
+                        </div>
+                      </Button>
+
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium">
+                          Annuler definitivement la livraison
+                        </label>
+                        <p className="text-xs text-muted-foreground">
+                          Reserves aux cas ou la livraison ne peut plus etre effectuee :
+                          colis perdu, detruit, ou situation impossible.
+                        </p>
+                        <Textarea
+                          placeholder="Expliquez pourquoi la livraison ne peut plus etre effectuee"
+                          value={cancelReason}
+                          onChange={(e) => setCancelReason(e.target.value)}
+                          rows={3}
+                        />
+                      </div>
+                    </div>
                   </div>
 
                   <div className="flex gap-2">
@@ -680,7 +708,7 @@ function IncidentDetailPage() {
                       {loading === "cancel" ? (
                         <Loader2 className="mr-1 h-4 w-4 animate-spin" />
                       ) : null}
-                      Confirmer l'annulation
+                      Annuler definitivement
                     </Button>
                   </div>
                 </CardContent>

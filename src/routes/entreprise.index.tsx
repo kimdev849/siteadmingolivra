@@ -9,6 +9,8 @@ import {
   Plus,
   Users,
   Wallet,
+  ChevronRight,
+  ShieldAlert,
 } from "lucide-react";
 import { PageHeader } from "@/components/admin/PageHeader";
 import { KpiCard } from "@/components/admin/KpiCard";
@@ -80,7 +82,34 @@ function EntrepriseDashboardPage() {
         <Card className="mb-6 border-amber-500/30 bg-amber-500/5">
           <CardContent className="py-4 text-sm text-muted-foreground">
             Votre entreprise est <Badge variant="secondary">{formatStatutLabel(statut)}</Badge>.
-            Vous pourrez gérer livreurs et livraisons dès validation par GoLivra.
+            Vous pourrez gerer livreurs et livraisons des validation par GoLivra.
+          </CardContent>
+        </Card>
+      ) : null}
+
+      {/* ── Alerte operationnelle ──────────────────────────────── */}
+      {(stats?.livraisons_en_retard ?? 0) > 0 && canManage ? (
+        <Card className="mb-6 border-destructive/40 bg-destructive/5">
+          <CardContent className="flex flex-wrap items-center justify-between gap-3 py-4">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-destructive/10">
+                <ShieldAlert className="h-5 w-5 text-destructive" />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-destructive">
+                  {stats.livraisons_en_retard} livraison(s) en retard
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Des incidents necessitent votre intervention. Consultez le centre de controle.
+                </p>
+              </div>
+            </div>
+            <Button asChild variant="destructive" size="sm">
+              <Link to="/entreprise/incidents">
+                Voir les incidents
+                <ChevronRight className="ml-1 h-4 w-4" />
+              </Link>
+            </Button>
           </CardContent>
         </Card>
       ) : null}
@@ -173,13 +202,18 @@ function EntrepriseDashboardPage() {
               </Link>
             </Button>
             <Button variant="outline" asChild className="justify-start">
-              <Link to="/entreprise/retards">
-                <AlertTriangle className="h-4 w-4" /> Retards
+              <Link to="/entreprise/incidents">
+                <AlertTriangle className="h-4 w-4" /> Centre de controle
                 {(stats?.livraisons_en_retard ?? 0) > 0 ? (
                   <Badge variant="destructive" className="ml-auto">
                     {stats?.livraisons_en_retard}
                   </Badge>
                 ) : null}
+              </Link>
+            </Button>
+            <Button variant="outline" asChild className="justify-start">
+              <Link to="/entreprise/retards">
+                <Activity className="h-4 w-4" /> Retards
               </Link>
             </Button>
             <Button variant="outline" asChild className="justify-start">
