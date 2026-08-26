@@ -39,6 +39,8 @@ import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
 import { Route as AdminAlertesRouteImport } from './routes/admin.alertes'
 import { Route as EntrepriseLivreursIndexRouteImport } from './routes/entreprise.livreurs.index'
 import { Route as EntrepriseLivraisonsIndexRouteImport } from './routes/entreprise.livraisons.index'
+import { Route as EntrepriseIncidentsIndexRouteImport } from './routes/entreprise.incidents'
+import { Route as EntrepriseIncidentsIdRouteImport } from './routes/entreprise.incidents.$id'
 import { Route as AdminTransporteursIndexRouteImport } from './routes/admin.transporteurs.index'
 import { Route as AdminMarchandsIndexRouteImport } from './routes/admin.marchands.index'
 import { Route as AdminComptesIndexRouteImport } from './routes/admin.comptes.index'
@@ -204,6 +206,16 @@ const EntrepriseLivraisonsIndexRoute =
     path: '/livraisons/',
     getParentRoute: () => EntrepriseRoute,
   } as any)
+const EntrepriseIncidentsIndexRoute = EntrepriseIncidentsIndexRouteImport.update({
+  id: '/incidents',
+  path: '/incidents',
+  getParentRoute: () => EntrepriseRoute,
+} as any)
+const EntrepriseIncidentsIdRoute = EntrepriseIncidentsIdRouteImport.update({
+  id: '/incidents/$id',
+  path: '/incidents/$id',
+  getParentRoute: () => EntrepriseRoute,
+} as any)
 const AdminTransporteursIndexRoute = AdminTransporteursIndexRouteImport.update({
   id: '/transporteurs/',
   path: '/transporteurs/',
@@ -336,6 +348,7 @@ export interface FileRoutesByTo {
   '/entreprise/profil': typeof EntrepriseProfilRoute
   '/entreprise/retards': typeof EntrepriseRetardsRoute
   '/entreprise/statistiques': typeof EntrepriseStatistiquesRoute
+  '/entreprise/incidents': typeof EntrepriseIncidentsIndexRoute
   '/admin': typeof AdminIndexRoute
   '/entreprise': typeof EntrepriseIndexRoute
   '/admin/commandes/$id': typeof AdminCommandesIdRoute
@@ -346,6 +359,7 @@ export interface FileRoutesByTo {
   '/admin/transporteurs/nouveau': typeof AdminTransporteursNouveauRoute
   '/entreprise/livreurs/$id': typeof EntrepriseLivreursIdRoute
   '/entreprise/livreurs/nouveau': typeof EntrepriseLivreursNouveauRoute
+  '/entreprise/incidents/$id': typeof EntrepriseIncidentsIdRoute
   '/admin/commandes': typeof AdminCommandesIndexRoute
   '/admin/comptes': typeof AdminComptesIndexRoute
   '/admin/marchands': typeof AdminMarchandsIndexRoute
@@ -792,6 +806,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EntrepriseLivreursIdRouteImport
       parentRoute: typeof EntrepriseRoute
     }
+    '/entreprise/incidents': {
+      id: '/entreprise/incidents'
+      path: '/incidents'
+      fullPath: '/entreprise/incidents'
+      preLoaderRoute: typeof EntrepriseIncidentsIndexRouteImport
+      parentRoute: typeof EntrepriseRoute
+    }
+    '/entreprise/incidents/$id': {
+      id: '/entreprise/incidents/$id'
+      path: '/incidents/$id'
+      fullPath: '/entreprise/incidents/$id'
+      preLoaderRoute: typeof EntrepriseIncidentsIdRouteImport
+      parentRoute: typeof EntrepriseRoute
+    }
     '/admin/transporteurs/nouveau': {
       id: '/admin/transporteurs/nouveau'
       path: '/transporteurs/nouveau'
@@ -924,6 +952,8 @@ interface EntrepriseRouteChildren {
   EntrepriseProfilRoute: typeof EntrepriseProfilRoute
   EntrepriseRetardsRoute: typeof EntrepriseRetardsRoute
   EntrepriseStatistiquesRoute: typeof EntrepriseStatistiquesRoute
+  EntrepriseIncidentsIndexRoute: typeof EntrepriseIncidentsIndexRoute
+  EntrepriseIncidentsIdRoute: typeof EntrepriseIncidentsIdRoute
   EntrepriseIndexRoute: typeof EntrepriseIndexRoute
   EntrepriseLivreursIdRoute: typeof EntrepriseLivreursIdRoute
   EntrepriseLivreursNouveauRoute: typeof EntrepriseLivreursNouveauRoute
@@ -939,6 +969,8 @@ const EntrepriseRouteChildren: EntrepriseRouteChildren = {
   EntrepriseProfilRoute: EntrepriseProfilRoute,
   EntrepriseRetardsRoute: EntrepriseRetardsRoute,
   EntrepriseStatistiquesRoute: EntrepriseStatistiquesRoute,
+  EntrepriseIncidentsIndexRoute: EntrepriseIncidentsIndexRoute,
+  EntrepriseIncidentsIdRoute: EntrepriseIncidentsIdRoute,
   EntrepriseIndexRoute: EntrepriseIndexRoute,
   EntrepriseLivreursIdRoute: EntrepriseLivreursIdRoute,
   EntrepriseLivreursNouveauRoute: EntrepriseLivreursNouveauRoute,

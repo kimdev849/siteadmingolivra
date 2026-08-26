@@ -246,3 +246,127 @@ export async function changeMyPassword(
     jsonBody: { currentPassword, newPassword },
   });
 }
+
+// ── Centre d'incidents ──────────────────────────────────────────────────
+
+export type IncidentRiskLevel = "NORMAL" | "A_SURVEILLER" | "RETARD" | "INCIDENT" | "CRITIQUE";
+
+export type IncidentAction = {
+  id: string;
+  action: string;
+  action_label: string;
+  operateur_nom: string;
+  details: string | null;
+  created_at: string;
+  created_at_label: string;
+};
+
+export type IncidentDelivery = {
+  id: string;
+  statut: string;
+  type_livraison: string;
+  created_at: string;
+  attribuee_at?: string | null;
+  collectee_at?: string | null;
+  livree_at?: string | null;
+  montant_total?: number | null;
+  note?: string | null;
+  livreur?: {
+    id: string;
+    nom: string;
+    telephone?: string | null;
+    avatar_url?: string | null;
+    type_vehicule?: string | null;
+    est_actif?: boolean;
+    position?: { latitude: number; longitude: number; at: string } | null;
+    derniere_activite_at?: string | null;
+  } | null;
+  client?: {
+    id?: string;
+    nom?: string | null;
+    telephone?: string | null;
+  } | null;
+  commerce?: {
+    id: string;
+    type: string;
+    nom: string;
+    telephone?: string | null;
+    utilisateur_id?: string | null;
+  } | null;
+  adresse_livraison?: string;
+  adresse_retrait?: string;
+  delay_minutes: number;
+  delay_label: string;
+  risk_level: IncidentRiskLevel;
+  risk_info: { label: string; color: string; emoji: string; order: number };
+  incident_level: string | null;
+  incident_level_info?: { key: string; label: string; color: string; emoji: string; delayRange: string } | null;
+  incident_since?: string | null;
+  incident_reason?: string | null;
+  last_activity_ago?: number | null;
+  timeline: Array<{
+    titre: string;
+    date: string;
+    date_label: string;
+    type: string;
+    details?: string | null;
+  }>;
+  operator_actions: IncidentAction[];
+};
+
+export type IncidentStats = {
+  total_incidents: number;
+  niveau_1: number;
+  niveau_2: number;
+  niveau_3: number;
+  total_active: number;
+  risk_breakdown: Record<IncidentRiskLevel, number>;
+  livraisons: IncidentDelivery[];
+  mis_a_jour_le: string;
+};
+
+export async function fetchMyIncidents(): Promise<IncidentDelivery[]> {
+  return apiFetch<IncidentDelivery[]>("/api/logistics/incidents", { method: "GET", token: token() });
+}
+
+export async function fetchMyIncidentStats(): Promise<IncidentStats> {
+  return apiFetch<IncidentStats>("/api/logistics/incidents/stats", { method: "GET", token: token() });
+}
+
+export async function fetchMyIncidentDetail(deliveryId: string): Promise<IncidentDelivery> {
+  return apiFetch<IncidentDelivery>(`/api/logistics/incidents/${deliveryId}`, {
+    method: "GET",
+    token: token(),
+  });
+}
+
+export async function resolveMyIncident(deliveryId: string, raison?: string): Promise<{ success: boolean }> {
+  return apiFetch(`/api/logistics/incidents/${deliveryId}/resolve`, {
+    method: "PATCH",
+    token: token(),
+    jsonBody: { raison },
+  });
+}
+
+export async function cancelMyIncident(deliveryId: string, raison?: string): Promise<{ success: boolean }> {
+  return apiFetch(`/api/logistics/incidents/${deliveryId}/cancel`, {
+    method: "PATCH",
+    token: token(),
+    jsonBody: { raison },
+  });
+}
+
+export async function addMyIncidentNote(deliveryId: string, note: string): Promise<{ success: boolean }> {
+  return apiFetch(`/api/logistics/incidents/${deliveryId}/note`, {
+    method: "POST",
+    token: token(),
+    jsonBody: { note },
+  });
+}
+
+export async function escalateMyIncident(deliveryId: string): Promise<{ success: boolean; new_level: string }> {
+  return apiFetch(`/api/logistics/incidents/${deliveryId}/escalate`, {
+    method: "PATCH",
+    token: token(),
+  });
+}

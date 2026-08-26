@@ -8,6 +8,7 @@ import {
   LayoutDashboard,
   PackageCheck,
   Radar,
+  ShieldAlert,
   Users,
 } from "lucide-react";
 
@@ -23,6 +24,7 @@ export const entrepriseNavItems: EntrepriseNavItem[] = [
   { to: "/entreprise/operations", label: "Opérations live", icon: Activity },
   { to: "/entreprise/livreurs-actifs", label: "Livreurs actifs", icon: Radar },
   { to: "/entreprise/livraisons", label: "Livraisons", icon: PackageCheck },
+  { to: "/entreprise/incidents", label: "Incidents", icon: ShieldAlert },
   { to: "/entreprise/retards", label: "Retards", icon: AlertTriangle },
   { to: "/entreprise/portefeuille", label: "Portefeuille", icon: Wallet },
   { to: "/entreprise/statistiques", label: "Statistiques", icon: BarChart3 },
