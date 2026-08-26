@@ -410,3 +410,16 @@ export async function cancelDefinitiveIncident(deliveryId: string, raison?: stri
     jsonBody: { raison },
   });
 }
+
+/** Réattribution cross-company : GoLivra assigne à une autre entreprise partenaire. */
+export async function reassignCrossCompanyIncident(
+  deliveryId: string,
+  newCompanyId: string,
+  newCourierId: string,
+): Promise<{ success: boolean; status: string; cross_company: boolean }> {
+  return apiFetch(`/api/logistics/incidents/${deliveryId}/reassign-cross-company`, {
+    method: "PATCH",
+    token: token(),
+    jsonBody: { newCompanyId, newCourierId },
+  });
+}
