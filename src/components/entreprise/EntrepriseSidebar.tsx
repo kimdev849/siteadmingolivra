@@ -50,7 +50,7 @@ export function EntrepriseSidebar({ className }: { className?: string }) {
         </Link>
       </nav>
       <div className="border-t border-border p-4">
-        <p className="text-xs text-muted-foreground">© GoLivra Entreprise</p>
+        <p className="text-xs text-muted-foreground">GoLivra Entreprise — by Synex</p>
       </div>
     </aside>
   );

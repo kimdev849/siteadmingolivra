@@ -219,7 +219,7 @@ function LoginPage() {
 
       {/* Pied de page */}
       <p className="pb-8 text-center text-xs text-muted-foreground">
-        © GoLivra — Tous droits réservés
+        GoLivra — by Synex
       </p>
     </div>
   );
