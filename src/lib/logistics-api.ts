@@ -1,11 +1,11 @@
-import { apiFetch } from "@/lib/api";
-import { getAdminToken } from "@/lib/auth-session";
+import { apiFetch } from "@/@/lib/api";
+import { getAdminToken } from "@/@/lib/auth-session";
 import type {
   ActiveCouriersTracking,
   AdminCourier,
   AdminLogistics,
   TimelineStep,
-} from "@/lib/admin-api";
+} from "@/@/lib/admin-api";
 
 function token() {
   const t = getAdminToken();
@@ -314,6 +314,8 @@ export type IncidentDelivery = {
   proof_gps_lng?: number | null;
   proof_taken_at?: string | null;
   proof_client_present?: boolean | null;
+  delay_reason?: string | null;
+  delay_reason_detail?: string | null;
   timeline: Array<{
     titre: string;
     date: string;
@@ -351,15 +353,15 @@ export async function fetchMyIncidentDetail(deliveryId: string): Promise<Inciden
 }
 
 export async function resolveMyIncident(deliveryId: string, raison?: string): Promise<{ success: boolean }> {
-  return apiFetch(`/api/logistics/incidents/${deliveryId}/resolve`, {
+  return apiFetch(`/api/logistics/incidents/${deliveryId}/resolve-simple`, {
     method: "PATCH",
     token: token(),
-    jsonBody: { raison },
+    jsonBody: { resolution: raison },
   });
 }
 
 export async function cancelMyIncident(deliveryId: string, raison?: string): Promise<{ success: boolean }> {
-  return apiFetch(`/api/logistics/incidents/${deliveryId}/cancel`, {
+  return apiFetch(`/api/logistics/incidents/${deliveryId}/cancel-definitive`, {
     method: "PATCH",
     token: token(),
     jsonBody: { raison },
@@ -378,5 +380,33 @@ export async function escalateMyIncident(deliveryId: string): Promise<{ success:
   return apiFetch(`/api/logistics/incidents/${deliveryId}/escalate`, {
     method: "PATCH",
     token: token(),
+  });
+}
+
+// ── Nouveau workflow d'incident ────────────────────────────────────────────
+
+/** Réattribuer la livraison à un nouveau livreur. */
+export async function reassignIncident(deliveryId: string, newCourierId: string): Promise<{ success: boolean; status: string }> {
+  return apiFetch(`/api/logistics/incidents/${deliveryId}/reassign`, {
+    method: "PATCH",
+    token: token(),
+    jsonBody: { newCourierId },
+  });
+}
+
+/** Confirmer le transfert physique du colis (appelé par le nouveau livreur). */
+export async function confirmTransferIncident(deliveryId: string): Promise<{ success: boolean; status: string }> {
+  return apiFetch(`/api/logistics/incidents/${deliveryId}/confirm-transfer`, {
+    method: "PATCH",
+    token: token(),
+  });
+}
+
+/** Annulation définitive avec cascade sous_commande → commande + notifs client. */
+export async function cancelDefinitiveIncident(deliveryId: string, raison?: string): Promise<{ success: boolean; remboursement_declenche: boolean }> {
+  return apiFetch(`/api/logistics/incidents/${deliveryId}/cancel-definitive`, {
+    method: "PATCH",
+    token: token(),
+    jsonBody: { raison },
   });
 }
