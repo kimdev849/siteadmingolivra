@@ -18,6 +18,7 @@ import {
   Navigation,
   MessageSquare,
   ChevronRight,
+  Camera,
 } from "lucide-react";
 import { PageHeader } from "@/components/admin/PageHeader";
 import { Badge } from "@/components/ui/badge";
@@ -745,6 +746,47 @@ function IncidentDetailPage() {
                 </CardContent>
               </Card>
             )}
+
+            {/* ── Preuve de livraison ─────────────────────────── */}
+            {inc.proof_photo_url ? (
+              <Card className="border-green-300 bg-green-50/50 dark:border-green-800 dark:bg-green-950/20">
+                <CardHeader className="pb-2">
+                  <CardTitle className="flex items-center gap-2 text-sm font-semibold">
+                    <Camera className="h-4 w-4" /> Preuve de livraison
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="overflow-hidden rounded-lg border border-border">
+                    <img
+                      src={inc.proof_photo_url}
+                      alt="Preuve de livraison"
+                      className="w-full object-cover"
+                      style={{ maxHeight: 300 }}
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-3 text-xs text-muted-foreground">
+                    {inc.proof_taken_at ? (
+                      <div>
+                        <p className="font-medium text-foreground">Horodatage</p>
+                        <p>{new Date(inc.proof_taken_at).toLocaleString("fr-FR")}</p>
+                      </div>
+                    ) : null}
+                    {inc.proof_gps_lat != null && inc.proof_gps_lng != null ? (
+                      <div>
+                        <p className="font-medium text-foreground">Position GPS</p>
+                        <p>{inc.proof_gps_lat.toFixed(6)}, {inc.proof_gps_lng.toFixed(6)}</p>
+                      </div>
+                    ) : null}
+                    {inc.proof_client_present != null ? (
+                      <div>
+                        <p className="font-medium text-foreground">Client present</p>
+                        <p>{inc.proof_client_present ? "Oui" : "Non"}</p>
+                      </div>
+                    ) : null}
+                  </div>
+                </CardContent>
+              </Card>
+            ) : null}
 
             {/* ── Chronologie ──────────────────────────────────── */}
             {inc.timeline?.length ? (

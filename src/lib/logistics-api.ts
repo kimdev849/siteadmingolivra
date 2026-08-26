@@ -309,6 +309,11 @@ export type IncidentDelivery = {
   colis_detenteur?: string | null;
   colis_peut_etre_reattribue?: boolean;
   colis_necessite_transfert?: boolean;
+  proof_photo_url?: string | null;
+  proof_gps_lat?: number | null;
+  proof_gps_lng?: number | null;
+  proof_taken_at?: string | null;
+  proof_client_present?: boolean | null;
   timeline: Array<{
     titre: string;
     date: string;

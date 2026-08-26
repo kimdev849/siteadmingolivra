@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Camera } from "lucide-react";
 import { PageHeader } from "@/components/admin/PageHeader";
 import { EventTimeline } from "@/components/admin/EventTimeline";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -115,6 +115,46 @@ function LivraisonDetailPage() {
                 ) : null}
               </CardContent>
             </Card>
+
+            {d.proof_photo_url ? (
+              <Card className="border-green-300 bg-green-50/50 dark:border-green-800 dark:bg-green-950/20">
+                <CardHeader className="pb-2">
+                  <CardTitle className="flex items-center gap-2 text-sm font-semibold">
+                    <Camera className="h-4 w-4" /> Preuve de livraison
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="overflow-hidden rounded-lg border border-border">
+                    <img
+                      src={d.proof_photo_url}
+                      alt="Preuve de livraison"
+                      className="w-full object-cover"
+                      style={{ maxHeight: 300 }}
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-3 text-xs text-muted-foreground">
+                    {d.proof_taken_at ? (
+                      <div>
+                        <p className="font-medium text-foreground">Horodatage</p>
+                        <p>{formatDateTimeFr(d.proof_taken_at)}</p>
+                      </div>
+                    ) : null}
+                    {d.proof_gps_lat != null && d.proof_gps_lng != null ? (
+                      <div>
+                        <p className="font-medium text-foreground">Position GPS</p>
+                        <p>{d.proof_gps_lat.toFixed(6)}, {d.proof_gps_lng.toFixed(6)}</p>
+                      </div>
+                    ) : null}
+                    {d.proof_client_present != null ? (
+                      <div>
+                        <p className="font-medium text-foreground">Client present</p>
+                        <p>{d.proof_client_present ? "Oui" : "Non"}</p>
+                      </div>
+                    ) : null}
+                  </div>
+                </CardContent>
+              </Card>
+            ) : null}
 
             {d.timeline?.length ? <EventTimeline steps={d.timeline} title="Chronologie" /> : null}
           </div>

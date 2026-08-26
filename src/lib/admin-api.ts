@@ -387,6 +387,11 @@ export type AdminDelivery = {
   en_retard?: boolean;
   type_retard?: "assignation" | "livraison" | null;
   minutes_retard?: number;
+  proof_photo_url?: string | null;
+  proof_gps_lat?: number | null;
+  proof_gps_lng?: number | null;
+  proof_taken_at?: string | null;
+  proof_client_present?: boolean | null;
 };
 
 /** Livreur dans la vue temps réel (positions partagées pendant les courses). */
