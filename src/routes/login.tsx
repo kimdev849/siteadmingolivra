@@ -143,13 +143,13 @@ function LoginPage() {
             <div className="space-y-2">
               <Label htmlFor="email">Adresse e-mail</Label>
               <div className="relative">
-                <Mail className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Mail className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/60" />
                 <Input
                   id="email"
                   type="email"
                   autoComplete="email"
                   placeholder="vous@exemple.com"
-                  className="pl-10"
+                  className="h-11 pl-11 text-base"
                   value={email}
                   disabled={loading}
                   onChange={(ev) => setEmail(ev.target.value)}
@@ -160,20 +160,20 @@ function LoginPage() {
             <div className="space-y-2">
               <Label htmlFor="password">Mot de passe</Label>
               <div className="relative">
-                <Lock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Lock className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/60" />
                 <Input
                   id="password"
                   type={showPassword ? "text" : "password"}
                   autoComplete="current-password"
                   placeholder="••••••••"
-                  className="pl-10 pr-10"
+                  className="h-11 pl-11 pr-11 text-base"
                   value={password}
                   disabled={loading}
                   onChange={(ev) => setPassword(ev.target.value)}
                 />
                 <button
                   type="button"
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                   aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
                   onClick={() => setShowPassword((v) => !v)}
                 >
