@@ -1,4 +1,4 @@
-import { AdminNotificationsBell } from "@/components/admin/AdminNotificationsBell";
+import { EntrepriseNotificationsBell } from "@/components/entreprise/EntrepriseNotificationsBell";
 import { LogOut, Menu } from "lucide-react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
@@ -92,7 +92,7 @@ export function EntrepriseTopbar() {
       </Sheet>
 
       <div className="ml-auto flex items-center gap-2 sm:gap-3">
-        <AdminNotificationsBell />
+        <EntrepriseNotificationsBell />
         <div className="hidden items-center gap-2 sm:flex">
           <Avatar className="h-8 w-8">
             <AvatarFallback className="bg-primary/10 text-xs font-semibold text-primary">
