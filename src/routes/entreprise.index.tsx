@@ -97,7 +97,7 @@ function EntrepriseDashboardPage() {
               </div>
               <div>
                 <p className="text-sm font-semibold text-destructive">
-                  {stats.livraisons_en_retard} livraison(s) en retard
+                  {stats?.livraisons_en_retard ?? 0} livraison(s) en retard
                 </p>
                 <p className="text-xs text-muted-foreground">
                   Des incidents necessitent votre intervention. Consultez le centre de controle.

@@ -1,11 +1,11 @@
-import { apiFetch } from "@/@/lib/api";
-import { getAdminToken } from "@/@/lib/auth-session";
+import { apiFetch } from "@/lib/api";
+import { getAdminToken } from "@/lib/auth-session";
 import type {
   ActiveCouriersTracking,
   AdminCourier,
   AdminLogistics,
   TimelineStep,
-} from "@/@/lib/admin-api";
+} from "@/lib/admin-api";
 
 function token() {
   const t = getAdminToken();

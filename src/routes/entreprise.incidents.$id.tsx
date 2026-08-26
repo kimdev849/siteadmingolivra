@@ -835,7 +835,15 @@ function IncidentDetailPage() {
 
             {/* ── Chronologie ──────────────────────────────────── */}
             {inc.timeline?.length ? (
-              <EventTimeline steps={inc.timeline} title="Chronologie" />
+              <EventTimeline
+                steps={inc.timeline.map((t, i) => ({
+                  key: t.type || String(i),
+                  label: t.titre || t.type,
+                  at: t.date,
+                  label_fr: t.date_label,
+                }))}
+                title="Chronologie"
+              />
             ) : null}
           </div>
 

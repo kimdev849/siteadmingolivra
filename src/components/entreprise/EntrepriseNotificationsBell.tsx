@@ -17,7 +17,7 @@ import {
   markAllNotificationsRead,
   markNotificationRead,
   type AppNotification,
-} from "@/@/lib/admin-api";
+} from "@/lib/admin-api";
 
 function notificationIcon(type: string) {
   if (type.includes("incident") || type.includes("anomalie") || type.includes("bloquee")) {
