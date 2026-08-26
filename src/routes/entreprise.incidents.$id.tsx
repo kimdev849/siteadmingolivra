@@ -103,7 +103,7 @@ function IncidentDetailPage() {
   const [loading, setLoading] = useState<string | null>(null);
 
   // Etat du workflow
-  const [step, setStep] = useState<"main" | "contact" | "decision" | "transfer" | "cancel">("main");
+  const [step, setStep] = useState<"main" | "contact" | "decision" | "transfer" | "cancel" | "escalate">("main");
   const [motif, setMotif] = useState("");
   const [contactNote, setContactNote] = useState("");
   const [escalateReason, setEscalateReason] = useState("");
@@ -123,8 +123,9 @@ function IncidentDetailPage() {
       await queryClient.invalidateQueries({ queryKey: ["logistics", "incident", id] });
       await queryClient.invalidateQueries({ queryKey: ["logistics", "incidents"] });
       await queryClient.invalidateQueries({ queryKey: ["logistics", "incident-stats"] });
-    } catch {
-      toast.error("Une erreur s'est produite.");
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : "Une erreur inconnue s'est produite.";
+      toast.error("Erreur", { description: msg });
     } finally {
       setLoading(null);
     }
@@ -368,7 +369,7 @@ function IncidentDetailPage() {
                   <Button
                     variant="ghost"
                     className="w-full justify-start gap-2 text-muted-foreground"
-                    onClick={() => setStep("main")}
+                    onClick={() => setStep("escalate")}
                   >
                     <ArrowUpRight className="h-4 w-4" />
                     Remonter a GoLivra
@@ -710,6 +711,50 @@ function IncidentDetailPage() {
                         <Loader2 className="mr-1 h-4 w-4 animate-spin" />
                       ) : null}
                       Annuler definitivement
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* ── Escalade a GoLivra ─────────────────────────── */}
+            {step === "escalate" && (
+              <Card className="border-orange-300 bg-orange-50/50 dark:border-orange-800 dark:bg-orange-950/20">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-semibold">
+                    Remonter a GoLivra
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <p className="text-sm text-muted-foreground">
+                    La situation necessite l'intervention de GoLivra. Expliquez le contexte ci-dessous.
+                  </p>
+
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">
+                      Description de la situation
+                    </label>
+                    <Textarea
+                      placeholder="Expliquez pourquoi cette situation doit etre remontee..."
+                      value={escalateReason}
+                      onChange={(e) => setEscalateReason(e.target.value)}
+                      rows={3}
+                    />
+                  </div>
+
+                  <div className="flex gap-2">
+                    <Button variant="outline" onClick={() => setStep("main")}>
+                      Retour
+                    </Button>
+                    <Button
+                      variant="destructive"
+                      disabled={!!loading || !escalateReason.trim()}
+                      onClick={() => void handleEscalate()}
+                    >
+                      {loading === "escalate" ? (
+                        <Loader2 className="mr-1 h-4 w-4 animate-spin" />
+                      ) : null}
+                      Remonter a GoLivra
                     </Button>
                   </div>
                 </CardContent>
