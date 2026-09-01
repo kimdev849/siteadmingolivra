@@ -22,6 +22,7 @@ import { Route as EntreprisePortefeuilleRouteImport } from './routes/entreprise.
 import { Route as EntrepriseOperationsRouteImport } from './routes/entreprise.operations'
 import { Route as EntrepriseMotDePasseRouteImport } from './routes/entreprise.mot-de-passe'
 import { Route as EntrepriseLivreursActifsRouteImport } from './routes/entreprise.livreurs-actifs'
+import { Route as EntrepriseIncidentsRouteImport } from './routes/entreprise.incidents'
 import { Route as AdminZonesRouteImport } from './routes/admin.zones'
 import { Route as AdminSanteEndpointsRouteImport } from './routes/admin.sante-endpoints'
 import { Route as AdminRetraitsRouteImport } from './routes/admin.retraits'
@@ -39,14 +40,13 @@ import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
 import { Route as AdminAlertesRouteImport } from './routes/admin.alertes'
 import { Route as EntrepriseLivreursIndexRouteImport } from './routes/entreprise.livreurs.index'
 import { Route as EntrepriseLivraisonsIndexRouteImport } from './routes/entreprise.livraisons.index'
-import { Route as EntrepriseIncidentsIndexRouteImport } from './routes/entreprise.incidents'
-import { Route as EntrepriseIncidentsIdRouteImport } from './routes/entreprise.incidents.$id'
 import { Route as AdminTransporteursIndexRouteImport } from './routes/admin.transporteurs.index'
 import { Route as AdminMarchandsIndexRouteImport } from './routes/admin.marchands.index'
 import { Route as AdminComptesIndexRouteImport } from './routes/admin.comptes.index'
 import { Route as AdminCommandesIndexRouteImport } from './routes/admin.commandes.index'
 import { Route as EntrepriseLivreursNouveauRouteImport } from './routes/entreprise.livreurs.nouveau'
 import { Route as EntrepriseLivreursIdRouteImport } from './routes/entreprise.livreurs.$id'
+import { Route as EntrepriseIncidentsIdRouteImport } from './routes/entreprise.incidents.$id'
 import { Route as AdminTransporteursNouveauRouteImport } from './routes/admin.transporteurs.nouveau'
 import { Route as AdminTransporteursIdRouteImport } from './routes/admin.transporteurs.$id'
 import { Route as AdminObservabiliteIdRouteImport } from './routes/admin.observabilite.$id'
@@ -120,6 +120,11 @@ const EntrepriseLivreursActifsRoute =
     path: '/livreurs-actifs',
     getParentRoute: () => EntrepriseRoute,
   } as any)
+const EntrepriseIncidentsRoute = EntrepriseIncidentsRouteImport.update({
+  id: '/incidents',
+  path: '/incidents',
+  getParentRoute: () => EntrepriseRoute,
+} as any)
 const AdminZonesRoute = AdminZonesRouteImport.update({
   id: '/zones',
   path: '/zones',
@@ -206,16 +211,6 @@ const EntrepriseLivraisonsIndexRoute =
     path: '/livraisons/',
     getParentRoute: () => EntrepriseRoute,
   } as any)
-const EntrepriseIncidentsIndexRoute = EntrepriseIncidentsIndexRouteImport.update({
-  id: '/incidents',
-  path: '/incidents',
-  getParentRoute: () => EntrepriseRoute,
-} as any)
-const EntrepriseIncidentsIdRoute = EntrepriseIncidentsIdRouteImport.update({
-  id: '/incidents/$id',
-  path: '/incidents/$id',
-  getParentRoute: () => EntrepriseRoute,
-} as any)
 const AdminTransporteursIndexRoute = AdminTransporteursIndexRouteImport.update({
   id: '/transporteurs/',
   path: '/transporteurs/',
@@ -246,6 +241,11 @@ const EntrepriseLivreursIdRoute = EntrepriseLivreursIdRouteImport.update({
   id: '/livreurs/$id',
   path: '/livreurs/$id',
   getParentRoute: () => EntrepriseRoute,
+} as any)
+const EntrepriseIncidentsIdRoute = EntrepriseIncidentsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => EntrepriseIncidentsRoute,
 } as any)
 const AdminTransporteursNouveauRoute =
   AdminTransporteursNouveauRouteImport.update({
@@ -299,6 +299,7 @@ export interface FileRoutesByFullPath {
   '/admin/retraits': typeof AdminRetraitsRoute
   '/admin/sante-endpoints': typeof AdminSanteEndpointsRoute
   '/admin/zones': typeof AdminZonesRoute
+  '/entreprise/incidents': typeof EntrepriseIncidentsRouteWithChildren
   '/entreprise/livreurs-actifs': typeof EntrepriseLivreursActifsRoute
   '/entreprise/mot-de-passe': typeof EntrepriseMotDePasseRoute
   '/entreprise/operations': typeof EntrepriseOperationsRoute
@@ -314,6 +315,7 @@ export interface FileRoutesByFullPath {
   '/admin/observabilite/$id': typeof AdminObservabiliteIdRoute
   '/admin/transporteurs/$id': typeof AdminTransporteursIdRoute
   '/admin/transporteurs/nouveau': typeof AdminTransporteursNouveauRoute
+  '/entreprise/incidents/$id': typeof EntrepriseIncidentsIdRoute
   '/entreprise/livreurs/$id': typeof EntrepriseLivreursIdRoute
   '/entreprise/livreurs/nouveau': typeof EntrepriseLivreursNouveauRoute
   '/admin/commandes/': typeof AdminCommandesIndexRoute
@@ -341,6 +343,7 @@ export interface FileRoutesByTo {
   '/admin/retraits': typeof AdminRetraitsRoute
   '/admin/sante-endpoints': typeof AdminSanteEndpointsRoute
   '/admin/zones': typeof AdminZonesRoute
+  '/entreprise/incidents': typeof EntrepriseIncidentsRouteWithChildren
   '/entreprise/livreurs-actifs': typeof EntrepriseLivreursActifsRoute
   '/entreprise/mot-de-passe': typeof EntrepriseMotDePasseRoute
   '/entreprise/operations': typeof EntrepriseOperationsRoute
@@ -348,7 +351,6 @@ export interface FileRoutesByTo {
   '/entreprise/profil': typeof EntrepriseProfilRoute
   '/entreprise/retards': typeof EntrepriseRetardsRoute
   '/entreprise/statistiques': typeof EntrepriseStatistiquesRoute
-  '/entreprise/incidents': typeof EntrepriseIncidentsIndexRoute
   '/admin': typeof AdminIndexRoute
   '/entreprise': typeof EntrepriseIndexRoute
   '/admin/commandes/$id': typeof AdminCommandesIdRoute
@@ -357,9 +359,9 @@ export interface FileRoutesByTo {
   '/admin/observabilite/$id': typeof AdminObservabiliteIdRoute
   '/admin/transporteurs/$id': typeof AdminTransporteursIdRoute
   '/admin/transporteurs/nouveau': typeof AdminTransporteursNouveauRoute
+  '/entreprise/incidents/$id': typeof EntrepriseIncidentsIdRoute
   '/entreprise/livreurs/$id': typeof EntrepriseLivreursIdRoute
   '/entreprise/livreurs/nouveau': typeof EntrepriseLivreursNouveauRoute
-  '/entreprise/incidents/$id': typeof EntrepriseIncidentsIdRoute
   '/admin/commandes': typeof AdminCommandesIndexRoute
   '/admin/comptes': typeof AdminComptesIndexRoute
   '/admin/marchands': typeof AdminMarchandsIndexRoute
@@ -388,6 +390,7 @@ export interface FileRoutesById {
   '/admin/retraits': typeof AdminRetraitsRoute
   '/admin/sante-endpoints': typeof AdminSanteEndpointsRoute
   '/admin/zones': typeof AdminZonesRoute
+  '/entreprise/incidents': typeof EntrepriseIncidentsRouteWithChildren
   '/entreprise/livreurs-actifs': typeof EntrepriseLivreursActifsRoute
   '/entreprise/mot-de-passe': typeof EntrepriseMotDePasseRoute
   '/entreprise/operations': typeof EntrepriseOperationsRoute
@@ -403,6 +406,7 @@ export interface FileRoutesById {
   '/admin/observabilite/$id': typeof AdminObservabiliteIdRoute
   '/admin/transporteurs/$id': typeof AdminTransporteursIdRoute
   '/admin/transporteurs/nouveau': typeof AdminTransporteursNouveauRoute
+  '/entreprise/incidents/$id': typeof EntrepriseIncidentsIdRoute
   '/entreprise/livreurs/$id': typeof EntrepriseLivreursIdRoute
   '/entreprise/livreurs/nouveau': typeof EntrepriseLivreursNouveauRoute
   '/admin/commandes/': typeof AdminCommandesIndexRoute
@@ -434,6 +438,7 @@ export interface FileRouteTypes {
     | '/admin/retraits'
     | '/admin/sante-endpoints'
     | '/admin/zones'
+    | '/entreprise/incidents'
     | '/entreprise/livreurs-actifs'
     | '/entreprise/mot-de-passe'
     | '/entreprise/operations'
@@ -449,6 +454,7 @@ export interface FileRouteTypes {
     | '/admin/observabilite/$id'
     | '/admin/transporteurs/$id'
     | '/admin/transporteurs/nouveau'
+    | '/entreprise/incidents/$id'
     | '/entreprise/livreurs/$id'
     | '/entreprise/livreurs/nouveau'
     | '/admin/commandes/'
@@ -476,6 +482,7 @@ export interface FileRouteTypes {
     | '/admin/retraits'
     | '/admin/sante-endpoints'
     | '/admin/zones'
+    | '/entreprise/incidents'
     | '/entreprise/livreurs-actifs'
     | '/entreprise/mot-de-passe'
     | '/entreprise/operations'
@@ -491,6 +498,7 @@ export interface FileRouteTypes {
     | '/admin/observabilite/$id'
     | '/admin/transporteurs/$id'
     | '/admin/transporteurs/nouveau'
+    | '/entreprise/incidents/$id'
     | '/entreprise/livreurs/$id'
     | '/entreprise/livreurs/nouveau'
     | '/admin/commandes'
@@ -520,6 +528,7 @@ export interface FileRouteTypes {
     | '/admin/retraits'
     | '/admin/sante-endpoints'
     | '/admin/zones'
+    | '/entreprise/incidents'
     | '/entreprise/livreurs-actifs'
     | '/entreprise/mot-de-passe'
     | '/entreprise/operations'
@@ -535,6 +544,7 @@ export interface FileRouteTypes {
     | '/admin/observabilite/$id'
     | '/admin/transporteurs/$id'
     | '/admin/transporteurs/nouveau'
+    | '/entreprise/incidents/$id'
     | '/entreprise/livreurs/$id'
     | '/entreprise/livreurs/nouveau'
     | '/admin/commandes/'
@@ -643,6 +653,13 @@ declare module '@tanstack/react-router' {
       path: '/livreurs-actifs'
       fullPath: '/entreprise/livreurs-actifs'
       preLoaderRoute: typeof EntrepriseLivreursActifsRouteImport
+      parentRoute: typeof EntrepriseRoute
+    }
+    '/entreprise/incidents': {
+      id: '/entreprise/incidents'
+      path: '/incidents'
+      fullPath: '/entreprise/incidents'
+      preLoaderRoute: typeof EntrepriseIncidentsRouteImport
       parentRoute: typeof EntrepriseRoute
     }
     '/admin/zones': {
@@ -806,19 +823,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EntrepriseLivreursIdRouteImport
       parentRoute: typeof EntrepriseRoute
     }
-    '/entreprise/incidents': {
-      id: '/entreprise/incidents'
-      path: '/incidents'
-      fullPath: '/entreprise/incidents'
-      preLoaderRoute: typeof EntrepriseIncidentsIndexRouteImport
-      parentRoute: typeof EntrepriseRoute
-    }
     '/entreprise/incidents/$id': {
       id: '/entreprise/incidents/$id'
-      path: '/incidents/$id'
+      path: '/$id'
       fullPath: '/entreprise/incidents/$id'
       preLoaderRoute: typeof EntrepriseIncidentsIdRouteImport
-      parentRoute: typeof EntrepriseRoute
+      parentRoute: typeof EntrepriseIncidentsRoute
     }
     '/admin/transporteurs/nouveau': {
       id: '/admin/transporteurs/nouveau'
@@ -944,7 +954,19 @@ const AdminRouteChildren: AdminRouteChildren = {
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
+interface EntrepriseIncidentsRouteChildren {
+  EntrepriseIncidentsIdRoute: typeof EntrepriseIncidentsIdRoute
+}
+
+const EntrepriseIncidentsRouteChildren: EntrepriseIncidentsRouteChildren = {
+  EntrepriseIncidentsIdRoute: EntrepriseIncidentsIdRoute,
+}
+
+const EntrepriseIncidentsRouteWithChildren =
+  EntrepriseIncidentsRoute._addFileChildren(EntrepriseIncidentsRouteChildren)
+
 interface EntrepriseRouteChildren {
+  EntrepriseIncidentsRoute: typeof EntrepriseIncidentsRouteWithChildren
   EntrepriseLivreursActifsRoute: typeof EntrepriseLivreursActifsRoute
   EntrepriseMotDePasseRoute: typeof EntrepriseMotDePasseRoute
   EntrepriseOperationsRoute: typeof EntrepriseOperationsRoute
@@ -952,8 +974,6 @@ interface EntrepriseRouteChildren {
   EntrepriseProfilRoute: typeof EntrepriseProfilRoute
   EntrepriseRetardsRoute: typeof EntrepriseRetardsRoute
   EntrepriseStatistiquesRoute: typeof EntrepriseStatistiquesRoute
-  EntrepriseIncidentsIndexRoute: typeof EntrepriseIncidentsIndexRoute
-  EntrepriseIncidentsIdRoute: typeof EntrepriseIncidentsIdRoute
   EntrepriseIndexRoute: typeof EntrepriseIndexRoute
   EntrepriseLivreursIdRoute: typeof EntrepriseLivreursIdRoute
   EntrepriseLivreursNouveauRoute: typeof EntrepriseLivreursNouveauRoute
@@ -962,6 +982,7 @@ interface EntrepriseRouteChildren {
 }
 
 const EntrepriseRouteChildren: EntrepriseRouteChildren = {
+  EntrepriseIncidentsRoute: EntrepriseIncidentsRouteWithChildren,
   EntrepriseLivreursActifsRoute: EntrepriseLivreursActifsRoute,
   EntrepriseMotDePasseRoute: EntrepriseMotDePasseRoute,
   EntrepriseOperationsRoute: EntrepriseOperationsRoute,
@@ -969,8 +990,6 @@ const EntrepriseRouteChildren: EntrepriseRouteChildren = {
   EntrepriseProfilRoute: EntrepriseProfilRoute,
   EntrepriseRetardsRoute: EntrepriseRetardsRoute,
   EntrepriseStatistiquesRoute: EntrepriseStatistiquesRoute,
-  EntrepriseIncidentsIndexRoute: EntrepriseIncidentsIndexRoute,
-  EntrepriseIncidentsIdRoute: EntrepriseIncidentsIdRoute,
   EntrepriseIndexRoute: EntrepriseIndexRoute,
   EntrepriseLivreursIdRoute: EntrepriseLivreursIdRoute,
   EntrepriseLivreursNouveauRoute: EntrepriseLivreursNouveauRoute,
