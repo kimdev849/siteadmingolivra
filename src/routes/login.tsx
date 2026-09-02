@@ -10,6 +10,7 @@ import logo from "@/assets/logo.png";
 import {
   fetchAdminMe,
   isAdminUser,
+  isCommerceOwner,
   isLogisticsManager,
   isStaffUser,
   staffLogin,
@@ -56,7 +57,7 @@ function LoginPage() {
           await navigate({ to: "/admin" });
           return;
         }
-        if (isLogisticsManager(me)) {
+        if (isLogisticsManager(me) || isCommerceOwner(me)) {
           await navigate({ to: "/entreprise" });
           return;
         }
@@ -87,15 +88,17 @@ function LoginPage() {
       setAdminToken(session.token, remember);
 
       const me = await fetchAdminMe(session.token);
-      if (!isStaffUser(me)) {
+      if (!isStaffUser(me) && !isCommerceOwner(me)) {
         clearAdminToken();
         setError(
-          "Ce compte n'est pas autorisé. Utilisez un compte admin ou responsable d'entreprise de livraison.",
+          "Ce compte n'est pas autorisé.",
         );
         return;
       }
 
-      if (isLogisticsManager(me)) {
+      if (isCommerceOwner(me)) {
+        await navigate({ to: "/entreprise" });
+      } else if (isLogisticsManager(me)) {
         await navigate({ to: "/entreprise" });
       } else {
         await navigate({ to: "/admin" });
