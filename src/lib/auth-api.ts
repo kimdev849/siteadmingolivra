@@ -64,6 +64,10 @@ export function isLogisticsManager(user: AdminUser | null | undefined): boolean 
   return user?.role === "gestionnaire_logistique";
 }
 
+export function isCommerceOwner(user: AdminUser | null | undefined): boolean {
+  return user?.role === "restaurateur" || user?.role === "commercant";
+}
+
 export function isStaffUser(user: AdminUser | null | undefined): boolean {
   return isAdminUser(user) || isLogisticsManager(user);
 }

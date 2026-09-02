@@ -5,6 +5,7 @@ import {
   AlertTriangle,
   BarChart3,
   Bike,
+  Clock,
   PackageCheck,
   Plus,
   Users,
@@ -21,6 +22,9 @@ import { CourierAvailabilityBadge } from "@/components/entreprise/CourierAvailab
 import { OperationDeliveryCard } from "@/components/entreprise/OperationDeliveryCard";
 import { ENTREPRISE_OPS_REFETCH_MS } from "@/lib/entreprise-nav";
 import { formatStatutLabel } from "@/lib/admin-api";
+import { fetchAdminMe, isCommerceOwner } from "@/lib/auth-api";
+import { getAdminToken } from "@/lib/auth-session";
+import { fetchMyEnterprises } from "@/lib/commerce-api";
 import {
   fetchMyCouriers,
   fetchMyLogisticsCompany,
@@ -32,7 +36,62 @@ export const Route = createFileRoute("/entreprise/")({
   component: EntrepriseDashboardPage,
 });
 
+function CommerceDashboard() {
+  const enterprisesQuery = useQuery({
+    queryKey: ["my-enterprises"],
+    queryFn: fetchMyEnterprises,
+  });
+  const enterprises = enterprisesQuery.data ?? [];
+
+  return (
+    <div>
+      <PageHeader
+        title="Mon commerce"
+        description="Gérez votre commerce, vos produits et vos horaires."
+      />
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        {enterprises.map((ent) => (
+          <Card key={ent.id}>
+            <CardHeader>
+              <CardTitle className="text-sm font-semibold">{ent.nom}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground">Type : {ent.type}</p>
+              <Button asChild className="mt-4 gap-2" size="sm">
+                <Link to="/entreprise/horaires">
+                  <Clock className="h-4 w-4" />
+                  Gérer les horaires
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>
+        ))}
+        {enterprises.length === 0 && !enterprisesQuery.isLoading && (
+          <Card>
+            <CardContent className="py-12 text-center text-sm text-muted-foreground">
+              Aucun commerce associé à votre compte.
+            </CardContent>
+          </Card>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function EntrepriseDashboardPage() {
+  const meQuery = useQuery({
+    queryKey: ["me"],
+    queryFn: () => fetchAdminMe(getAdminToken()),
+    staleTime: 5 * 60 * 1000,
+  });
+  const isCommerce = isCommerceOwner(meQuery.data);
+
+  // Commerce owners: simple dashboard
+  if (isCommerce) {
+    return <CommerceDashboard />;
+  }
+
+  // Logistics managers: full dashboard
   const companyQuery = useQuery({
     queryKey: ["logistics", "company"],
     queryFn: fetchMyLogisticsCompany,

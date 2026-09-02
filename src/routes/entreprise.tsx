@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { EntrepriseSidebar } from "@/components/entreprise/EntrepriseSidebar";
 import { EntrepriseTopbar } from "@/components/entreprise/EntrepriseTopbar";
-import { fetchAdminMe, isAdminUser, isLogisticsManager } from "@/lib/auth-api";
+import { fetchAdminMe, isAdminUser, isCommerceOwner, isLogisticsManager } from "@/lib/auth-api";
 import { clearAdminToken, getAdminToken } from "@/lib/auth-session";
 
 export const Route = createFileRoute("/entreprise")({
@@ -28,7 +28,7 @@ function EntrepriseLayout() {
           await navigate({ to: "/admin" });
           return;
         }
-        if (!isLogisticsManager(me)) {
+        if (!isLogisticsManager(me) && !isCommerceOwner(me)) {
           clearAdminToken();
           await navigate({ to: "/login" });
           return;
